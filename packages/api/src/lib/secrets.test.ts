@@ -8,6 +8,12 @@ describe("secrets", () => {
     const hash = await hashSecret("correct horse");
     expect(await verifySecret("correct horse", hash)).toBe(true);
     expect(await verifySecret("wrong horse", hash)).toBe(false);
+    expect(hash.startsWith("scrypt$")).toBe(true);
+  });
+
+  test("rejects malformed stored hashes", async () => {
+    expect(await verifySecret("anything", "")).toBe(false);
+    expect(await verifySecret("anything", "argon2id$whatever")).toBe(false);
   });
 
   test("pin fields include an offline verifier the phone can recompute", async () => {
