@@ -1,0 +1,62 @@
+enum Role {
+  OWNER
+  HELPER
+}
+
+enum Currency {
+  USD
+  ZIG
+}
+
+enum TransactionType {
+  CASH_IN
+  CASH_OUT
+}
+
+/// How a logbook entry lines up with the EcoCash confirmation SMS.
+enum MatchState {
+  MATCHED
+  NO_SMS
+  MISMATCH
+  /// Recorded on purpose without an SMS (override, or SMS reading is off).
+  MANUAL
+}
+
+/// Money moving in or out of the booth that is not a customer transaction.
+enum MovementKind {
+  /// Cash turned into float (bank or Econet shop).
+  FLOAT_BOUGHT
+  CASH_DEPOSITED
+  CASH_ADDED
+  CASH_REMOVED
+  FLOAT_ADDED
+  FLOAT_REMOVED
+}
+
+enum DeviceKind {
+  BOOTH
+  OWNER
+}
+
+enum ShiftStatus {
+  OPEN
+  CLOSED
+}
+
+enum SmsParseStatus {
+  /// Type, amount, currency and reference were all read.
+  PARSED
+  /// Some transaction fields were read, but not all.
+  PARTIAL
+  /// A balance message with no transaction in it.
+  BALANCE_ONLY
+  UNPARSED
+}
+
+enum AuditAction {
+  CREATE
+  EDIT
+  VOID
+  FLAG
+  REVIEW
+}
