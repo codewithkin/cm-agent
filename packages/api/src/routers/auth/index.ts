@@ -6,6 +6,7 @@ import { deviceUsers } from "./device-users";
 import { lock } from "./lock";
 import { me } from "./me";
 import { registerDevice } from "./register-device";
+import { resetOwnerPin } from "./reset-owner-pin";
 import { unlock } from "./unlock";
 
 export const authRouter = router({
@@ -17,4 +18,5 @@ export const authRouter = router({
   me,
   changePin,
   changePassword,
+  resetOwnerPin,
 });
