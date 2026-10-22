@@ -15,6 +15,7 @@ model Device {
   shifts           Shift[]
   transactions     Transaction[]
   movements        Movement[]
+  smsMessages      SmsMessage[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 }

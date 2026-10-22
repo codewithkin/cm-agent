@@ -1,0 +1,31 @@
+/// An EcoCash confirmation SMS read on a booth phone. Money fields are cents.
+model SmsMessage {
+  id                String           @id @default(uuid())
+  deviceId          String
+  device            Device           @relation(fields: [deviceId], references: [id])
+  sender            String
+  body              String
+  /// SHA-256 of sender + body, so the same SMS is never stored twice.
+  bodyHash          String           @unique
+  receivedAt        DateTime
+  parseStatus       SmsParseStatus
+  type              TransactionType?
+  currency          Currency?
+  amount            Int?
+  counterpartyPhone String?
+  counterpartyName  String?
+  reference         String?
+  balanceAfter      Int?
+  transactionId     String?          @unique
+  transaction       Transaction?     @relation(fields: [transactionId], references: [id])
+  ignoredAt         DateTime?
+  ignoredReason     String?
+  reviewedAt        DateTime?
+  reviewedById      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([deviceId, receivedAt])
+  @@index([reference])
+  @@index([updatedAt])
+}
