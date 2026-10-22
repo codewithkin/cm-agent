@@ -19,3 +19,16 @@ export async function loadVisibleShift(db: Db, actor: Actor, shiftId: string): P
   }
   return shift;
 }
+
+/** A transaction the actor is allowed to see, with its shift. */
+export async function loadVisibleTransaction(db: Db, actor: Actor, transactionId: string) {
+  const transaction = await db.transaction.findUnique({
+    where: { id: transactionId },
+    include: { shift: { select: { deviceId: true, status: true } } },
+  });
+  if (!transaction) throw new TRPCError({ code: "NOT_FOUND", message: "Transaction not found" });
+  if (!canSeeShift(actor, transaction.shift)) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Only the owner can see past transactions" });
+  }
+  return transaction;
+}
