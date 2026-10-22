@@ -3,8 +3,19 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { recordAudit } from "../lib/audit";
-import { BALANCE_KEYS, balancesSchema, expectedBalances, type Balances } from "../lib/balances";
+import {
+  BALANCE_KEYS,
+  balancesSchema,
+  expectedBalances,
+  outOfTolerance,
+  subtractBalances,
+  type Balances,
+} from "../lib/balances";
+import { getSettings } from "./settings";
 import type { Actor, Db } from "./types";
+
+/** SMS that should have a logbook entry: parsed fully or partly, not linked, not ignored. */
+export const RECORDABLE_SMS_STATUSES = ["PARSED", "PARTIAL"] as const;
 
 export function openingBalances(shift: Shift): Balances {
   return {
@@ -128,4 +139,83 @@ export async function openShift(db: Db, actor: Actor, input: z.infer<typeof open
     after: { opening: input.opening, note: input.note ?? null, carriedFrom: lastClosed?.id ?? null },
   });
   return shift;
+}
+
+export const closeShiftInput = z.object({
+  shiftId: z.uuid(),
+  counted: balancesSchema,
+  note: z.string().trim().min(1).max(500).optional(),
+  /** Close even though some EcoCash SMS have no logbook entry yet. */
+  acceptUnrecordedSms: z.boolean().default(false),
+  closedAt: z.coerce.date().optional(),
+});
+
+/**
+ * Closes a shift: saves the count, snapshots the expected balances and works out
+ * the variance. A gap outside the owner's tolerance needs a note.
+ */
+export async function closeShift(db: Db, actor: Actor, input: z.infer<typeof closeShiftInput>) {
+  const shift = await db.shift.findUnique({ where: { id: input.shiftId } });
+  if (!shift) throw new TRPCError({ code: "NOT_FOUND", message: "Shift not found" });
+  if (shift.status === "CLOSED") {
+    throw new TRPCError({ code: "CONFLICT", message: "This shift is already closed" });
+  }
+  if (shift.deviceId !== actor.deviceId && actor.role !== "OWNER") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Close the shift from the phone it was opened on" });
+  }
+
+  const unrecordedSms = await db.smsMessage.count({
+    where: {
+      deviceId: shift.deviceId,
+      transactionId: null,
+      ignoredAt: null,
+      parseStatus: { in: [...RECORDABLE_SMS_STATUSES] },
+      receivedAt: { gte: shift.openedAt },
+    },
+  });
+  if (unrecordedSms > 0 && !input.acceptUnrecordedSms) {
+    throw new TRPCError({
+      code: "PRECONDITION_FAILED",
+      message: `${unrecordedSms} EcoCash SMS not recorded yet. Record them first, or close anyway.`,
+    });
+  }
+
+  const [expected, settings] = await Promise.all([shiftExpectedBalances(db, shift), getSettings(db)]);
+  const variance = subtractBalances(input.counted, expected);
+  const outside = outOfTolerance(variance, settings);
+  if (outside.length > 0 && !input.note) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: "The count is outside the allowed difference. Add a note explaining what happened.",
+    });
+  }
+
+  const closed = await db.shift.update({
+    where: { id: shift.id },
+    data: {
+      status: "CLOSED",
+      closedAt: input.closedAt ?? new Date(),
+      closedById: actor.userId,
+      expectedCashUsd: expected.cashUsd,
+      expectedFloatUsd: expected.floatUsd,
+      expectedCashZig: expected.cashZig,
+      expectedFloatZig: expected.floatZig,
+      countedCashUsd: input.counted.cashUsd,
+      countedFloatUsd: input.counted.floatUsd,
+      countedCashZig: input.counted.cashZig,
+      countedFloatZig: input.counted.floatZig,
+      closeNote: input.note ?? null,
+      closedWithUnrecordedSms: unrecordedSms,
+    },
+  });
+  await recordAudit(db, {
+    actorId: actor.userId,
+    deviceId: actor.deviceId,
+    entity: "Shift",
+    entityId: shift.id,
+    action: "EDIT",
+    after: { status: "CLOSED", expected, counted: input.counted, variance, unrecordedSms },
+    reason: input.note ?? null,
+  });
+  return { shift: closed, expected, counted: input.counted, variance, outOfTolerance: outside };
 }
