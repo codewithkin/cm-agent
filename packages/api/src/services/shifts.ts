@@ -3,7 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { recordAudit } from "../lib/audit";
-import { BALANCE_KEYS, balancesSchema, type Balances } from "../lib/balances";
+import { BALANCE_KEYS, balancesSchema, expectedBalances, type Balances } from "../lib/balances";
 import type { Actor, Db } from "./types";
 
 export function openingBalances(shift: Shift): Balances {
@@ -63,6 +63,21 @@ export function findLastClosedShift(db: Db, deviceId: string) {
     where: { deviceId, status: "CLOSED" },
     orderBy: { closedAt: "desc" },
   });
+}
+
+/** Live expected balances: opening count plus every non-voided transaction and movement. */
+export async function shiftExpectedBalances(db: Db, shift: Shift): Promise<Balances> {
+  const [transactions, movements] = await Promise.all([
+    db.transaction.findMany({
+      where: { shiftId: shift.id, voidedAt: null },
+      select: { type: true, currency: true, amount: true, commission: true, voidedAt: true },
+    }),
+    db.movement.findMany({
+      where: { shiftId: shift.id, voidedAt: null },
+      select: { kind: true, currency: true, amount: true, voidedAt: true },
+    }),
+  ]);
+  return expectedBalances(openingBalances(shift), transactions, movements);
 }
 
 export const openShiftInput = z.object({

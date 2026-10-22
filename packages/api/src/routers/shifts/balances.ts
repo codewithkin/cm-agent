@@ -1,0 +1,22 @@
+import { z } from "zod";
+
+import { userProcedure } from "../../index";
+import { lowBalances } from "../../lib/balances";
+import { loadVisibleShift } from "../../services/access";
+import { getSettings } from "../../services/settings";
+import { findOpenShift, shiftExpectedBalances } from "../../services/shifts";
+
+/** The four live numbers on the home screen, plus which ones are below the warning level. */
+export const balances = userProcedure
+  .input(z.object({ shiftId: z.uuid().optional() }).optional())
+  .query(async ({ ctx, input }) => {
+    const shift = input?.shiftId
+      ? await loadVisibleShift(ctx.db, ctx.actor, input.shiftId)
+      : await findOpenShift(ctx.db, ctx.device.id);
+    if (!shift) return null;
+    const [expected, settings] = await Promise.all([
+      shiftExpectedBalances(ctx.db, shift),
+      getSettings(ctx.db),
+    ]);
+    return { shiftId: shift.id, expected, low: lowBalances(expected, settings) };
+  });
