@@ -11,6 +11,7 @@ model Device {
   lastSeenAt       DateTime?
   lastSyncedAt     DateTime?
   revokedAt        DateTime?
+  sessions         Session[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 }

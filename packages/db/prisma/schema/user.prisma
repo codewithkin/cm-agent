@@ -13,6 +13,7 @@ model User {
   pinFailedAttempts Int       @default(0)
   pinLockedUntil    DateTime?
   active            Boolean   @default(true)
+  sessions          Session[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

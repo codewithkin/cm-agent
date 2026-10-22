@@ -1,0 +1,14 @@
+/// Created when someone unlocks a registered phone with their PIN.
+model Session {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  deviceId  String
+  device    Device    @relation(fields: [deviceId], references: [id])
+  expiresAt DateTime
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([deviceId, endedAt])
+}
