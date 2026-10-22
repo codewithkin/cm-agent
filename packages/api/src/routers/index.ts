@@ -4,6 +4,7 @@ import { customersRouter } from "./customers";
 import { devicesRouter } from "./devices";
 import { settingsRouter } from "./settings";
 import { shiftsRouter } from "./shifts";
+import { smsRouter } from "./sms";
 import { teamRouter } from "./team";
 
 export const appRouter = router({
@@ -16,5 +17,6 @@ export const appRouter = router({
   settings: settingsRouter,
   shifts: shiftsRouter,
   customers: customersRouter,
+  sms: smsRouter,
 });
 export type AppRouter = typeof appRouter;
