@@ -4,6 +4,7 @@ import { edit } from "./edit";
 import { flag } from "./flag";
 import { get } from "./get";
 import { list } from "./list";
+import { voidTransaction } from "./void";
 
 export const transactionsRouter = router({
   create,
@@ -11,4 +12,5 @@ export const transactionsRouter = router({
   get,
   flag,
   edit,
+  void: voidTransaction,
 });
