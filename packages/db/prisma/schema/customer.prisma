@@ -5,7 +5,8 @@ model Customer {
   phone       String   @unique
   name        String?
   idNumber    String?
-  firstSeenAt DateTime @default(now())
+  firstSeenAt  DateTime      @default(now())
+  transactions Transaction[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

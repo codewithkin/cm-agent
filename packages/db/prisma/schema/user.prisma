@@ -15,6 +15,7 @@ model User {
   active            Boolean   @default(true)
   sessions          Session[]
   shifts            Shift[]
+  transactions      Transaction[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

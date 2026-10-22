@@ -1,0 +1,43 @@
+/// One row of the agent logbook. Money fields are cents.
+model Transaction {
+  id               String          @id @default(uuid())
+  type             TransactionType
+  currency         Currency
+  amount           Int
+  fee              Int?
+  commission       Int?
+  customerId       String
+  customer         Customer        @relation(fields: [customerId], references: [id])
+  customerPhone    String
+  customerName     String
+  customerIdNumber String
+  /// EcoCash transaction reference, from the SMS or typed in.
+  reference        String?         @unique
+  /// Customer signature as a PNG data URL.
+  signature        String
+  idPhoto          String?
+  shiftId          String
+  shift            Shift           @relation(fields: [shiftId], references: [id])
+  deviceId         String
+  device           Device          @relation(fields: [deviceId], references: [id])
+  servedById       String
+  servedBy         User            @relation(fields: [servedById], references: [id])
+  occurredAt       DateTime        @default(now())
+  matchState       MatchState
+  flaggedAt        DateTime?
+  flagReason       String?
+  flaggedById      String?
+  voidedAt         DateTime?
+  voidReason       String?
+  voidedById       String?
+  reviewedAt       DateTime?
+  reviewedById     String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([shiftId])
+  @@index([occurredAt])
+  @@index([deviceId, occurredAt])
+  @@index([customerPhone])
+  @@index([updatedAt])
+}
