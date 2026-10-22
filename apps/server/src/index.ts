@@ -15,6 +15,7 @@ app.use(
   cors({
     origin: ENV.CORS_ORIGIN,
     allowMethods: ["GET", "POST", "OPTIONS"],
+    allowHeaders: ["content-type", "authorization", "x-session-token"],
   }),
 );
 
