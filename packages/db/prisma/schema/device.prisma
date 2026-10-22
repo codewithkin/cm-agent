@@ -1,0 +1,16 @@
+/// A phone registered by the owner. Requests carry its token as a bearer token.
+model Device {
+  id               String     @id @default(uuid())
+  label            String
+  kind             DeviceKind
+  tokenHash        String     @unique
+  registeredById   String
+  appVersion       String?
+  /// Records waiting on the phone to sync, as last reported by the phone.
+  pendingSyncCount Int        @default(0)
+  lastSeenAt       DateTime?
+  lastSyncedAt     DateTime?
+  revokedAt        DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
