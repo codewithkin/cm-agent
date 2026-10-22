@@ -1,0 +1,18 @@
+/// Single-row business configuration (id is always "default"). Money values are cents.
+model BusinessSettings {
+  id            String   @id @default("default")
+  businessName  String   @default("[Business name]")
+  agentCodeUsd  String?
+  agentCodeZig  String?
+  /// Largest allowed difference between expected and counted balances at shift close.
+  toleranceUsd  Int      @default(0)
+  toleranceZig  Int      @default(0)
+  lowCashUsd    Int      @default(5000)
+  lowCashZig    Int      @default(0)
+  lowFloatUsd   Int      @default(5000)
+  lowFloatZig   Int      @default(0)
+  /// SMS senders treated as EcoCash confirmations, compared case-insensitively.
+  smsSenders    String[] @default(["EcoCash"])
+  retentionDays Int      @default(1825)
+  updatedAt     DateTime @updatedAt
+}
