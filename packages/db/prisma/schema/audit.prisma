@@ -1,0 +1,17 @@
+/// Who changed what, when and why. Never edited or deleted.
+model AuditEvent {
+  id        String      @id @default(uuid())
+  actorId   String
+  actor     User        @relation(fields: [actorId], references: [id])
+  deviceId  String?
+  entity    String
+  entityId  String
+  action    AuditAction
+  before    Json?
+  after     Json?
+  reason    String?
+  createdAt DateTime    @default(now())
+
+  @@index([entity, entityId])
+  @@index([createdAt])
+}

@@ -17,6 +17,7 @@ model User {
   shifts            Shift[]
   transactions      Transaction[]
   movements         Movement[]
+  auditEvents       AuditEvent[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
