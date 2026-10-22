@@ -1,0 +1,3 @@
+{
+  "extends": "@cm-agent/config/tsconfig.base.json"
+}

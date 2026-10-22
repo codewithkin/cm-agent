@@ -1,0 +1,37 @@
+{
+  "name": "cm-agent",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "check-types": "turbo run check-types",
+    "dev:native": "turbo run dev -F native --",
+    "dev:server": "turbo run dev -F server --",
+    "db:push": "turbo run db:push -F @cm-agent/db --",
+    "db:studio": "turbo run db:studio -F @cm-agent/db --",
+    "db:generate": "turbo run db:generate -F @cm-agent/db --",
+    "db:migrate": "turbo run db:migrate -F @cm-agent/db --",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d --build",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "env:generate": "varlock codegen --path ./apps/server/ && varlock codegen --path ./apps/native/ && varlock codegen --path ./packages/db/",
+    "postinstall": "varlock codegen --path ./apps/server/ && varlock codegen --path ./apps/native/ && varlock codegen --path ./packages/db/"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cm-agent/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "turbo": "^2.11.7",
+    "typescript": "^6.0.3",
+    "varlock": "catalog:"
+  },
+  "packageManager": "pnpm@11.4.0"
+}

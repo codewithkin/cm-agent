@@ -1,0 +1,6 @@
+{
+  "extends": "@cm-agent/config/tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true
+  }
+}
