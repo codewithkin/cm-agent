@@ -1,0 +1,38 @@
+/// One working session on one booth phone, from opening count to closing count.
+/// Money fields are cents. At most one OPEN shift per device (enforced in the API).
+model Shift {
+  id                      String      @id @default(uuid())
+  deviceId                String
+  device                  Device      @relation(fields: [deviceId], references: [id])
+  openedById              String
+  openedBy                User        @relation(fields: [openedById], references: [id])
+  status                  ShiftStatus @default(OPEN)
+  openedAt                DateTime    @default(now())
+  openingCashUsd          Int
+  openingFloatUsd         Int
+  openingCashZig          Int
+  openingFloatZig         Int
+  openingNote             String?
+  closedAt                DateTime?
+  closedById              String?
+  /// Snapshot of the expected balances at close.
+  expectedCashUsd         Int?
+  expectedFloatUsd        Int?
+  expectedCashZig         Int?
+  expectedFloatZig        Int?
+  countedCashUsd          Int?
+  countedFloatUsd         Int?
+  countedCashZig          Int?
+  countedFloatZig         Int?
+  closeNote               String?
+  /// EcoCash SMS still unrecorded when the shift was closed anyway.
+  closedWithUnrecordedSms Int         @default(0)
+  reviewedAt              DateTime?
+  reviewedById            String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  @@index([deviceId, status])
+  @@index([openedAt])
+  @@index([updatedAt])
+}

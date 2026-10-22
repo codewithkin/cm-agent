@@ -12,6 +12,7 @@ model Device {
   lastSyncedAt     DateTime?
   revokedAt        DateTime?
   sessions         Session[]
+  shifts           Shift[]
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 }
