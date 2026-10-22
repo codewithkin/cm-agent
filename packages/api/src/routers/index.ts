@@ -8,6 +8,7 @@ import { reviewRouter } from "./review";
 import { settingsRouter } from "./settings";
 import { shiftsRouter } from "./shifts";
 import { smsRouter } from "./sms";
+import { syncRouter } from "./sync";
 import { teamRouter } from "./team";
 import { transactionsRouter } from "./transactions";
 
@@ -26,5 +27,6 @@ export const appRouter = router({
   movements: movementsRouter,
   review: reviewRouter,
   reports: reportsRouter,
+  sync: syncRouter,
 });
 export type AppRouter = typeof appRouter;
