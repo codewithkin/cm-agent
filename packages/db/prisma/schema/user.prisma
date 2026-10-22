@@ -1,0 +1,20 @@
+model User {
+  id                String    @id @default(uuid())
+  name              String
+  role              Role
+  /// Owner sign-in only. Helpers unlock with a PIN and have no password.
+  phone             String?   @unique
+  passwordHash      String?
+  pinHash           String
+  /// Salted SHA-256 of the PIN, synced to registered phones for offline unlock.
+  pinSalt           String
+  pinVerifier       String
+  mustChangePin     Boolean   @default(false)
+  pinFailedAttempts Int       @default(0)
+  pinLockedUntil    DateTime?
+  active            Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([updatedAt])
+}
