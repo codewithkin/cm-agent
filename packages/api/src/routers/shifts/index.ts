@@ -2,6 +2,7 @@ import { router } from "../../index";
 import { balances } from "./balances";
 import { close } from "./close";
 import { current } from "./current";
+import { get } from "./get";
 import { list } from "./list";
 import { open } from "./open";
 
@@ -11,4 +12,5 @@ export const shiftsRouter = router({
   balances,
   close,
   list,
+  get,
 });
