@@ -1,5 +1,6 @@
 import { router } from "../../index";
 import { bootstrapOwner } from "./bootstrap-owner";
+import { changePin } from "./change-pin";
 import { deviceUsers } from "./device-users";
 import { lock } from "./lock";
 import { me } from "./me";
@@ -13,4 +14,5 @@ export const authRouter = router({
   unlock,
   lock,
   me,
+  changePin,
 });
