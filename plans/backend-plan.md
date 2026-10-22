@@ -19,112 +19,112 @@ Procedure levels: `publicProcedure` → `deviceProcedure` (phone registered) →
 ## Features and sub-features
 
 ### 1. Database schema
-- [ ] Enums (role, currency, transaction type, match state, movement kind, device kind, shift status, SMS parse status, audit action)
-- [ ] `BusinessSettings` model
-- [ ] `User` model
-- [ ] `Device` model
-- [ ] `Session` model
-- [ ] `Customer` model
-- [ ] `Shift` model
-- [ ] `Transaction` model
-- [ ] `Movement` model
-- [ ] `SmsMessage` model
-- [ ] `AuditEvent` model
-- [ ] Re-export generated Prisma types from `@cm-agent/db`
+- [x] Enums (role, currency, transaction type, match state, movement kind, device kind, shift status, SMS parse status, audit action)
+- [x] `BusinessSettings` model
+- [x] `User` model
+- [x] `Device` model
+- [x] `Session` model
+- [x] `Customer` model
+- [x] `Shift` model
+- [x] `Transaction` model
+- [x] `Movement` model
+- [x] `SmsMessage` model
+- [x] `AuditEvent` model
+- [x] Re-export generated Prisma types from `@cm-agent/db`
 
 ### 2. Shared helpers
-- [ ] Zod schemas for the enums
-- [ ] Money helpers (cents parsing and formatting)
-- [ ] Zimbabwe time helpers (day and month ranges)
-- [ ] Phone number normalisation
-- [ ] Token generation and hashing
-- [ ] Password and PIN hashing, offline PIN verifier
-- [ ] Audit log recorder
+- [x] Zod schemas for the enums
+- [x] Money helpers (cents parsing and formatting)
+- [x] Zimbabwe time helpers (day and month ranges)
+- [x] Phone number normalisation
+- [x] Token generation and hashing
+- [x] Password and PIN hashing, offline PIN verifier
+- [x] Audit log recorder
 
 ### 3. Auth
-- [ ] Owner setup code env var
-- [ ] Read device and session tokens into the tRPC context
-- [ ] Allow auth headers through CORS
-- [ ] `deviceProcedure`, `userProcedure`, `ownerProcedure`
-- [ ] `auth.bootstrapOwner`
-- [ ] `auth.registerDevice`
-- [ ] `auth.deviceUsers` (lock screen list + offline PIN verifiers)
-- [ ] `auth.unlock` (PIN → session, lockout after 5 wrong PINs)
-- [ ] `auth.lock`
-- [ ] `auth.me`
-- [ ] `auth.changePin`
-- [ ] `auth.changePassword`
-- [ ] `auth.resetOwnerPin`
+- [x] Owner setup code env var
+- [x] Read device and session tokens into the tRPC context
+- [x] Allow auth headers through CORS
+- [x] `deviceProcedure`, `userProcedure`, `ownerProcedure`
+- [x] `auth.bootstrapOwner`
+- [x] `auth.registerDevice`
+- [x] `auth.deviceUsers` (lock screen list + offline PIN verifiers)
+- [x] `auth.unlock` (PIN → session, lockout after 5 wrong PINs)
+- [x] `auth.lock`
+- [x] `auth.me`
+- [x] `auth.changePin`
+- [x] `auth.changePassword`
+- [x] `auth.resetOwnerPin`
 
 ### 4. Team
-- [ ] `team.list`
-- [ ] `team.addHelper`
-- [ ] `team.resetPin`
-- [ ] `team.setActive`
-- [ ] `team.rename`
+- [x] `team.list`
+- [x] `team.addHelper`
+- [x] `team.resetPin`
+- [x] `team.setActive`
+- [x] `team.rename`
 
 ### 5. Devices
-- [ ] `devices.list`
-- [ ] `devices.revoke`
-- [ ] `devices.heartbeat`
+- [x] `devices.list`
+- [x] `devices.revoke`
+- [x] `devices.heartbeat`
 
 ### 6. Settings
-- [ ] `settings.get`
-- [ ] `settings.update`
+- [x] `settings.get`
+- [x] `settings.update`
 
 ### 7. Shifts and balances
-- [ ] Expected-balance calculator
-- [ ] Transaction summary calculator
-- [ ] `shifts.current`
-- [ ] `shifts.open`
-- [ ] `shifts.balances`
-- [ ] `shifts.close`
-- [ ] `shifts.list`
-- [ ] `shifts.get`
+- [x] Expected-balance calculator
+- [x] Transaction summary calculator
+- [x] `shifts.current`
+- [x] `shifts.open`
+- [x] `shifts.balances`
+- [x] `shifts.close`
+- [x] `shifts.list`
+- [x] `shifts.get`
 
 ### 8. Customers
-- [ ] Customer upsert service
-- [ ] `customers.search`
-- [ ] `customers.get`
+- [x] Customer upsert service
+- [x] `customers.search`
+- [x] `customers.get`
 
 ### 9. SMS
-- [ ] EcoCash SMS parser
-- [ ] SMS ↔ transaction matching
-- [ ] `sms.ingest`
-- [ ] `sms.unrecorded`
-- [ ] `sms.list`
-- [ ] `sms.ignore`
-- [ ] `sms.latestBalance`
-- [ ] `sms.parsePreview`
+- [x] EcoCash SMS parser
+- [x] SMS ↔ transaction matching
+- [x] `sms.ingest`
+- [x] `sms.unrecorded`
+- [x] `sms.list`
+- [x] `sms.ignore`
+- [x] `sms.latestBalance`
+- [x] `sms.parsePreview`
 
 ### 10. Transactions
-- [ ] `transactions.create`
-- [ ] `transactions.list`
-- [ ] `transactions.get`
-- [ ] `transactions.flag`
-- [ ] `transactions.edit`
-- [ ] `transactions.void`
+- [x] `transactions.create`
+- [x] `transactions.list`
+- [x] `transactions.get`
+- [x] `transactions.flag`
+- [x] `transactions.edit`
+- [x] `transactions.void`
 
 ### 11. Movements
-- [ ] `movements.create`
-- [ ] `movements.list`
-- [ ] `movements.void`
+- [x] `movements.create`
+- [x] `movements.list`
+- [x] `movements.void`
 
 ### 12. Review
-- [ ] `review.queue`
-- [ ] `review.markChecked`
+- [x] `review.queue`
+- [x] `review.markChecked`
 
 ### 13. Reports
-- [ ] `reports.day`
-- [ ] `reports.month`
-- [ ] CSV helper
-- [ ] `reports.exportCsv`
-- [ ] `reports.logbook`
-- [ ] `reports.today`
+- [x] `reports.day`
+- [x] `reports.month`
+- [x] CSV helper
+- [x] `reports.exportCsv`
+- [x] `reports.logbook`
+- [x] `reports.today`
 
 ### 14. Sync
-- [ ] `sync.pull`
-- [ ] `sync.push`
+- [x] `sync.pull`
+- [x] `sync.push`
 
 ### 15. Docs
-- [ ] Backend section in the README
+- [x] Backend section in the README
