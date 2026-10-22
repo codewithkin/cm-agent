@@ -3,6 +3,7 @@ import { ignore } from "./ignore";
 import { ingest } from "./ingest";
 import { latestBalance } from "./latest-balance";
 import { list } from "./list";
+import { parsePreview } from "./parse-preview";
 import { unrecorded } from "./unrecorded";
 
 export const smsRouter = router({
@@ -11,4 +12,5 @@ export const smsRouter = router({
   list,
   ignore,
   latestBalance,
+  parsePreview,
 });
