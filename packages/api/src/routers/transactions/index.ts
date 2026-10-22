@@ -1,5 +1,6 @@
 import { router } from "../../index";
 import { create } from "./create";
+import { edit } from "./edit";
 import { flag } from "./flag";
 import { get } from "./get";
 import { list } from "./list";
@@ -9,4 +10,5 @@ export const transactionsRouter = router({
   list,
   get,
   flag,
+  edit,
 });
