@@ -1,6 +1,7 @@
 import { router } from "../../index";
 import { addHelper } from "./add-helper";
 import { list } from "./list";
+import { rename } from "./rename";
 import { resetPin } from "./reset-pin";
 import { setActive } from "./set-active";
 
@@ -9,4 +10,5 @@ export const teamRouter = router({
   addHelper,
   resetPin,
   setActive,
+  rename,
 });
