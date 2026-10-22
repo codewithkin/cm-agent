@@ -3,6 +3,7 @@ import { authRouter } from "./auth";
 import { customersRouter } from "./customers";
 import { devicesRouter } from "./devices";
 import { movementsRouter } from "./movements";
+import { reportsRouter } from "./reports";
 import { reviewRouter } from "./review";
 import { settingsRouter } from "./settings";
 import { shiftsRouter } from "./shifts";
@@ -24,5 +25,6 @@ export const appRouter = router({
   transactions: transactionsRouter,
   movements: movementsRouter,
   review: reviewRouter,
+  reports: reportsRouter,
 });
 export type AppRouter = typeof appRouter;
