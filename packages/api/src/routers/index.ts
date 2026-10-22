@@ -6,6 +6,7 @@ import { settingsRouter } from "./settings";
 import { shiftsRouter } from "./shifts";
 import { smsRouter } from "./sms";
 import { teamRouter } from "./team";
+import { transactionsRouter } from "./transactions";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -18,5 +19,6 @@ export const appRouter = router({
   shifts: shiftsRouter,
   customers: customersRouter,
   sms: smsRouter,
+  transactions: transactionsRouter,
 });
 export type AppRouter = typeof appRouter;
