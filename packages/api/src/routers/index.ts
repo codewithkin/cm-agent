@@ -2,6 +2,7 @@ import { publicProcedure, router } from "../index";
 import { authRouter } from "./auth";
 import { customersRouter } from "./customers";
 import { devicesRouter } from "./devices";
+import { movementsRouter } from "./movements";
 import { settingsRouter } from "./settings";
 import { shiftsRouter } from "./shifts";
 import { smsRouter } from "./sms";
@@ -20,5 +21,6 @@ export const appRouter = router({
   customers: customersRouter,
   sms: smsRouter,
   transactions: transactionsRouter,
+  movements: movementsRouter,
 });
 export type AppRouter = typeof appRouter;
