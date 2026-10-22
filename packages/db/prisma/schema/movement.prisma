@@ -1,0 +1,25 @@
+/// Cash or float moving that is not a customer transaction, such as buying float
+/// or the owner taking cash home. Amount is cents.
+model Movement {
+  id         String       @id @default(uuid())
+  kind       MovementKind
+  currency   Currency
+  amount     Int
+  reason     String
+  userId     String
+  user       User         @relation(fields: [userId], references: [id])
+  shiftId    String
+  shift      Shift        @relation(fields: [shiftId], references: [id])
+  deviceId   String
+  device     Device       @relation(fields: [deviceId], references: [id])
+  occurredAt DateTime     @default(now())
+  voidedAt   DateTime?
+  voidReason String?
+  voidedById String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+
+  @@index([shiftId])
+  @@index([occurredAt])
+  @@index([updatedAt])
+}

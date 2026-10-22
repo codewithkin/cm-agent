@@ -16,6 +16,7 @@ model User {
   sessions          Session[]
   shifts            Shift[]
   transactions      Transaction[]
+  movements         Movement[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
