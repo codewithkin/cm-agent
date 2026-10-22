@@ -1,0 +1,13 @@
+/// Someone served at the booth. Remembered so repeat customers fill in automatically.
+model Customer {
+  id          String   @id @default(uuid())
+  /// Normalised to +2637XXXXXXXX.
+  phone       String   @unique
+  name        String?
+  idNumber    String?
+  firstSeenAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([updatedAt])
+}
