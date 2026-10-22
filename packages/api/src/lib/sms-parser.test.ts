@@ -39,6 +39,8 @@ describe("parseSms", () => {
     expect(parsed.status).toBe("BALANCE_ONLY");
     expect(parsed.balanceAfter).toBe(41_275);
     expect(parsed.amount).toBeNull();
+    expect(parsed.currency).toBe("USD");
+    expect(parseSms("ZiG wallet balance: ZiG 88.00").currency).toBe("ZIG");
   });
 
   test("a cash-out without a reference is PARTIAL", () => {

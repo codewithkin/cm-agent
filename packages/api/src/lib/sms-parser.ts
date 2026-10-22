@@ -56,7 +56,9 @@ export function parseSms(body: string): ParsedSms {
   const withoutBalance = balanceMatch ? text.replace(balanceMatch[0], " ") : text;
   const moneyMatch = MONEY_RE.exec(withoutBalance);
 
-  const currency = moneyMatch?.[1] ? readCurrency(moneyMatch[1]) : null;
+  // A balance-only message still says which wallet it is about.
+  const currencyToken = moneyMatch?.[1] ?? balanceMatch?.[1];
+  const currency = currencyToken ? readCurrency(currencyToken) : null;
   const amount = moneyMatch?.[2] ? parseAmountToCents(moneyMatch[2]) : null;
   const balanceAfter = balanceMatch?.[2] ? parseAmountToCents(balanceMatch[2]) : null;
 
