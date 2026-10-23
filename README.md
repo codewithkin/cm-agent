@@ -63,18 +63,21 @@ Run standalone Node/Bun tools that use Varlock from the owning app directory so 
 
 ## Deployment
 
-### Docker Compose
+`docker-compose.yml` runs the API and its Postgres database. It works on Coolify (Docker Compose build pack) and locally with `docker compose up`.
 
-- Target: server
-- Config: `docker-compose.yml` (app Dockerfiles live in `apps/*/Dockerfile`)
-- Build images: pnpm run docker:build
-- Start: pnpm run docker:up
-- Logs: pnpm run docker:logs
-- Stop: pnpm run docker:down
+- The server image (`apps/server/Dockerfile`) generates the Prisma client while building and runs `prisma migrate deploy` each time it starts, so new migrations apply on redeploy.
+- Postgres data lives in the `postgres-data` volume.
+- Hard-coded: `NODE_ENV=production`, port `3000`, database name `cm_agent`, CORS open to any origin (the phones use bearer tokens).
 
-Environment variables are read from each app's `.env` file (baked into web builds for public variables) and overridden in `docker-compose.yml` for container networking.
+### Environment variables
 
-For more details, see the guide on [Deploying with Docker Compose](https://www.better-t-stack.dev/docs/guides/docker).
+| Variable | Who sets it |
+| --- | --- |
+| `OWNER_SETUP_CODE` | You. At least 12 characters; typed once in the app to create Coline's owner account |
+| `SERVICE_USER_POSTGRES`, `SERVICE_PASSWORD_POSTGRES` | Coolify generates them (locally they default to `cm_agent`) |
+| `SERVICE_FQDN_SERVER_3000` | Coolify, from the domain you give the `server` service |
+
+The app's `EXPO_PUBLIC_SERVER_URL` (set on EAS) is that domain, e.g. `https://api.example.com`.
 
 ## Backend API
 
