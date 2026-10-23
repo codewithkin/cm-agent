@@ -6,6 +6,7 @@ import Animated from "react-native-reanimated";
 
 import { DemoDataCard } from "@/components/owner/demo-data-card";
 import { LiveState } from "@/components/owner/live-state";
+import { OwnerAccountCard } from "@/components/owner/owner-account-card";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -87,6 +88,11 @@ export default function Settings() {
         {data ? (
           <>
             <T weight="heavy" className="text-[12px] text-subtle px-1">
+              OWNER ACCOUNT
+            </T>
+            <OwnerAccountCard index={0} />
+
+            <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               BUSINESS
             </T>
             <Card index={0} className="gap-0 py-0">
