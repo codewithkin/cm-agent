@@ -18,6 +18,8 @@ export type SyncState = {
 };
 
 const CURSOR_KEY = "cm.sync.since";
+/** The server's dataResetAt this phone last loaded from. */
+const RESET_KEY = "cm.sync.resetAt";
 const LAST_SYNC_KEY = "cm.sync.last";
 const MAX_PAGES = 20;
 
@@ -32,11 +34,25 @@ function isSignedOut(error: unknown) {
   return error instanceof TRPCClientError && error.data?.code === "UNAUTHORIZED" && /signed out|not registered/i.test(error.message);
 }
 
-/** Downloads everything that changed since the last sync into the local store. */
+/**
+ * Downloads everything that changed since the last sync into the local store.
+ * Deletions don't sync, so when the server says its data was reset (e.g. demo
+ * data cleared), the phone wipes its copy and downloads everything again.
+ */
 async function pullChanges() {
   let since = await readJson<string | null>(CURSOR_KEY, null);
   for (let page = 0; page < MAX_PAGES; page++) {
     const result = await trpcClient.sync.pull.mutate(since ? { since } : undefined);
+    const resetAt = result.settings?.dataResetAt ? new Date(result.settings.dataResetAt).toISOString() : null;
+    if (resetAt && resetAt !== (await readJson<string | null>(RESET_KEY, null))) {
+      await clearLocalDb();
+      await writeJson(RESET_KEY, resetAt);
+      await writeJson(CURSOR_KEY, null);
+      if (since) {
+        since = null;
+        continue;
+      }
+    }
     upsertRows("users", result.users);
     upsertRows("customers", result.customers);
     upsertRows("shifts", result.shifts);
