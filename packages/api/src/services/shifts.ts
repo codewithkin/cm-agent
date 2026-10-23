@@ -97,16 +97,35 @@ export const openShiftInput = z.object({
   opening: balancesSchema,
   note: z.string().trim().min(1).max(500).optional(),
   openedAt: z.coerce.date().optional(),
+  /** The helper who will serve. Defaults to whoever is signed in. */
+  servingUserId: z.uuid().optional(),
 });
 
+/** Only the owner counts the money. Throws unless this person is the active owner. */
+export async function assertOwnerCounted(db: Db, countedById: string) {
+  const owner = await db.user.findUnique({ where: { id: countedById }, select: { role: true, active: true } });
+  if (!owner?.active || owner.role !== "OWNER") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Only Coline can count the money" });
+  }
+}
+
 /**
- * Opens a shift on the actor's phone. If the opening count differs from the
- * last closing count, a note is required so the gap is explained.
+ * Opens a shift on the actor's phone, for the person serving, with the owner's
+ * count. If the count differs from the last close, a note is required.
  */
-export async function openShift(db: Db, actor: Actor, input: z.infer<typeof openShiftInput>) {
+export async function openShift(
+  db: Db,
+  actor: Actor,
+  input: z.infer<typeof openShiftInput>,
+  countedById: string,
+) {
+  await assertOwnerCounted(db, countedById);
   if (await findOpenShift(db, actor.deviceId)) {
     throw new TRPCError({ code: "CONFLICT", message: "Close the open shift on this phone first" });
   }
+  const servingUserId = input.servingUserId ?? actor.userId;
+  const serving = await db.user.findUnique({ where: { id: servingUserId }, select: { active: true } });
+  if (!serving?.active) throw new TRPCError({ code: "NOT_FOUND", message: "Person not found" });
   const lastClosed = await findLastClosedShift(db, actor.deviceId);
   const carried = lastClosed ? countedBalances(lastClosed) : null;
   const differs = carried !== null && BALANCE_KEYS.some((key) => carried[key] !== input.opening[key]);
@@ -121,7 +140,8 @@ export async function openShift(db: Db, actor: Actor, input: z.infer<typeof open
     data: {
       id: input.id,
       deviceId: actor.deviceId,
-      openedById: actor.userId,
+      openedById: servingUserId,
+      openingCountedById: countedById,
       openedAt: input.openedAt ?? new Date(),
       openingCashUsd: input.opening.cashUsd,
       openingFloatUsd: input.opening.floatUsd,
@@ -154,7 +174,13 @@ export const closeShiftInput = z.object({
  * Closes a shift: saves the count, snapshots the expected balances and works out
  * the variance. A gap outside the owner's tolerance needs a note.
  */
-export async function closeShift(db: Db, actor: Actor, input: z.infer<typeof closeShiftInput>) {
+export async function closeShift(
+  db: Db,
+  actor: Actor,
+  input: z.infer<typeof closeShiftInput>,
+  countedById: string,
+) {
+  await assertOwnerCounted(db, countedById);
   const shift = await db.shift.findUnique({ where: { id: input.shiftId } });
   if (!shift) throw new TRPCError({ code: "NOT_FOUND", message: "Shift not found" });
   if (shift.status === "CLOSED") {
@@ -195,7 +221,7 @@ export async function closeShift(db: Db, actor: Actor, input: z.infer<typeof clo
     data: {
       status: "CLOSED",
       closedAt: input.closedAt ?? new Date(),
-      closedById: actor.userId,
+      closedById: countedById,
       expectedCashUsd: expected.cashUsd,
       expectedFloatUsd: expected.floatUsd,
       expectedCashZig: expected.cashZig,

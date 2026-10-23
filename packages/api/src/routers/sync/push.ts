@@ -9,13 +9,20 @@ import { createTransaction, createTransactionInput } from "../../services/transa
 import type { Actor, Db } from "../../services/types";
 
 const actorId = z.uuid();
+/** The owner who counted the money; the phone checked her PIN before queueing this. */
+const countedById = z.uuid();
 
 const operationSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("sms"), data: ingestSmsInput.extend({ id: z.uuid() }) }),
-  z.object({ kind: z.literal("openShift"), actorId, data: openShiftInput.extend({ id: z.uuid() }) }),
+  z.object({
+    kind: z.literal("openShift"),
+    actorId,
+    countedById,
+    data: openShiftInput.extend({ id: z.uuid() }),
+  }),
   z.object({ kind: z.literal("transaction"), actorId, data: createTransactionInput.extend({ id: z.uuid() }) }),
   z.object({ kind: z.literal("movement"), actorId, data: createMovementInput.extend({ id: z.uuid() }) }),
-  z.object({ kind: z.literal("closeShift"), actorId, data: closeShiftInput }),
+  z.object({ kind: z.literal("closeShift"), actorId, countedById, data: closeShiftInput }),
 ]);
 
 type Operation = z.infer<typeof operationSchema>;
@@ -84,7 +91,7 @@ export const push = deviceProcedure
           const actor = await loadActor(tx, ctx.device.id, ctx.device.kind, operation.actorId);
           switch (operation.kind) {
             case "openShift":
-              await openShift(tx, actor, operation.data);
+              await openShift(tx, actor, operation.data, operation.countedById);
               break;
             case "transaction":
               await createTransaction(tx, actor, operation.data);
@@ -93,7 +100,7 @@ export const push = deviceProcedure
               await createMovement(tx, actor, operation.data);
               break;
             case "closeShift":
-              await closeShift(tx, actor, operation.data);
+              await closeShift(tx, actor, operation.data, operation.countedById);
               break;
           }
           return "created" as const;
