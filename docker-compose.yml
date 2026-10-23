@@ -1,18 +1,26 @@
 name: cm-agent
 
+# Works on Coolify (Docker Compose build pack) and with plain `docker compose up`.
+# Coolify fills in the SERVICE_* values itself; locally they fall back to the defaults.
+# The only value to set by hand is OWNER_SETUP_CODE.
+
 services:
   server:
     build:
       context: .
       dockerfile: apps/server/Dockerfile
-      secrets:
-        - server_env
     init: true
-    ports:
-      - "3000:3000"
-    env_file:
-      - path: apps/server/.env
-        required: false
+    environment:
+      # Coolify gives this service its HTTPS domain and routes it to port 3000.
+      - SERVICE_FQDN_SERVER_3000
+      - DATABASE_URL=postgresql://${SERVICE_USER_POSTGRES:-cm_agent}:${SERVICE_PASSWORD_POSTGRES:-cm_agent}@postgres:5432/cm_agent
+      # Typed once in the app to create Coline's owner account. At least 12 characters.
+      - OWNER_SETUP_CODE=${OWNER_SETUP_CODE:?Set OWNER_SETUP_CODE}
+    expose:
+      - "3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
     healthcheck:
       test:
         [
@@ -24,10 +32,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
+      start_period: 30s
     restart: unless-stopped
 
-# BuildKit makes these available only while install/build commands run.
-secrets:
-  server_env:
-    file: apps/server/.env
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      - POSTGRES_USER=${SERVICE_USER_POSTGRES:-cm_agent}
+      - POSTGRES_PASSWORD=${SERVICE_PASSWORD_POSTGRES:-cm_agent}
+      - POSTGRES_DB=cm_agent
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d cm_agent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
