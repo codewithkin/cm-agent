@@ -18,7 +18,7 @@ import { amount, clock, localDateKey, maskPhone, toDate } from "@/lib/format";
 import { useRows, type LocalSms } from "@/lib/local-db";
 import { enterUp, exitFade, layout } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
-import { smsPermissionStore, requestSmsPermission } from "@/lib/sms";
+import { smsReaderStore } from "@/lib/sms";
 
 type Tab = "NOT_SAVED" | "ALL" | "NO_MATCH";
 
@@ -93,7 +93,7 @@ function SmsCard({ sms, index, unrecorded }: { sms: LocalSms; index: number; unr
 /** B9 SMS inbox: EcoCash SMS from today, the unsaved ones first. */
 export default function SmsInbox() {
   const device = useObservable(deviceStore);
-  const permission = useObservable(smsPermissionStore);
+  const reader = useObservable(smsReaderStore);
   const [tab, setTab] = useState<Tab>("NOT_SAVED");
   const today = localDateKey();
   const all = useRows(
@@ -114,15 +114,11 @@ export default function SmsInbox() {
       withTabBar
       header={{ title: "SMS inbox", subtitle: "EcoCash · today", leading: null, large: true, right: <SyncChip /> }}
     >
-      {permission === "denied" ? (
-        <Banner
-          tone="amber"
-          icon="sms-failed"
-          text="The app can't read SMS. Entries are typed in by hand."
-          actionLabel="Fix"
-          onAction={() => void requestSmsPermission()}
-        />
-      ) : null}
+      {reader === "unavailable" ? (
+        <Banner tone="amber" icon="sms-failed" text="This phone can't read SMS (Google Play services missing). Entries are typed in by hand." />
+      ) : (
+        <Banner tone="lilac" icon="touch-app" text="When an EcoCash SMS arrives, Android asks to share it. Tap Allow and it appears here." />
+      )}
       <ChipFilter
         value={tab}
         onChange={setTab}

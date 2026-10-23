@@ -21,12 +21,12 @@ import { TypeTile } from "@/components/ui/transaction-row";
 import { deviceStore } from "@/lib/device";
 import { enterUp, haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
-import { requestSmsPermission } from "@/lib/sms";
+import { ensureNotificationPermission } from "@/lib/notifications";
 
 const POINTS: { icon: IconName; text: string }[] = [
   { icon: "bolt", text: "Fills in the details for you" },
   { icon: "verified", text: "Checks each entry with the SMS" },
-  { icon: "shield", text: "Reads EcoCash messages only" },
+  { icon: "shield", text: "Android asks you before each SMS is read" },
 ];
 
 /** The arrow between the SMS and the entry bobs to show one becomes the other. */
@@ -43,13 +43,17 @@ function FlowArrow() {
   );
 }
 
-/** A3 Confirmation + SMS permission (booth phones only). */
+/**
+ * A3 Confirmation + how SMS reading works (booth phones only). There's no SMS
+ * permission to grant: Android asks "Allow?" for each EcoCash SMS. This step
+ * asks for notifications, used when an SMS arrives while the app is closed.
+ */
 export default function SmsPermission() {
   const device = useObservable(deviceStore);
 
   async function allow() {
-    const granted = await requestSmsPermission();
-    if (granted) haptic.success();
+    await ensureNotificationPermission();
+    haptic.success();
     router.replace("/lock");
   }
 
@@ -57,8 +61,8 @@ export default function SmsPermission() {
     <Screen
       footer={
         <>
-          <Button label="Allow" icon="sms" onPress={allow} />
-          <Button label="Not now" variant="ghost" size="md" onPress={() => router.replace("/lock")} />
+          <Button label="Got it" icon="check" onPress={allow} />
+          <Button label="Skip" variant="ghost" size="md" onPress={() => router.replace("/lock")} />
         </>
       }
     >
