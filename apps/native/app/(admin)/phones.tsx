@@ -1,13 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
 import { LiveState } from "@/components/owner/live-state";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/ui/card";
+import { Fab } from "@/components/ui/fab";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
+import { Sheet } from "@/components/ui/sheet";
 import { T } from "@/components/ui/text";
 import { deviceStore } from "@/lib/device";
 import { clock } from "@/lib/format";
@@ -118,8 +121,45 @@ function PhoneCard({ phone, index, isThis }: { phone: Phone; index: number; isTh
   );
 }
 
+const ADD_STEPS = [
+  "Install this app on the new phone.",
+  "Open it and sign in with your phone number and password.",
+  "Choose Booth phone 1, Booth phone 2 or Owner phone.",
+  "On a booth phone, allow notifications so EcoCash SMS can be saved.",
+  "It shows up here as soon as it connects.",
+];
+
+/** "+ Add phone": a phone is added from the new phone itself, with Coline's sign-in. */
+function AddPhone({ startOpen }: { startOpen: boolean }) {
+  const [open, setOpen] = useState(startOpen);
+  return (
+    <>
+      <Fab label="Add phone" icon="add-to-home-screen" onPress={() => setOpen(true)} />
+      <Sheet visible={open} onClose={() => setOpen(false)} title="Add a phone" subtitle="Done once, on the new phone.">
+        <View className="bg-white rounded-3xl border border-line p-3.5 gap-3">
+          {ADD_STEPS.map((step, index) => (
+            <View key={step} className="flex-row items-start gap-3">
+              <View className="w-7 h-7 rounded-full bg-sun items-center justify-center">
+                <T weight="heavy" className="text-[13px]">
+                  {index + 1}
+                </T>
+              </View>
+              <T weight="semibold" className="flex-1 text-[14px] leading-[20px]">
+                {step}
+              </T>
+            </View>
+          ))}
+        </View>
+        <Banner tone="lilac" icon="info" text="Only your sign-in can add a phone, so helpers can't add one on their own." />
+        <Button variant="success" label="Got it" icon="check" onPress={() => setOpen(false)} />
+      </Sheet>
+    </>
+  );
+}
+
 /** C9 Phones: which phones are up to date and what's waiting to send. */
 export default function Phones() {
+  const { add } = useLocalSearchParams<{ add?: string }>();
   const device = useObservable(deviceStore);
   const { syncing } = useObservable(syncStore);
   const list = useQuery(trpc.devices.list.queryOptions());
@@ -131,6 +171,7 @@ export default function Phones() {
   return (
     <Screen
       header={{ title: "Phones", subtitle: "Each phone saves first, then sends" }}
+      fab={<AddPhone startOpen={add === "1"} />}
       footer={
         <Button
           label="Update now"
