@@ -1,87 +1,88 @@
-import { AppState, PermissionsAndroid, Platform } from "react-native";
+import { parseSms } from "@cm-agent/api/lib/sms-parser";
+import { AppState, Platform } from "react-native";
 
-import { addSmsListener, readInboxSince, smsReaderAvailable } from "@/modules/sms-reader";
+import { addSmsReaderListener, smsReaderAvailable, startListening, stopListening } from "@/modules/sms-reader";
 
 import { receiveSms } from "./actions";
-import { readJson, writeJson } from "./kv";
 import { localSettings, type LocalSms } from "./local-db";
 import { observable } from "./observable";
 
-const LAST_SEEN_KEY = "cm.sms.lastSeen";
+/*
+ * EcoCash SMS come in through Google's SMS User Consent API: while the booth
+ * screens are open the app keeps a listening window running; when an SMS
+ * arrives, Android asks "Allow CM to read this message?" and only then does
+ * the app see it. No SMS permissions are needed.
+ */
+
 const FALLBACK_SENDERS = ["EcoCash"];
 
 /** The SMS the incoming-SMS sheet is showing, if any. */
 export const incomingSmsStore = observable<LocalSms | null>(null);
 
-/** Whether this phone may read SMS. */
-export const smsPermissionStore = observable<"granted" | "denied" | "unknown">("unknown");
+/** "listening" while waiting for the next SMS; "unavailable" without Google Play services or the native module. */
+export const smsReaderStore = observable<"listening" | "idle" | "unavailable">(
+  Platform.OS === "android" && smsReaderAvailable ? "idle" : "unavailable",
+);
 
-function senders() {
-  return localSettings.get()?.smsSenders ?? FALLBACK_SENDERS;
+let sheetSuppressed = 0;
+
+/**
+ * Stops new SMS from opening the incoming-SMS sheet, e.g. while New transaction
+ * is open and handles the SMS itself. Returns a function that lifts it.
+ */
+export function suppressIncomingSheet() {
+  sheetSuppressed += 1;
+  return () => {
+    sheetSuppressed = Math.max(0, sheetSuppressed - 1);
+  };
 }
 
-export async function checkSmsPermission() {
-  if (Platform.OS !== "android" || !smsReaderAvailable) {
-    smsPermissionStore.set("denied");
-    return false;
-  }
-  const [receive, read] = await Promise.all([
-    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECEIVE_SMS),
-    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_SMS),
-  ]);
-  const granted = receive && read;
-  smsPermissionStore.set(granted ? "granted" : "denied");
-  return granted;
+function ecoCashSender() {
+  return localSettings.get()?.smsSenders[0] ?? FALLBACK_SENDERS[0]!;
 }
 
-export async function requestSmsPermission() {
-  if (Platform.OS !== "android" || !smsReaderAvailable) return false;
-  const result = await PermissionsAndroid.requestMultiple([
-    PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
-    PermissionsAndroid.PERMISSIONS.READ_SMS,
-  ]);
-  const granted = Object.values(result).every((value) => value === PermissionsAndroid.RESULTS.GRANTED);
-  smsPermissionStore.set(granted ? "granted" : "denied");
-  return granted;
+/** Stores a consented SMS if it reads as an EcoCash message, and shows the sheet. */
+function handle(body: string, receivedAt: number) {
+  // The person chose to share it, but it could still be an unrelated SMS (e.g. a bank code).
+  if (parseSms(body).status === "UNPARSED") return;
+  const sender = ecoCashSender();
+  const stored = receiveSms({ sender, body, receivedAt: new Date(receivedAt) }, [sender]);
+  if (stored && !stored.transactionId && sheetSuppressed === 0) incomingSmsStore.set(stored);
 }
 
-let lastSeen = 0;
-let onIncoming: ((sms: LocalSms) => void) | undefined;
-
-/** Stores an SMS and, if it's EcoCash, shows the incoming-SMS sheet. */
-function handle(sms: { sender: string; body: string; receivedAt: number }, showSheet: boolean) {
-  const stored = receiveSms({ ...sms, receivedAt: new Date(sms.receivedAt) }, senders());
-  if (stored && showSheet && !stored.transactionId) {
-    incomingSmsStore.set(stored);
-    onIncoming?.(stored);
-  }
-  lastSeen = Math.max(sms.receivedAt, lastSeen);
-  void writeJson(LAST_SEEN_KEY, lastSeen);
-}
-
-/** Picks up EcoCash SMS that arrived while the app was closed. */
-async function catchUp() {
-  const since = lastSeen || Date.now() - 24 * 60 * 60 * 1000;
-  const missed = await readInboxSince(since, senders());
-  for (const sms of missed) handle(sms, false);
+async function listen() {
+  if (smsReaderStore.get() === "unavailable" || AppState.currentState !== "active") return;
+  const started = await startListening();
+  smsReaderStore.set(started ? "listening" : "unavailable");
 }
 
 /**
- * Starts reading EcoCash SMS on a booth phone. `notify` runs for each new one
- * (used for a local notification when the app is in the background).
+ * Keeps an SMS listening window open while the app is in front, re-arming it
+ * after each SMS, refusal or 5-minute timeout. `onPending` runs when an SMS
+ * arrived in the background (the consent sheet waits until the app reopens).
+ * Returns a stop function.
  */
-export async function startSmsReader(notify?: (sms: LocalSms) => void) {
-  onIncoming = notify;
-  if (!(await checkSmsPermission())) return () => {};
-  lastSeen = await readJson<number>(LAST_SEEN_KEY, 0);
-  await catchUp();
+export function startSmsReader({ onPending }: { onPending?: () => void } = {}) {
+  if (smsReaderStore.get() === "unavailable") return () => {};
 
-  const subscription = addSmsListener((sms) => handle(sms, true));
+  const subscriptions = [
+    addSmsReaderListener("onSms", (sms) => {
+      handle(sms.body, sms.receivedAt);
+      void listen();
+    }),
+    addSmsReaderListener("onDenied", () => void listen()),
+    addSmsReaderListener("onTimeout", () => void listen()),
+    addSmsReaderListener("onPending", () => onPending?.()),
+  ];
   const appState = AppState.addEventListener("change", (state) => {
-    if (state === "active") void catchUp();
+    if (state === "active") void listen();
   });
+  void listen();
+
   return () => {
-    subscription.remove();
+    for (const subscription of subscriptions) subscription.remove();
     appState.remove();
+    stopListening();
+    if (smsReaderStore.get() === "listening") smsReaderStore.set("idle");
   };
 }
