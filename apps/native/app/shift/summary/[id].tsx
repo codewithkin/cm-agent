@@ -134,7 +134,7 @@ export default function ShiftSummary() {
 
       <View className="flex-row gap-2">
         <Button label="Share" icon="share" variant="light" className="flex-1" onPress={share} />
-        <Button label="Done" icon="check" className="flex-1" onPress={() => router.dismissTo("/home")} />
+        <Button variant="success" label="Done" icon="check" className="flex-1" onPress={() => router.dismissTo("/home")} />
       </View>
     </View>
   );

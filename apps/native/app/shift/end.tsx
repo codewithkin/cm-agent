@@ -97,7 +97,7 @@ export default function EndShift() {
     ) : step === 1 ? (
       <Button label="Next: check" icon="arrow-forward" onPress={() => go(2)} />
     ) : (
-      <Button label="End shift" icon="lock" disabled={outside.length > 0 && !note.trim()} onPress={finish} />
+      <Button variant="success" label="End shift" icon="lock" disabled={outside.length > 0 && !note.trim()} onPress={finish} />
     );
 
   const enter = direction === 1 ? SlideInRight : SlideInLeft;
@@ -132,8 +132,8 @@ export default function EndShift() {
                   </T>
                 </View>
                 <View className="flex-row gap-2">
-                  <Button label="Save now" icon="add" size="md" className="flex-1 bg-alarm" onPress={() => router.push("/sms")} />
-                  <Button label="End anyway" size="md" variant="light" className="flex-1" onPress={() => setEndAnyway(true)} />
+                  <Button variant="success" label="Save now" icon="add" size="md" className="flex-1" onPress={() => router.push("/sms")} />
+                  <Button variant="caution" label="End anyway" size="md" className="flex-1" onPress={() => setEndAnyway(true)} />
                 </View>
               </Card>
             ) : null}

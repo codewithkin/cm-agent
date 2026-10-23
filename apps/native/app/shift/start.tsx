@@ -75,6 +75,7 @@ export default function StartShift() {
       header={{ title: "Start shift", subtitle: `${session.user.name} · ${device?.label ?? ""}`, leading: "close" }}
       footer={
         <Button
+          variant="success"
           label="Yes, this is correct"
           icon="check"
           disabled={changedKeys.length > 0 && note.trim().length === 0}
