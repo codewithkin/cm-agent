@@ -1,14 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
 import { LiveState } from "@/components/owner/live-state";
 import { Button } from "@/components/ui/button";
 import { Avatar, Banner, Card } from "@/components/ui/card";
+import { Fab } from "@/components/ui/fab";
 import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
+import { Sheet } from "@/components/ui/sheet";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { initials } from "@/lib/format";
@@ -108,29 +111,80 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
   );
 }
 
-/** C8 People: add helpers, give a new PIN, remove (records are kept). */
-export default function People() {
+/** "+ Add person": a name, then their starting PIN to tell them in person. */
+function AddPerson({ startOpen }: { startOpen: boolean }) {
   const queryClient = useQueryClient();
-  const team = useQuery(trpc.team.list.queryOptions());
+  const [open, setOpen] = useState(startOpen);
   const [name, setName] = useState("");
-  const [createdPin, setCreatedPin] = useState<{ name: string; pin: string } | null>(null);
-  const people = team.data ?? [];
-  const active = people.filter((person) => person.active);
+  const [created, setCreated] = useState<{ name: string; pin: string } | null>(null);
 
   const add = useMutation({
     mutationFn: async () => {
       const pin = randomPin();
       await trpcClient.team.addHelper.mutate({ name: name.trim(), pin });
-      return pin;
+      return { name: name.trim(), pin };
     },
-    onSuccess: (pin) => {
+    onSuccess: (result) => {
       haptic.success();
-      setCreatedPin({ name: name.trim(), pin });
+      setCreated(result);
       setName("");
       void queryClient.invalidateQueries();
       void syncNow();
     },
+    onError: () => haptic.error(),
   });
+
+  const close = () => {
+    setOpen(false);
+    setCreated(null);
+    add.reset();
+  };
+
+  return (
+    <>
+      <Fab label="Add person" icon="person-add" onPress={() => setOpen(true)} />
+      <Sheet visible={open} onClose={close} title={created ? `${created.name} is added` : "Add a person"} subtitle="Helpers see only their own work.">
+        {created ? (
+          <>
+            <View className="items-center gap-1 p-4 rounded-3xl bg-white border border-line">
+              <T weight="bold" className="text-[12px] text-subtle">
+                Starting PIN
+              </T>
+              <T weight="heavy" className="text-[40px] tracking-[8px]">
+                {created.pin}
+              </T>
+              <T weight="semibold" className="text-[12px] text-subtle text-center">
+                Tell {created.name} in person. They choose their own PIN when they first sign in.
+              </T>
+            </View>
+            <Button variant="success" label="Done" icon="check" onPress={close} />
+            <Button variant="ghost" size="md" label="Add another" onPress={() => setCreated(null)} />
+          </>
+        ) : (
+          <>
+            <Field icon="person" label="Name" placeholder="e.g. Kuda" value={name} onChangeText={setName} autoCapitalize="words" autoFocus />
+            {add.isError ? <Banner tone="danger" icon="error" text="Couldn't add them. Check the internet and try again." /> : null}
+            <Button
+              variant="sun"
+              label="Add person"
+              icon="person-add"
+              loading={add.isPending}
+              disabled={!name.trim()}
+              onPress={() => add.mutate()}
+            />
+          </>
+        )}
+      </Sheet>
+    </>
+  );
+}
+
+/** C8 People: add helpers, give a new PIN, remove (records are kept). */
+export default function People() {
+  const { add } = useLocalSearchParams<{ add?: string }>();
+  const team = useQuery(trpc.team.list.queryOptions());
+  const people = team.data ?? [];
+  const active = people.filter((person) => person.active);
 
   return (
     <Screen
@@ -144,28 +198,17 @@ export default function People() {
           </View>
         ),
       }}
+      fab={<AddPerson startOpen={add === "1"} />}
     >
-      <Card title="Add a person">
-        <View className="flex-row items-center gap-2">
-          <View className="flex-1">
-            <Field icon="person" placeholder="Name, e.g. Kuda" value={name} onChangeText={setName} autoCapitalize="words" />
-          </View>
-          <Button label="Add" icon="add" variant="sun" size="md" loading={add.isPending} disabled={!name.trim()} onPress={() => add.mutate()} />
-        </View>
-        <T weight="semibold" className="text-[12px] text-subtle">
-          They get a starting PIN, then choose their own.
-        </T>
-        {createdPin ? (
-          <Banner tone="leaf" icon="key" text={`${createdPin.name}'s starting PIN: ${createdPin.pin}. Tell them in person.`} />
-        ) : null}
-      </Card>
-
       <LiveState query={team}>
         <Card title="People" className="gap-0">
           {people.map((person, index) => (
             <PersonRow key={person.id} person={person} index={index} />
           ))}
         </Card>
+        {active.length <= 1 ? (
+          <Banner tone="lilac" icon="person-add" text="No helpers yet. Tap Add person to give your son or daughter their own PIN." />
+        ) : null}
       </LiveState>
     </Screen>
   );
