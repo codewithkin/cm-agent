@@ -26,46 +26,54 @@ type Props = {
 
 /** The on-screen number pad. No system keyboard, so it's fast and predictable at the counter. */
 export function Keypad({ onKey, decimal, disabled, variant = "round" }: Props) {
-  const key = (value: KeypadKey | null) => {
-    if (value === null) return <View key="empty" className="flex-1 h-16" />;
+  const key = (value: KeypadKey | null, index: number) => {
+    // Every key sits in an equal column; round keys are fixed circles centred in it.
+    if (value === null) return <View key={`empty-${index}`} className="flex-1" />;
+    const content =
+      value === "back" ? (
+        <Icon name="backspace" size={24} className="text-ink-soft" />
+      ) : (
+        <T weight="bold" className="text-[26px]">
+          {value}
+        </T>
+      );
     return (
-      <Tap
-        key={value}
-        disabled={disabled}
-        feedback={false}
-        scaleTo={0.88}
-        accessibilityLabel={value === "back" ? "Delete" : value}
-        onPress={() => {
-          haptic.select();
-          onKey(value);
-        }}
-        className={cn(
-          "flex-1 items-center justify-center",
-          variant === "round" ? "h-16 mx-3 rounded-full bg-white" : "h-14 rounded-2xl",
-        )}
-      >
-        {value === "back" ? (
-          <Icon name="backspace" size={24} className="text-ink-soft" />
-        ) : (
-          <T weight="bold" className="text-[24px]">
-            {value}
-          </T>
-        )}
-      </Tap>
+      <View key={value} className="flex-1 items-center">
+        <Tap
+          disabled={disabled}
+          feedback={false}
+          scaleTo={0.88}
+          accessibilityLabel={value === "back" ? "Delete" : value}
+          onPress={() => {
+            haptic.select();
+            onKey(value);
+          }}
+          className={cn(
+            "items-center justify-center",
+            variant === "round"
+              ? value === "back"
+                ? "w-[72px] h-[72px] rounded-full"
+                : "w-[72px] h-[72px] rounded-full bg-white border border-line"
+              : "self-stretch h-14 rounded-2xl",
+          )}
+        >
+          {content}
+        </Tap>
+      </View>
     );
   };
 
   return (
-    <View className="gap-2.5">
+    <View className={variant === "round" ? "gap-3" : "gap-2.5"}>
       {ROWS.map((row) => (
         <View key={row.join("")} className="flex-row">
-          {row.map(key)}
+          {row.map((value, index) => key(value, index))}
         </View>
       ))}
       <View className="flex-row">
-        {key(decimal ? "." : null)}
-        {key("0")}
-        {key("back")}
+        {key(decimal ? "." : null, 0)}
+        {key("0", 1)}
+        {key("back", 2)}
       </View>
     </View>
   );

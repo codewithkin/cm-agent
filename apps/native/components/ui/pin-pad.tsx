@@ -9,10 +9,11 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { haptic, SPRING } from "@/lib/motion";
+import { enterFade, exitFade, haptic, SPRING } from "@/lib/motion";
 
-import { Banner } from "./card";
+import { Icon } from "./icon";
 import { Keypad, type KeypadKey } from "./keypad";
+import { T } from "./text";
 
 const PIN_LENGTH = 4;
 
@@ -83,8 +84,23 @@ export function PinPad({ onComplete, error, disabled }: Props) {
 
   return (
     <View className="gap-6">
-      <View className="items-center gap-4 min-h-[60px] justify-end">
-        {shown ? <Banner tone="danger" icon="error" text={shown} /> : null}
+      <View className="items-center gap-4">
+        {/* Fixed height so the dots don't jump when the message appears. */}
+        <View className="h-9 items-center justify-center">
+          {shown ? (
+            <Animated.View
+              entering={enterFade}
+              exiting={exitFade}
+              className="flex-row items-center gap-1.5 h-9 px-3.5 rounded-full bg-alarm-soft"
+              accessibilityLiveRegion="polite"
+            >
+              <Icon name="error" size={18} className="text-alarm-ink" />
+              <T weight="bold" className="text-[13px] text-alarm-ink">
+                {shown}
+              </T>
+            </Animated.View>
+          ) : null}
+        </View>
         <Animated.View style={shakeStyle} className="flex-row gap-4">
           {Array.from({ length: PIN_LENGTH }, (_, index) => (
             <Dot key={index} filled={index < pin.length} error={Boolean(shown) && pin.length === PIN_LENGTH} />
