@@ -67,6 +67,7 @@ export default function ForgotPin() {
       header={{ title: "Reset your PIN", subtitle: "Coline only", leading: "back" }}
       footer={
         <Button
+          variant="success"
           label="Save new PIN"
           icon="check"
           loading={saving}

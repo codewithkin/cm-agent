@@ -61,7 +61,7 @@ export default function SmsPermission() {
     <Screen
       footer={
         <>
-          <Button label="Got it" icon="check" onPress={allow} />
+          <Button variant="success" label="Got it" icon="check" onPress={allow} />
           <Button label="Skip" variant="ghost" size="md" onPress={() => router.replace("/lock")} />
         </>
       }
