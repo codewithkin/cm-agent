@@ -7,8 +7,8 @@ import { dateKeySchema, dayRange } from "../../lib/time";
 import { findOpenShift } from "../../services/shifts";
 
 /**
- * Logbook entries, newest first. Helpers only ever see the open shift on their
- * phone; the owner can filter across every shift, day and helper.
+ * Logbook entries, newest first. Helpers only ever see their own entries in the
+ * open shift on their phone; the owner can filter across every shift, day and helper.
  */
 export const list = userProcedure
   .input(
@@ -29,7 +29,9 @@ export const list = userProcedure
   )
   .query(async ({ ctx, input }) => {
     let shiftId = input.shiftId;
+    let servedById = input.servedById;
     if (ctx.user.role !== "OWNER") {
+      servedById = ctx.user.id;
       const openShift = await findOpenShift(ctx.db, ctx.device.id);
       if (!openShift) return { items: [], nextCursor: undefined };
       shiftId = openShift.id;
@@ -42,7 +44,7 @@ export const list = userProcedure
       type: input.type,
       currency: input.currency,
       matchState: input.matchState,
-      servedById: input.servedById,
+      servedById,
       ...(range ? { occurredAt: { gte: range.start, lt: range.end } } : {}),
       ...(input.flagged === undefined ? {} : { flaggedAt: input.flagged ? { not: null } : null }),
       ...(input.includeVoided ? {} : { voidedAt: null }),
