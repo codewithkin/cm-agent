@@ -35,10 +35,11 @@ export function Card({
   );
 }
 
-type Tone = "alarm" | "amber" | "lilac" | "leaf" | "peach";
+type Tone = "alarm" | "danger" | "amber" | "lilac" | "leaf" | "peach";
 
 const TONES: Record<Tone, { box: string; ink: string }> = {
   alarm: { box: "bg-alarm", ink: "text-white" },
+  danger: { box: "bg-alarm-soft", ink: "text-alarm-ink" },
   amber: { box: "bg-amber-soft", ink: "text-amber-ink" },
   lilac: { box: "bg-lilac", ink: "text-lilac-ink" },
   leaf: { box: "bg-leaf-soft", ink: "text-leaf" },
