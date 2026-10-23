@@ -13,6 +13,8 @@ model Shift {
   openingCashZig          Int
   openingFloatZig         Int
   openingNote             String?
+  /// The owner, who counts the money at the start (the shift is opened for a helper).
+  openingCountedById      String?
   closedAt                DateTime?
   closedById              String?
   /// Snapshot of the expected balances at close.
