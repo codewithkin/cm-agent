@@ -52,7 +52,7 @@ function draftFromSms(smsId: string): Draft {
 
 /** B4–B5 New transaction: amount (with the cash-out SMS gate), customer, signature. */
 export default function NewTransaction() {
-  const params = useLocalSearchParams<{ type?: Draft["type"]; smsId?: string }>();
+  const params = useLocalSearchParams<{ type?: Draft["type"]; smsId?: string; phone?: string; name?: string; idNumber?: string }>();
   const session = useObservable(sessionStore);
   const device = useObservable(deviceStore);
   const shift = useOpenShift();
@@ -65,7 +65,16 @@ export default function NewTransaction() {
   useEffect(() => suppressIncomingSheet(), []);
 
   const [draft, setDraft] = useState<Draft>(() =>
-    params.smsId ? draftFromSms(params.smsId) : { ...EMPTY_DRAFT, type: params.type ?? "CASH_OUT" },
+    params.smsId
+      ? draftFromSms(params.smsId)
+      : {
+          ...EMPTY_DRAFT,
+          type: params.type ?? "CASH_OUT",
+          // From a customer's page: their details are filled in already.
+          phone: params.phone ?? "",
+          name: params.name ?? "",
+          idNumber: params.idNumber ?? "",
+        },
   );
   const [step, setStep] = useState(params.smsId ? 1 : 0);
   const [askingWhy, setAskingWhy] = useState(false);

@@ -6,11 +6,14 @@ import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Avatar, Card } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
+import { Fab } from "@/components/ui/fab";
 import { Screen } from "@/components/ui/screen";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { TransactionRow } from "@/components/ui/transaction-row";
 import { clock, dayLabel, initials, prettyPhone, shortDate, wholeAmount } from "@/lib/format";
+import { deviceStore } from "@/lib/device";
+import { useObservable } from "@/lib/observable";
 import { trpc } from "@/utils/trpc";
 
 function RoundAction({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {
@@ -26,9 +29,25 @@ export default function CustomerDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const customer = useQuery(trpc.customers.get.queryOptions({ customerId: id }));
   const data = customer.data;
+  const device = useObservable(deviceStore);
 
   return (
-    <Screen header={{ title: "Customer" }}>
+    <Screen
+      header={{ title: "Customer" }}
+      fab={
+        data && device?.kind === "BOOTH" ? (
+          <Fab
+            label="New transaction"
+            onPress={() =>
+              router.push({
+                pathname: "/transaction/new",
+                params: { phone: data.customer.phone, name: data.customer.name ?? "", idNumber: data.customer.idNumber ?? "" },
+              })
+            }
+          />
+        ) : undefined
+      }
+    >
       <LiveState query={customer}>
         {data ? (
           <>
