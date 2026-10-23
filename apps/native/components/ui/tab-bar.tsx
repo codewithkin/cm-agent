@@ -1,9 +1,8 @@
 import { cn } from "heroui-native";
 import { View } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { DURATION, haptic, layout, sheetIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 
 import { CountBubble } from "./badges";
 import { Icon, type IconName } from "./icon";
@@ -44,7 +43,7 @@ export function FloatingTabBar({ state, navigateToTab, items, centerAction }: Pr
     if (!route) return null;
     const active = item.name === activeName;
     return (
-      <Animated.View key={item.name} layout={layout}>
+      <View key={item.name}>
         <Tap
           accessibilityLabel={item.label}
           accessibilityState={{ selected: active }}
@@ -59,20 +58,19 @@ export function FloatingTabBar({ state, navigateToTab, items, centerAction }: Pr
             {item.badge ? <CountBubble count={item.badge} /> : null}
           </View>
           {active ? (
-            <Animated.View entering={FadeIn.duration(DURATION.base)} exiting={FadeOut.duration(DURATION.fast)}>
+            <View>
               <T weight="heavy" className="text-[13px] text-white">
                 {item.label}
               </T>
-            </Animated.View>
+            </View>
           ) : null}
         </Tap>
-      </Animated.View>
+      </View>
     );
   };
 
   return (
-    <Animated.View
-      entering={sheetIn}
+    <View
       className="absolute left-3.5 right-3.5 h-16 rounded-full bg-white border border-line flex-row items-center justify-between px-2"
       style={{
         bottom: insets.bottom + 10,
@@ -106,6 +104,6 @@ export function FloatingTabBar({ state, navigateToTab, items, centerAction }: Pr
         </Tap>
       ) : null}
       {items.slice(half).map(renderItem)}
-    </Animated.View>
+    </View>
   );
 }

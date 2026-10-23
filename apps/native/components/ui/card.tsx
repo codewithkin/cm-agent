@@ -1,9 +1,7 @@
 import { cn } from "heroui-native";
 import type { PropsWithChildren, ReactNode } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
-import { enterUp, exitFade, layout } from "@/lib/motion";
 
 import { Icon, type IconName } from "./icon";
 import { Tap } from "./tap";
@@ -18,10 +16,7 @@ export function Card({
   action,
 }: PropsWithChildren<{ className?: string; index?: number; title?: string; action?: ReactNode }>) {
   return (
-    <Animated.View
-      entering={enterUp(index)}
-      exiting={exitFade}
-      layout={layout}
+    <View
       className={cn("bg-card rounded-3xl border border-line p-3.5 gap-3", className)}
     >
       {title ? (
@@ -31,7 +26,7 @@ export function Card({
         </View>
       ) : null}
       {children}
-    </Animated.View>
+    </View>
   );
 }
 
@@ -80,7 +75,7 @@ export function Banner({
     </>
   );
   return (
-    <Animated.View entering={enterUp(0)} exiting={exitFade} layout={layout} className="self-stretch">
+    <View className="self-stretch">
       {onAction ? (
         <Tap
           onPress={onAction}
@@ -93,7 +88,7 @@ export function Banner({
           {content}
         </View>
       )}
-    </Animated.View>
+    </View>
   );
 }
 

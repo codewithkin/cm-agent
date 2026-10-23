@@ -1,8 +1,6 @@
 import { cn } from "heroui-native";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
-import { enterFade } from "@/lib/motion";
 
 import { Icon, type IconName } from "./icon";
 import { T } from "./text";
@@ -46,12 +44,12 @@ const STATUS: Record<MatchStatus, { label: string; icon: IconName; box: string; 
 export function StatusChip({ status }: { status: MatchStatus }) {
   const style = STATUS[status];
   return (
-    <Animated.View entering={enterFade} className={cn("flex-row items-center gap-1 h-6 pl-1.5 pr-2.5 rounded-full self-start", style.box)}>
+    <View className={cn("flex-row items-center gap-1 h-6 pl-1.5 pr-2.5 rounded-full self-start", style.box)}>
       <Icon name={style.icon} size={14} className={style.ink} />
       <T weight="heavy" className={cn("text-[11px]", style.ink)}>
         {style.label}
       </T>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -71,13 +69,12 @@ export function Pill({ icon, label, className }: { icon?: IconName; label: strin
 export function CountBubble({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
-    <Animated.View
-      entering={enterFade}
+    <View
       className="absolute -top-1 -right-2 min-w-[17px] h-[17px] px-1 rounded-full bg-alarm items-center justify-center border-2 border-white"
     >
       <T weight="heavy" className="text-[10px] text-white">
         {count > 99 ? "99+" : count}
       </T>
-    </Animated.View>
+    </View>
   );
 }

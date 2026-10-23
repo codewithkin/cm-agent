@@ -1,13 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Banner, Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
-import { enterUp, exitFade, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { syncNow } from "@/lib/sync";
 import { trpc, trpcClient } from "@/utils/trpc";
 
@@ -84,7 +83,7 @@ export function DemoDataCard({ index = 4 }: { index?: number }) {
       {message ? <Banner tone={active ? "lilac" : "leaf"} icon="info" text={message} /> : null}
 
       {confirming ? (
-        <Animated.View entering={enterUp(0)} exiting={exitFade} className="gap-2 p-3 rounded-2xl bg-alarm-soft">
+        <View className="gap-2 p-3 rounded-2xl bg-alarm-soft">
           <T weight="heavy" className="text-alarm-ink">
             Clear all demo data?
           </T>
@@ -95,7 +94,7 @@ export function DemoDataCard({ index = 4 }: { index?: number }) {
             <Button label="Keep it" size="md" variant="light" className="flex-1" onPress={() => setConfirming(false)} />
             <Button variant="destructive" label="Clear" icon="delete-sweep" size="md" className="flex-1" loading={clear.isPending} onPress={() => clear.mutate()} />
           </View>
-        </Animated.View>
+        </View>
       ) : active ? (
         <Button label="Clear demo data" icon="delete-sweep" variant="danger" size="md" onPress={() => setConfirming(true)} />
       ) : (

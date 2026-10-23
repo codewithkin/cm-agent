@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
 import { initials, prettyPhone } from "@/lib/format";
 import { useRows, type LocalSms } from "@/lib/local-db";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 
 import { draftPhone, type Draft } from "./draft";
 
@@ -57,7 +56,7 @@ export function CustomerStep({
             </View>
           </View>
           {confirmed ? (
-            <Animated.View entering={enterUp(0)} className="flex-row items-center gap-2 p-3 rounded-2xl bg-leaf-soft">
+            <View className="flex-row items-center gap-2 p-3 rounded-2xl bg-leaf-soft">
               <Icon name="check-circle" size={20} className="text-leaf" />
               <T weight="heavy" className="text-leaf flex-1">
                 Name confirmed
@@ -67,9 +66,9 @@ export function CustomerStep({
                   ID {saved.idNumber}
                 </T>
               ) : null}
-            </Animated.View>
+            </View>
           ) : (
-            <Animated.View exiting={exitFade} layout={layout} className="p-3 rounded-2xl bg-sun-soft gap-3">
+            <View className="p-3 rounded-2xl bg-sun-soft gap-3">
               <View className="flex-row items-center gap-2">
                 <Icon name="record-voice-over" size={20} className="text-sun-ink" />
                 <T weight="heavy" className="text-sun-ink flex-1">
@@ -80,7 +79,7 @@ export function CustomerStep({
                 <Button variant="success" label="Yes, correct" icon="check" size="md" className="flex-1" onPress={confirmSaved} />
                 <Button variant="caution" label="Change" icon="edit" size="md" onPress={() => setEditing(true)} />
               </View>
-            </Animated.View>
+            </View>
           )}
         </Card>
       ) : (

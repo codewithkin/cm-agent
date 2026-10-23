@@ -1,17 +1,10 @@
 import { useEffect } from "react";
 import { View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
-import { enterUp } from "@/lib/motion";
 
 /** A gently bobbing cash drawer, standing in for the design's illustration. */
 function DrawerIllustration() {
@@ -32,7 +25,7 @@ function DrawerIllustration() {
 /** B2 Home · no shift open: only Coline can start one, because she counts the money. */
 export function NoShiftCard({ isOwner, onStart }: { isOwner: boolean; onStart: () => void }) {
   return (
-    <Animated.View entering={enterUp(1)} className="rounded-[28px] bg-lilac-strong p-5 gap-3 min-h-[420px]">
+    <Animated.View className="rounded-[28px] bg-lilac-strong p-5 gap-3 min-h-[420px]">
       <T weight="heavy" className="text-[32px] leading-[36px] tracking-tight">
         No shift{"\n"}open yet
       </T>

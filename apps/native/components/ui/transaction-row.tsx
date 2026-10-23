@@ -1,9 +1,7 @@
 import { cn } from "heroui-native";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { amount } from "@/lib/format";
-import { enterUp, exitFade, layout } from "@/lib/motion";
 
 import { CurrencyBadge, StatusChip, type Currency, type MatchStatus } from "./badges";
 import { Icon } from "./icon";
@@ -46,7 +44,7 @@ export function TransactionRow({
 }) {
   const cancelled = row.status === "CANCELLED";
   return (
-    <Animated.View entering={enterUp(index)} exiting={exitFade} layout={layout}>
+    <View>
       <Tap
         onPress={onPress}
         scaleTo={0.98}
@@ -75,6 +73,6 @@ export function TransactionRow({
           <StatusChip status={row.status} />
         </View>
       </Tap>
-    </Animated.View>
+    </View>
   );
 }

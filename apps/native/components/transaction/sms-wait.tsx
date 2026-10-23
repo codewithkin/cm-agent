@@ -1,19 +1,11 @@
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withSequence,
-  withTiming,
-  ZoomIn,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 import { CurrencyBadge, type Currency } from "@/components/ui/badges";
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
 import { amount, clock, type DateLike } from "@/lib/format";
-import { exitFade } from "@/lib/motion";
 
 function PulsingDot() {
   const scale = useSharedValue(1);
@@ -60,7 +52,7 @@ export function SmsWait({
 }) {
   if (received) {
     return (
-      <Animated.View entering={ZoomIn.springify().damping(14)} exiting={exitFade} className="rounded-3xl bg-leaf-bright p-3.5 gap-1">
+      <Animated.View className="rounded-3xl bg-leaf-bright p-3.5 gap-1">
         <View className="flex-row items-center gap-1.5">
           <Icon name="check-circle" size={18} className="text-white" />
           <T weight="bold" className="text-[12px] text-white">
@@ -80,7 +72,7 @@ export function SmsWait({
     );
   }
   return (
-    <Animated.View exiting={exitFade} className="flex-row items-center gap-2.5 h-12 px-4 rounded-full bg-sun-soft border border-sun">
+    <Animated.View className="flex-row items-center gap-2.5 h-12 px-4 rounded-full bg-sun-soft border border-sun">
       <PulsingDot />
       <T weight="heavy" className="flex-1 text-[14px] text-sun-ink">
         Waiting for EcoCash SMS…

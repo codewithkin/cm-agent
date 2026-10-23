@@ -1,15 +1,9 @@
 import { cn } from "heroui-native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
 
-import { enterFade, exitFade, haptic, SPRING } from "@/lib/motion";
+import { haptic, SPRING } from "@/lib/motion";
 
 import { Icon } from "./icon";
 import { Keypad, type KeypadKey } from "./keypad";
@@ -89,8 +83,6 @@ export function PinPad({ onComplete, error, disabled }: Props) {
         <View className="min-h-[52px] items-center justify-center px-4">
           {shown ? (
             <Animated.View
-              entering={enterFade}
-              exiting={exitFade}
               className="flex-row items-center gap-1.5 min-h-9 px-3.5 py-2 rounded-2xl bg-alarm-soft"
               accessibilityLiveRegion="polite"
             >

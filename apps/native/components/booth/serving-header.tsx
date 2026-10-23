@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -8,7 +7,6 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { clock, dayLabel, greeting, initials, type DateLike } from "@/lib/format";
 import { lockNow } from "@/lib/idle-lock";
-import { enterFromTop } from "@/lib/motion";
 import type { Session } from "@/lib/session";
 
 /**
@@ -38,7 +36,7 @@ export function ServingHeader({
     : `${dayLabel(new Date())} · ${deviceLabel}`;
 
   return (
-    <Animated.View entering={enterFromTop} className="flex-row items-center gap-2.5">
+    <View className="flex-row items-center gap-2.5">
       <Tap onPress={lockNow} scaleTo={0.97} className="flex-1 flex-row items-center gap-2.5" accessibilityLabel="Change person">
         <Avatar label={initials(session.user.name)} owner={owner} />
         <View className="flex-1 min-w-0">
@@ -62,6 +60,6 @@ export function ServingHeader({
         </View>
       </Tap>
       <SyncChip />
-    </Animated.View>
+    </View>
   );
 }

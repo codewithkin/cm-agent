@@ -4,7 +4,7 @@ import { TextInput, View, type TextInputProps } from "react-native";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 import { FONT_FAMILY } from "@/lib/fonts";
-import { DURATION, enterFade } from "@/lib/motion";
+import { DURATION } from "@/lib/motion";
 
 import { Icon, type IconName } from "./icon";
 import { Tap } from "./tap";
@@ -67,7 +67,7 @@ export function Field({ label, icon, prefix, error, secret, className, onFocus, 
         ) : null}
       </Animated.View>
       {error ? (
-        <Animated.View entering={enterFade}>
+        <Animated.View>
           <T weight="bold" className="text-[12px] text-alarm-ink">
             {error}
           </T>

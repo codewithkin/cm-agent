@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useState, type ReactNode } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Banner, Card } from "@/components/ui/card";
@@ -11,7 +10,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { prettyPhone } from "@/lib/format";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { trpc, trpcClient } from "@/utils/trpc";
 
 function Editor({
@@ -32,7 +31,7 @@ function Editor({
   children: ReactNode;
 }) {
   return (
-    <Animated.View layout={layout} className={cn(!first && "border-t border-line")}>
+    <View className={cn(!first && "border-t border-line")}>
       <Tap onPress={onToggle} scaleTo={0.99} className="flex-row items-center gap-3 py-3.5">
         <Icon name={icon} size={20} className="text-subtle" />
         <T weight="bold" className="flex-1 text-[14px]">
@@ -44,11 +43,11 @@ function Editor({
         <Icon name={open ? "expand-less" : "chevron-right"} size={20} className="text-subtle" />
       </Tap>
       {open ? (
-        <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-3 gap-2">
+        <View className="pb-3 gap-2">
           {children}
-        </Animated.View>
+        </View>
       ) : null}
-    </Animated.View>
+    </View>
   );
 }
 

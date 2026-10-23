@@ -1,13 +1,7 @@
 import { cn } from "heroui-native";
 import { Fragment, useEffect } from "react";
 import { View } from "react-native";
-import Animated, {
-  interpolateColor,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
 import { DURATION, SPRING } from "@/lib/motion";
 

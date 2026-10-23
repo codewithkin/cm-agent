@@ -1,14 +1,12 @@
 import type { BalanceKey, Balances } from "@cm-agent/api/lib/balances";
 import { cn } from "heroui-native";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
 import { amount } from "@/lib/format";
-import { enterUp } from "@/lib/motion";
 
 const TILES: { key: BalanceKey; label: string; currency: "USD" | "ZIG" }[] = [
   { key: "cashUsd", label: "Cash balance", currency: "USD" },
@@ -41,9 +39,8 @@ export function MoneyNowCard({ balances, low, index = 1, caption }: {
         {TILES.map((tile, i) => {
           const isLow = low.includes(tile.key);
           return (
-            <Animated.View
+            <View
               key={tile.key}
-              entering={enterUp(i)}
               className={cn("rounded-2xl p-3 gap-1.5", isLow ? "bg-peach" : "bg-page")}
               style={{ width: "48.5%" }}
             >
@@ -64,7 +61,7 @@ export function MoneyNowCard({ balances, low, index = 1, caption }: {
                   {isLow ? "Low" : caption?.(tile.key)}
                 </T>
               ) : null}
-            </Animated.View>
+            </View>
           );
         })}
       </View>

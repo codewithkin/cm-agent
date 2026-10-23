@@ -1,16 +1,14 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Icon } from "@/components/ui/icon";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
-import { enterUp } from "@/lib/motion";
 
 /** The two big buttons: yellow Cash-in, black Cash-out. Open New transaction with the type chosen. */
 export function QuickActions({ index = 2 }: { index?: number }) {
   return (
-    <Animated.View entering={enterUp(index)} className="flex-row gap-2">
+    <View className="flex-row gap-2">
       <Tap
         accessibilityLabel="New cash-in"
         onPress={() => router.push({ pathname: "/transaction/new", params: { type: "CASH_IN" } })}
@@ -41,6 +39,6 @@ export function QuickActions({ index = 2 }: { index?: number }) {
           Cash-out
         </T>
       </Tap>
-    </Animated.View>
+    </View>
   );
 }

@@ -1,10 +1,5 @@
 import { useEffect } from "react";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
 
 import { clock } from "@/lib/format";
 import { onlineStore } from "@/lib/network";

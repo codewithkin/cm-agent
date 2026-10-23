@@ -1,9 +1,8 @@
 import { useMemo, useRef, useState } from "react";
 import { PanResponder, View, type LayoutChangeEvent } from "react-native";
-import Animated from "react-native-reanimated";
 import Svg, { Path } from "react-native-svg";
 
-import { enterFade, exitFade, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 
 import { Icon } from "./icon";
 import { Tap } from "./tap";
@@ -93,20 +92,20 @@ export function SignaturePad({ onChange, height = 260 }: Props) {
         <View className="flex-1 border-b border-line-strong" />
       </View>
       {empty ? (
-        <Animated.View entering={enterFade} exiting={exitFade} pointerEvents="none" className="absolute left-0 right-0 bottom-5 items-center">
+        <View pointerEvents="none" className="absolute left-0 right-0 bottom-5 items-center">
           <T weight="semibold" className="text-[13px] text-subtle">
             Customer signs here
           </T>
-        </Animated.View>
+        </View>
       ) : (
-        <Animated.View entering={enterFade} exiting={exitFade} className="absolute top-3 right-3">
+        <View className="absolute top-3 right-3">
           <Tap onPress={clear} className="h-9 px-3 rounded-full bg-page flex-row items-center gap-1">
             <Icon name="clear" size={16} className="text-ink-soft" />
             <T weight="bold" className="text-[12px] text-ink-soft">
               Clear
             </T>
           </Tap>
-        </Animated.View>
+        </View>
       )}
     </View>
   );

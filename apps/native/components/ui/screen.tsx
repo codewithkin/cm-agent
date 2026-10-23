@@ -2,10 +2,8 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import type { PropsWithChildren, ReactNode } from "react";
 import { ScrollView, View } from "react-native";
-import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { enterFromTop } from "@/lib/motion";
 
 import { IconButton } from "./button";
 import { T } from "./text";
@@ -23,7 +21,7 @@ type HeaderProps = {
 
 export function ScreenHeader({ title, subtitle, leading = "back", onLeading, right, large }: HeaderProps) {
   return (
-    <Animated.View entering={enterFromTop} className="flex-row items-center gap-3 pb-2">
+    <View className="flex-row items-center gap-3 pb-2">
       {leading ? (
         <IconButton
           icon={leading === "back" ? "arrow-back" : "close"}
@@ -47,7 +45,7 @@ export function ScreenHeader({ title, subtitle, leading = "back", onLeading, rig
         ) : null}
       </View>
       {right}
-    </Animated.View>
+    </View>
   );
 }
 

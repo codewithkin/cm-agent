@@ -1,8 +1,7 @@
 import { View } from "react-native";
-import Animated, { FadeInDown, FadeOutUp } from "react-native-reanimated";
 
 import { amount, centsFromInput } from "@/lib/format";
-import { DURATION, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 
 import { CurrencyBadge, type Currency } from "./badges";
 import { Keypad, type KeypadKey } from "./keypad";
@@ -31,16 +30,14 @@ export function AmountDisplay({ text, currency }: { text: string; currency: Curr
       <CurrencyBadge currency={currency} size="md" />
       <View className="flex-row overflow-hidden">
         {shown.split("").map((char, index) => (
-          <Animated.View
+          <View
             // Keyed by position + char so a changed digit animates in.
             key={`${index}-${char}`}
-            entering={FadeInDown.duration(DURATION.fast)}
-            exiting={FadeOutUp.duration(DURATION.fast)}
           >
             <T weight="heavy" className="text-[44px] leading-[52px]" style={{ fontVariant: ["tabular-nums"] }}>
               {char}
             </T>
-          </Animated.View>
+          </View>
         ))}
       </View>
     </View>
