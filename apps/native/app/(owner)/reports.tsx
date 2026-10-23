@@ -132,7 +132,8 @@ function People({ data }: { data: Insights }) {
             <T weight="heavy">{row.count} done</T>
           </View>
           <T weight="semibold" className="text-[12px] text-ink-soft">
-            Handled USD {wholeAmount(row.valueUsd)} · ZiG {wholeAmount(row.valueZig)} · earned USD {amount(row.commissionUsd)}
+            Handled USD {wholeAmount(row.valueUsd)} · ZiG {wholeAmount(row.valueZig)} · earned{" "}
+            {moneyPair(row.commissionUsd, row.commissionZig)}
           </T>
           <View className="flex-row flex-wrap gap-1.5">
             <View className={cn("px-2 h-6 rounded-full justify-center", row.problems ? "bg-amber-soft" : "bg-leaf-soft")}>
@@ -242,7 +243,7 @@ function Customers({ data, text }: { data: Insights; text: string }) {
 function Largest({ data }: { data: Insights }) {
   if (data.largest.length === 0) return null;
   return (
-    <Card title="Biggest transactions">
+    <Card title="Biggest transactions" action={<T weight="semibold" className="text-[11px] text-subtle">Top 3 per currency</T>}>
       {data.largest.map((tx) => (
         <View key={tx.id} className="flex-row items-center gap-2">
           <View className="flex-1">

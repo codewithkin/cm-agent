@@ -100,7 +100,7 @@ export function insightsPdfHtml(data: Insights, businessName: string): string {
   </section>
 
   <section><h2>Who did what?</h2>
-  ${table(["Person", "Done", "USD handled", "ZiG handled", "Earned USD", "Problems", "Short shifts"], data.people.map((row) => [row.name, String(row.count), amount(row.valueUsd), amount(row.valueZig), amount(row.commissionUsd), String(row.problems), row.shortShifts ? `${row.shortShifts} · ${moneyPair(row.shortUsd, row.shortZig)}` : "0"]))}
+  ${table(["Person", "Done", "USD handled", "ZiG handled", "Earned", "Problems", "Short shifts"], data.people.map((row) => [row.name, String(row.count), amount(row.valueUsd), amount(row.valueZig), moneyPair(row.commissionUsd, row.commissionZig), String(row.problems), row.shortShifts ? `${row.shortShifts} · ${moneyPair(row.shortUsd, row.shortZig)}` : "0"]))}
   </section>
 
   <section><h2>When is it busy?</h2>
@@ -120,6 +120,7 @@ export function insightsPdfHtml(data: Insights, businessName: string): string {
   </section>
 
   <section><h2>Biggest transactions</h2>
+  <p class="muted">The three biggest in each currency.</p>
   ${table(["Customer", "When", "Served by", "Type", "Amount"], data.largest.map((row) => [row.customerName, `${dayLabel(row.occurredAt)} ${clock(row.occurredAt)}`, row.servedBy, row.type === "CASH_IN" ? "Cash-in" : "Cash-out", `${row.currency === "USD" ? "USD" : "ZiG"} ${amount(row.amount)}`]))}
   </section>
 

@@ -68,7 +68,7 @@ export function answers(data: Insights) {
       ? "No shifts were closed in this period yet."
       : missing.shortShifts === 0
         ? `Nothing missing. All ${missing.closedShifts} closed shift${missing.closedShifts === 1 ? "" : "s"} balanced${missing.overShifts ? `, ${missing.overShifts} had extra money` : ""}.`
-        : `${missing.shortShifts} of ${missing.closedShifts} shifts were short: ${moneyPair(missing.shortUsd, missing.shortZig)} missing.`;
+        : `${missing.shortShifts} of ${missing.closedShifts} shifts ${missing.shortShifts === 1 ? "was" : "were"} short: ${moneyPair(missing.shortUsd, missing.shortZig)} missing.`;
 
   const needLines = (["USD", "ZIG"] as const).flatMap((currency) => {
     const label = currency === "USD" ? "USD" : "ZiG";
