@@ -66,7 +66,7 @@ export function Screen({ header, footer, scroll = true, withTabBar, className, c
   const insets = useSafeAreaInsets();
   const bottomRoom = withTabBar ? 110 : 16;
   const body = (
-    <View className={cn("gap-3", className)}>
+    <View className={cn("gap-3", !scroll && "flex-1", className)}>
       {children}
     </View>
   );
