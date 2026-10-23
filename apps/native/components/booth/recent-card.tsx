@@ -28,10 +28,9 @@ export function rowOf(tx: LocalTransaction, withPhone = false) {
 }
 
 /** "Today": the latest few entries, with "See all". */
-export function RecentCard({ transactions, index = 5 }: { transactions: LocalTransaction[]; index?: number }) {
+export function RecentCard({ transactions }: { transactions: LocalTransaction[] }) {
   return (
     <Card
-      index={index}
       title="Today"
       className="pb-1"
       action={
@@ -56,7 +55,6 @@ export function RecentCard({ transactions, index = 5 }: { transactions: LocalTra
             <TransactionRow
               key={tx.id}
               row={rowOf(tx)}
-              index={i}
               first={i === 0}
               onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: tx.id } })}
             />

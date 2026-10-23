@@ -89,12 +89,12 @@ export default function Settings() {
             <T weight="heavy" className="text-[12px] text-subtle px-1">
               OWNER ACCOUNT
             </T>
-            <OwnerAccountCard index={0} />
+            <OwnerAccountCard />
 
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               BUSINESS
             </T>
-            <Card index={0} className="gap-0 py-0">
+            <Card className="gap-0 py-0">
               <Row first icon="storefront" label="Business name" value={data.businessName}>
                 {(close) => (
                   <>
@@ -128,7 +128,7 @@ export default function Settings() {
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               MONEY RULES
             </T>
-            <Card index={1} className="gap-0 py-0">
+            <Card className="gap-0 py-0">
               <Row first icon="payments" label="Low cash alert" value={`USD ${wholeAmount(data.lowCashUsd)} · ZiG ${wholeAmount(data.lowCashZig)}`}>
                 {(close) => (
                   <>
@@ -162,7 +162,7 @@ export default function Settings() {
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               SMS
             </T>
-            <Card index={2}>
+            <Card>
               <View className="flex-row items-center gap-2">
                 <Icon name="sms" size={20} className="text-subtle" />
                 <T weight="bold" className="flex-1 text-[14px]">
@@ -201,12 +201,12 @@ export default function Settings() {
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               DEMO DATA
             </T>
-            <DemoDataCard index={3} />
+            <DemoDataCard />
 
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               RECORDS
             </T>
-            <Card index={3} className="gap-0 py-0">
+            <Card className="gap-0 py-0">
               <Row first icon="backup" label="Backed up" value="On the server" />
               <Row icon="inventory-2" label="Keep records" value={`${Math.round(data.retentionDays / 365)} years`}>
                 {(close) => (

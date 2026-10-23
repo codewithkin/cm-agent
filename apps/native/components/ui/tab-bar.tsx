@@ -31,7 +31,7 @@ type Props = TabBarProps & {
 
 /**
  * The floating white bar from the design: the active tab is a black pill with
- * its label, the others are icons; the pill slides between tabs.
+ * its label, the others are icons.
  */
 export function FloatingTabBar({ state, navigateToTab, items, centerAction }: Props) {
   const insets = useSafeAreaInsets();

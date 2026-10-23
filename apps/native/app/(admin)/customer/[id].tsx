@@ -46,7 +46,7 @@ export default function CustomerDetail() {
               </View>
             </View>
 
-            <Card index={1} className="flex-row gap-2 p-2.5">
+            <Card className="flex-row gap-2 p-2.5">
               {[
                 ["ID", data.customer.idNumber ?? "—"],
                 ["First visit", shortDate(data.customer.firstSeenAt)],
@@ -84,7 +84,6 @@ export default function CustomerDetail() {
               {data.transactions.map((tx, index) => (
                 <TransactionRow
                   key={tx.id}
-                  index={index}
                   first={index === 0}
                   onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: tx.id } })}
                   row={{

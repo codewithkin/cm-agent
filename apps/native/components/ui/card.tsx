@@ -7,14 +7,13 @@ import { Icon, type IconName } from "./icon";
 import { Tap } from "./tap";
 import { T } from "./text";
 
-/** White rounded card. Pass `index` to fade it up in a stagger as the screen opens. */
+/** White rounded card, with an optional title and action. */
 export function Card({
   children,
   className,
-  index = 0,
   title,
   action,
-}: PropsWithChildren<{ className?: string; index?: number; title?: string; action?: ReactNode }>) {
+}: PropsWithChildren<{ className?: string; title?: string; action?: ReactNode }>) {
   return (
     <View
       className={cn("bg-card rounded-3xl border border-line p-3.5 gap-3", className)}
@@ -41,7 +40,7 @@ const TONES: Record<Tone, { box: string; ink: string }> = {
   peach: { box: "bg-peach", ink: "text-peach-ink" },
 };
 
-/** Coloured message strip: warnings, info, "2 EcoCash SMS not saved". Fades up into place, full width. */
+/** Coloured message strip: warnings, info, "2 EcoCash SMS not saved". Full width. */
 export function Banner({
   tone,
   icon,

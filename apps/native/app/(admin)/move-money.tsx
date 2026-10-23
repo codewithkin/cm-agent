@@ -72,7 +72,7 @@ export default function MoveMoney() {
   if (!shift || !balances) {
     return (
       <Screen header={{ title: "Move money", subtitle: "Coline only", leading: "close" }}>
-        <Card index={0}>
+        <Card>
           <T weight="semibold" className="text-subtle">
             Open a shift on this phone first.
           </T>
@@ -139,7 +139,7 @@ export default function MoveMoney() {
       />
       <MoneyInput currency={currency} label="Amount" cents={cents} onChange={setCents} />
 
-      <Card index={6} title="After this" action={<T weight="bold" className="text-[11px] text-subtle">preview</T>}>
+      <Card title="After this" action={<T weight="bold" className="text-[11px] text-subtle">preview</T>}>
         <View className="flex-row gap-2">
           <Change label="Cash" currency={currency} before={balances[cashKey]} after={balances[cashKey] + effect.cash * cents} />
           <Change label="EcoCash" currency={currency} before={balances[floatKey]} after={balances[floatKey] + effect.float * cents} />

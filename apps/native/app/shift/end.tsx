@@ -119,7 +119,7 @@ export default function EndShift() {
               Count the cash
             </T>
             {unrecorded.length > 0 && !endAnyway ? (
-              <Card index={0} className="bg-alarm-soft border-0">
+              <Card className="bg-alarm-soft border-0">
                 <View className="flex-row items-center gap-2">
                   <Icon name="mark-chat-unread" size={20} className="text-alarm-ink" />
                   <T weight="heavy" className="flex-1 text-alarm-ink">
@@ -132,7 +132,7 @@ export default function EndShift() {
                 </View>
               </Card>
             ) : null}
-            <Card index={1} className="gap-0 py-1">
+            <Card className="gap-0 py-1">
               <MoneyInput currency="USD" icon="payments" label="Cash balance" cents={counted.cashUsd} onChange={set("cashUsd")} />
               <MoneyInput currency="ZIG" icon="payments" label="Cash balance" cents={counted.cashZig} onChange={set("cashZig")} />
             </Card>
@@ -144,7 +144,7 @@ export default function EndShift() {
             <T weight="heavy" className="text-[24px] tracking-tight">
               Check the EcoCash balance
             </T>
-            <Card index={1} className="gap-0 py-1">
+            <Card className="gap-0 py-1">
               <MoneyInput currency="USD" icon="account-balance-wallet" label="EcoCash balance" cents={counted.floatUsd} onChange={set("floatUsd")} />
               <MoneyInput currency="ZIG" icon="account-balance-wallet" label="EcoCash balance" cents={counted.floatZig} onChange={set("floatZig")} />
             </Card>
@@ -162,7 +162,7 @@ export default function EndShift() {
 
         {step === 2 ? (
           <>
-            <Card index={0} className="gap-0 py-1">
+            <Card className="gap-0 py-1">
               <View className="flex-row py-2 border-b border-line">
                 <T weight="heavy" className="flex-1 text-[11px] text-subtle">
                   MONEY
@@ -208,7 +208,7 @@ export default function EndShift() {
               <Field label="What happened?" icon="edit-note" placeholder="Explain the difference" value={note} onChangeText={setNote} />
             )}
 
-            <Card index={2} title="This shift">
+            <Card title="This shift">
               <View className="flex-row gap-2">
                 {[
                   ["Transactions", transactions.filter((tx) => !tx.voidedAt).length],

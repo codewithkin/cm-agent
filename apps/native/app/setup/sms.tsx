@@ -62,7 +62,7 @@ export default function SmsPermission() {
       <SetupSteps current={2} />
       <Banner tone="leaf" icon="check-circle" text={`This phone is ${device?.label ?? "registered"}`} />
 
-      <Card index={1} className="bg-page border-0 p-3 gap-2">
+      <Card className="bg-page border-0 p-3 gap-2">
         <View className="bg-white rounded-2xl p-3 flex-row gap-3">
           <View className="w-9 h-9 rounded-xl bg-lilac items-center justify-center">
             <Icon name="sms" size={18} className="text-lilac-ink" />

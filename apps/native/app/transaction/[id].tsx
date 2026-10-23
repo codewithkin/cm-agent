@@ -80,7 +80,7 @@ export default function TransactionDetail() {
   if (!tx) {
     return (
       <Screen header={{ title: "Transaction" }}>
-        <Card index={0}>
+        <Card>
           <T weight="semibold" className="text-subtle">
             {online ? "Loading…" : "This transaction isn't on this phone. Connect to the internet to see it."}
           </T>
@@ -131,7 +131,7 @@ export default function TransactionDetail() {
         ) : null}
       </View>
 
-      <Card index={1} className="gap-0 py-1">
+      <Card className="gap-0 py-1">
         {isOwner ? (
           <Tap onPress={() => router.push({ pathname: "/customer/[id]", params: { id: tx.customerId } })} scaleTo={0.99}>
             <InfoRow icon="person" label="Customer" right={<T weight="heavy" className="text-[14px] underline">{tx.customerName}</T>} />
@@ -179,7 +179,7 @@ export default function TransactionDetail() {
       {editing ? <EditTransaction transactionId={id} onDone={() => setEditing(false)} /> : null}
 
       {cancelling ? (
-        <Card index={0} className="bg-alarm-soft border-0">
+        <Card className="bg-alarm-soft border-0">
           <T weight="heavy" className="text-alarm-ink">
             Cancel this entry?
           </T>
@@ -204,7 +204,7 @@ export default function TransactionDetail() {
       ) : null}
 
       {reporting ? (
-        <Card index={0} className="bg-amber-soft border-0">
+        <Card className="bg-amber-soft border-0">
           <T weight="heavy" className="text-amber-ink">
             What's wrong with this entry?
           </T>

@@ -122,7 +122,7 @@ export default function ShiftTab() {
             </View>
           )}
 
-          <Card index={3} title="Money in and out">
+          <Card title="Money in and out">
             {(["USD", "ZIG"] as const).flatMap((currency) =>
               (["CASH_IN", "CASH_OUT"] as const).map((type) => {
                 const totals = summary[currency];

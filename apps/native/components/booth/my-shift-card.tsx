@@ -31,9 +31,9 @@ function Tile({ title, inward, summary }: { title: string; inward: boolean; summ
 }
 
 /** "My shift today": counts and values only (helpers never see balances). */
-export function MyShiftCard({ summary, index = 1 }: { summary: TransactionSummary; index?: number }) {
+export function MyShiftCard({ summary }: { summary: TransactionSummary }) {
   return (
-    <Card index={index} title="My shift today" action={<Pill icon="receipt-long" label={`${summary.transactionCount} done`} />}>
+    <Card title="My shift today" action={<Pill icon="receipt-long" label={`${summary.transactionCount} done`} />}>
       <View className="flex-row gap-2">
         <Tile title="Cash in" inward summary={summary} />
         <Tile title="Cash out" inward={false} summary={summary} />

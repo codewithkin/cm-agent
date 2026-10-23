@@ -43,7 +43,7 @@ export function CustomerStep({
   return (
     <View className="gap-3">
       {saved && !editing ? (
-        <Card index={1} title="Customer" action={<T weight="bold" className="text-[12px] text-subtle">Saved · {visits} visits</T>}>
+        <Card title="Customer" action={<T weight="bold" className="text-[12px] text-subtle">Saved · {visits} visits</T>}>
           <View className="flex-row items-center gap-3">
             <Avatar label={initials(saved.name ?? "?")} size={48} />
             <View className="flex-1">
@@ -83,7 +83,7 @@ export function CustomerStep({
           )}
         </Card>
       ) : (
-        <Card index={1} title="Customer">
+        <Card title="Customer">
           <Field
             label="Mobile number"
             icon="call"
@@ -108,7 +108,7 @@ export function CustomerStep({
         </Card>
       )}
 
-      <Card index={2} className="flex-row items-center gap-2 py-3">
+      <Card className="flex-row items-center gap-2 py-3">
         <Icon name="tag" size={20} className="text-subtle" />
         {sms?.reference ? (
           <>

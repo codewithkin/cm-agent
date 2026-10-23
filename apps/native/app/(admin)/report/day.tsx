@@ -124,7 +124,7 @@ export default function DayReport() {
       <LiveState query={report}>
         {data && money ? (
           <View key={date} className="gap-3">
-            <Card index={0} className="bg-ink border-0">
+            <Card className="bg-ink border-0">
               <T weight="heavy" className="text-white text-[18px]">
                 {data.shifts.length} shifts · {data.totals.transactionCount} transactions
               </T>
@@ -141,7 +141,6 @@ export default function DayReport() {
             </Card>
 
             <Card
-              index={1}
               title="Totals"
               action={
                 <View className="flex-row items-center gap-1 px-2 h-6 rounded-full bg-leaf-soft">
@@ -176,7 +175,7 @@ export default function DayReport() {
               ))}
             </Card>
 
-            <Card index={2} title="Money">
+            <Card title="Money">
               <View className="flex-row">
                 <View className="flex-1" />
                 <T weight="heavy" className="w-24 text-right text-[11px] text-subtle">
@@ -201,7 +200,7 @@ export default function DayReport() {
               ))}
             </Card>
 
-            <Card index={3} title="By person">
+            <Card title="By person">
               {data.perHelper.map((row, index) => (
                 <View key={row.userId} className="flex-row items-center">
                   <View className="flex-1 flex-row items-center gap-2">

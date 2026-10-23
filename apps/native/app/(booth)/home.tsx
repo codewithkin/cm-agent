@@ -52,13 +52,13 @@ export default function Home() {
         <>
           {isOwner && balances ? (
             <>
-              <MoneyNowCard balances={balances} low={low} index={1} />
-              <OwnerToolsLink index={2} />
+              <MoneyNowCard balances={balances} low={low} />
+              <OwnerToolsLink />
             </>
           ) : (
-            <MyShiftCard summary={summary} index={1} />
+            <MyShiftCard summary={summary} />
           )}
-          <QuickActions index={2} />
+          <QuickActions />
           {unrecorded.length > 0 ? (
             <Banner
               tone="alarm"
@@ -76,8 +76,8 @@ export default function Home() {
               text={isOwner ? `${BALANCE_LABEL[key]} is low.` : `${BALANCE_LABEL[key]} is low. Tell Coline.`}
             />
           ))}
-          {isOwner ? <ByPersonCard transactions={mine} index={4} /> : null}
-          <RecentCard transactions={mine} index={5} />
+          {isOwner ? <ByPersonCard transactions={mine} /> : null}
+          <RecentCard transactions={mine} />
         </>
       )}
     </Screen>

@@ -33,12 +33,10 @@ export function TypeTile({ type, size = 38 }: { type: "CASH_IN" | "CASH_OUT"; si
 
 export function TransactionRow({
   row,
-  index = 0,
   first,
   onPress,
 }: {
   row: TransactionRowData;
-  index?: number;
   first?: boolean;
   onPress?: () => void;
 }) {

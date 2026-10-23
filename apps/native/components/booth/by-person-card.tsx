@@ -7,12 +7,12 @@ import { amount, initials } from "@/lib/format";
 import { localDb, type LocalTransaction } from "@/lib/local-db";
 
 /** "Today by person": who did how many, and how much cash went out (USD). */
-export function ByPersonCard({ transactions, index = 4 }: { transactions: LocalTransaction[]; index?: number }) {
+export function ByPersonCard({ transactions }: { transactions: LocalTransaction[] }) {
   const users = localDb.get().users;
   const rows = [...summarizeBy(transactions.filter((tx) => !tx.voidedAt), (tx) => tx.servedById)];
   if (rows.length === 0) return null;
   return (
-    <Card index={index} title="Today by person">
+    <Card title="Today by person">
       <View className="flex-row border-b border-line pb-2">
         <T weight="heavy" className="flex-1 text-[11px] text-subtle">
           PERSON

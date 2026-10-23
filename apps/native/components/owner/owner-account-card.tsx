@@ -52,7 +52,7 @@ function Editor({
 }
 
 /** Settings → Owner account: the phone number and password Coline signs in with. */
-export function OwnerAccountCard({ index = 0 }: { index?: number }) {
+export function OwnerAccountCard() {
   const queryClient = useQueryClient();
   const team = useQuery(trpc.team.list.queryOptions());
   const owner = team.data?.find((person) => person.role === "OWNER");
@@ -99,7 +99,7 @@ export function OwnerAccountCard({ index = 0 }: { index?: number }) {
   const passwordsMatch = newPassword.length > 0 && newPassword === confirmPassword;
 
   return (
-    <Card index={index} className="gap-0 py-0">
+    <Card className="gap-0 py-0">
       <Editor
         first
         icon="call"

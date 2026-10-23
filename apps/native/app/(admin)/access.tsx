@@ -55,7 +55,7 @@ export default function Access() {
         </View>
       </View>
 
-      <Card index={2} className="gap-0 py-1">
+      <Card className="gap-0 py-1">
         <View className="flex-row py-2 border-b border-line">
           <View className="flex-1" />
           <T weight="heavy" className="w-16 text-center text-[11px] text-subtle">

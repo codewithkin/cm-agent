@@ -87,7 +87,7 @@ export default function Transactions() {
         ]}
       />
 
-      <Card index={1}>
+      <Card>
         <T weight="heavy">{summary.transactionCount} transactions</T>
         {(["USD", "ZIG"] as const).map((currency) => {
           const totals = summary[currency];
@@ -141,7 +141,6 @@ export default function Transactions() {
                 <TransactionRow
                   key={tx.id}
                   row={rowOf(tx, true)}
-                  index={index}
                   first={index === 0}
                   onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: tx.id } })}
                 />

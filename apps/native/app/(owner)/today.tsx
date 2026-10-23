@@ -81,7 +81,7 @@ export default function Today() {
               <Banner tone="leaf" icon="task-alt" text="Nothing to check. All entries match." />
             )}
 
-            <Card index={3} title="Working now">
+            <Card title="Working now">
               {data.booths.map((booth, index) => {
                 const synced = booth.lastSyncedAt ? new Date(booth.lastSyncedAt) : null;
                 const stale = !synced || Date.now() - synced.getTime() > 10 * 60_000;
@@ -114,7 +114,7 @@ export default function Today() {
               })}
             </Card>
 
-            <MoneyNowCard balances={data.balances} low={data.low} index={4} caption={() => "Both phones"} />
+            <MoneyNowCard balances={data.balances} low={data.low} caption={() => "Both phones"} />
           </>
         ) : null}
       </LiveState>

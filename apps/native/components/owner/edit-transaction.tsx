@@ -52,7 +52,7 @@ export function EditTransaction({ transactionId, onDone }: { transactionId: stri
   if (!tx) return null;
 
   return (
-    <Card index={0} className="bg-page border-0 gap-2">
+    <Card className="bg-page border-0 gap-2">
       <T weight="heavy">Edit entry</T>
       <MoneyInput currency={tx.currency} label="Amount" cents={cents} onChange={setCents} />
       <Field label="Customer name" value={name} onChangeText={setName} />

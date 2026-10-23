@@ -242,7 +242,7 @@ export default function NewTransaction() {
             ) : null}
 
             {askingWhy ? (
-              <Card index={0} className="bg-amber-soft border-0">
+              <Card className="bg-amber-soft border-0">
                 <T weight="heavy" className="text-amber-ink">
                   Why is there no SMS?
                 </T>

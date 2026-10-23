@@ -14,7 +14,7 @@ import { trpc, trpcClient } from "@/utils/trpc";
  * Settings → Demo data: a sample week to show or try the app, and a way to
  * remove it before real use. Only demo records are removed.
  */
-export function DemoDataCard({ index = 4 }: { index?: number }) {
+export function DemoDataCard() {
   const queryClient = useQueryClient();
   const status = useQuery(trpc.demo.status.queryOptions());
   const [confirming, setConfirming] = useState(false);
@@ -58,7 +58,7 @@ export function DemoDataCard({ index = 4 }: { index?: number }) {
   });
 
   return (
-    <Card index={index}>
+    <Card>
       <View className="flex-row items-center gap-2">
         <Icon name="science" size={20} className="text-subtle" />
         <View className="flex-1">

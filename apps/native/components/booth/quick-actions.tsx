@@ -6,7 +6,7 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 
 /** The two big buttons: yellow Cash-in, black Cash-out. Open New transaction with the type chosen. */
-export function QuickActions({ index = 2 }: { index?: number }) {
+export function QuickActions() {
   return (
     <View className="flex-row gap-2">
       <Tap

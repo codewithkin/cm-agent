@@ -6,7 +6,7 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 
 /** "Owner tools · Reports, people, phones, settings" on a booth phone, for Coline. */
-export function OwnerToolsLink({ index = 2 }: { index?: number }) {
+export function OwnerToolsLink() {
   return (
     <View>
       <Tap onPress={() => router.push("/today")} className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-ink">

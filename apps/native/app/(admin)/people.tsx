@@ -145,7 +145,7 @@ export default function People() {
         ),
       }}
     >
-      <Card index={0} title="Add a person">
+      <Card title="Add a person">
         <View className="flex-row items-center gap-2">
           <View className="flex-1">
             <Field icon="person" placeholder="Name, e.g. Kuda" value={name} onChangeText={setName} autoCapitalize="words" />
@@ -161,7 +161,7 @@ export default function People() {
       </Card>
 
       <LiveState query={team}>
-        <Card index={1} title="People" className="gap-0">
+        <Card title="People" className="gap-0">
           {people.map((person, index) => (
             <PersonRow key={person.id} person={person} index={index} />
           ))}

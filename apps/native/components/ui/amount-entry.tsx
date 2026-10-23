@@ -22,24 +22,15 @@ export function applyAmountKey(text: string, key: KeypadKey): string {
   return text + key;
 }
 
-/** The big amount: each new digit slides in. */
+/** The big amount, with its currency badge. */
 export function AmountDisplay({ text, currency }: { text: string; currency: Currency }) {
   const shown = text ? amount(centsFromInput(text)) : "0.00";
   return (
     <View className="flex-row items-center justify-center gap-2 h-16">
       <CurrencyBadge currency={currency} size="md" />
-      <View className="flex-row overflow-hidden">
-        {shown.split("").map((char, index) => (
-          <View
-            // Keyed by position + char so a changed digit animates in.
-            key={`${index}-${char}`}
-          >
-            <T weight="heavy" className="text-[44px] leading-[52px]" style={{ fontVariant: ["tabular-nums"] }}>
-              {char}
-            </T>
-          </View>
-        ))}
-      </View>
+      <T weight="heavy" className="text-[44px] leading-[52px]" style={{ fontVariant: ["tabular-nums"] }}>
+        {shown}
+      </T>
     </View>
   );
 }

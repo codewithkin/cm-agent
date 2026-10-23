@@ -84,7 +84,7 @@ export default function StartShift() {
       }
     >
       <CountingChip />
-      <Card index={1} className="gap-0 py-1">
+      <Card className="gap-0 py-1">
         {ROWS.map((row) => {
           const changed = changedKeys.includes(row.key);
           return (

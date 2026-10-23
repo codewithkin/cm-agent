@@ -122,7 +122,6 @@ export default function History() {
                   {rows.map((tx, index) => (
                     <TransactionRow
                       key={tx.id}
-                      index={index}
                       first={index === 0}
                       onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: tx.id } })}
                       row={{

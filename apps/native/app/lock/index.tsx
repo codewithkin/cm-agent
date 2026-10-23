@@ -95,7 +95,7 @@ export default function WhoIsServing() {
       </View>
 
       {users.length === 0 ? (
-        <Card index={2} className="items-center py-8">
+        <Card className="items-center py-8">
           <ActivityIndicator color="#141416" />
           <T weight="semibold" className="text-subtle">
             Getting the people for this phone…

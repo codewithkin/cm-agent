@@ -33,7 +33,7 @@ function Stat({ label, value, children }: { label: string; value?: string; child
   );
 }
 
-/** B6 Saved: the tick pops, then a 5-second bar drains to "Next customer". */
+/** B6 Saved: a tick, then a 5-second bar drains to "Next customer". */
 export default function Saved() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();

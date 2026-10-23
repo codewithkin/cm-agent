@@ -16,15 +16,13 @@ const TILES: { key: BalanceKey; label: string; currency: "USD" | "ZIG" }[] = [
 ];
 
 /** "All money now · Coline only": the four live balances, low ones in peach. */
-export function MoneyNowCard({ balances, low, index = 1, caption }: {
+export function MoneyNowCard({ balances, low, caption }: {
   balances: Balances;
   low: BalanceKey[];
-  index?: number;
   caption?: (key: BalanceKey) => string | null;
 }) {
   return (
     <Card
-      index={index}
       title="All money now"
       action={
         <View className="flex-row items-center gap-1 h-6 px-2 rounded-full bg-sun-soft">
