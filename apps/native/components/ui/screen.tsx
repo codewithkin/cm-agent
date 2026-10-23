@@ -56,13 +56,17 @@ type ScreenProps = PropsWithChildren<{
   scroll?: boolean;
   /** Extra room at the bottom for the floating tab bar. */
   withTabBar?: boolean;
+  /** A floating action button, bottom right, above the footer and tab bar. */
+  fab?: ReactNode;
   className?: string;
 }>;
 
-/** Page frame: safe areas, the page colour, optional header and pinned footer. */
-export function Screen({ header, footer, scroll = true, withTabBar, className, children }: ScreenProps) {
+/** Page frame: safe areas, the page colour, optional header, floating button and pinned footer. */
+export function Screen({ header, footer, scroll = true, withTabBar, fab, className, children }: ScreenProps) {
   const insets = useSafeAreaInsets();
-  const bottomRoom = withTabBar ? 110 : 16;
+  // The tab bar floats over the bottom of the page: keep the footer and FAB above it.
+  const tabBarRoom = withTabBar ? insets.bottom + 86 : 0;
+  const bottomRoom = (withTabBar && !footer ? 110 : 16) + (fab ? 76 : 0);
   const body = (
     <View className={cn("gap-3", !scroll && "flex-1", className)}>
       {children}
@@ -71,20 +75,27 @@ export function Screen({ header, footer, scroll = true, withTabBar, className, c
   return (
     <View className="flex-1 bg-page" style={{ paddingTop: insets.top + 8 }}>
       <View className="px-4">{header ? <ScreenHeader {...header} /> : null}</View>
-      {scroll ? (
-        <ScrollView
-          className="flex-1"
-          contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: bottomRoom }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {body}
-        </ScrollView>
-      ) : (
-        <View className="flex-1 px-4 pt-1">{body}</View>
-      )}
+      <View className="flex-1">
+        {scroll ? (
+          <ScrollView
+            className="flex-1"
+            contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 4, paddingBottom: bottomRoom }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            {body}
+          </ScrollView>
+        ) : (
+          <View className="flex-1 px-4 pt-1">{body}</View>
+        )}
+        {fab ? (
+          <View className="absolute right-4" style={{ bottom: withTabBar && !footer ? tabBarRoom : 12 }}>
+            {fab}
+          </View>
+        ) : null}
+      </View>
       {footer ? (
-        <View className="px-4 pt-2 gap-2" style={{ paddingBottom: insets.bottom + 12 }}>
+        <View className="px-4 pt-2 gap-2" style={{ paddingBottom: withTabBar ? tabBarRoom : insets.bottom + 12 }}>
           {footer}
         </View>
       ) : null}
