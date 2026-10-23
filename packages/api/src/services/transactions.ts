@@ -33,8 +33,10 @@ export const createTransactionInput = z.object({
   idPhoto: z.string().max(MAX_ID_PHOTO_LENGTH).optional(),
   /** The SMS the entry was filled from, when it came from the incoming-SMS sheet. */
   smsId: z.uuid().optional(),
-  /** "Record without SMS": saves as MANUAL instead of NO_SMS. */
+  /** "Save without SMS": saves as MANUAL instead of NO_SMS. */
   manual: z.boolean().default(false),
+  /** Why it was saved without an SMS, shown to Coline in the review queue. */
+  note: z.string().trim().min(1).max(300).optional(),
   occurredAt: z.coerce.date().optional(),
 });
 
@@ -125,6 +127,7 @@ export async function createTransaction(
       servedById: actor.userId,
       occurredAt,
       matchState,
+      note: input.note ?? null,
     },
     omit: { signature: true, idPhoto: true },
   });
