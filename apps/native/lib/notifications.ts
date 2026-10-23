@@ -1,5 +1,4 @@
 import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
 import { AppState } from "react-native";
 
 import { amount, maskPhone } from "./format";
@@ -48,8 +47,8 @@ export function watchNotificationTaps() {
     if (typeof smsId !== "string") return;
     const sms = localDb.get().smsMessages[smsId];
     if (!sms || sms.transactionId) return;
+    // The booth tabs open the sheet whenever this store is set.
     incomingSmsStore.set(sms);
-    router.push("/incoming-sms");
   });
   return () => subscription.remove();
 }
