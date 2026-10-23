@@ -79,6 +79,25 @@ Run standalone Node/Bun tools that use Varlock from the owning app directory so 
 
 The app's `EXPO_PUBLIC_SERVER_URL` (set on EAS) is that domain, e.g. `https://api.example.com`.
 
+## Local Development and Demo Data
+
+1. Create the local database (Postgres 18 is at `C:\Program Files\PostgreSQL8in`):
+
+   ```bash
+   "/c/Program Files/PostgreSQL/18/bin/createdb.exe" -h localhost -U postgres cm_agent
+   ```
+
+2. In `apps/server/.env`, set `DATABASE_URL=postgresql://postgres:<your password>@localhost:5432/cm_agent` and `OWNER_SETUP_CODE` (any 12+ characters).
+3. Apply the migrations: `pnpm --filter @cm-agent/db exec prisma migrate deploy`.
+4. Start the server: `pnpm run dev:server`. In development it always makes sure there is a local owner and demo data. You can also run `pnpm --filter server seed`.
+
+Local sign-in: owner phone `0771234567`, password `localdev123`, PIN `1234`. Demo helpers: `Helper 1 (demo)` PIN `1111`, `Helper 2 (demo)` PIN `2222`.
+
+**Demo data** is a week on a "Demo booth" phone: closed shifts with counts, matched SMS, and a few problems for the review queue (no SMS, a mismatch, a reported entry, a cancelled one, a short shift, an unsaved SMS). Every demo row is tagged `isDemo`.
+
+- **Production:** only added when Coline taps **Settings → Demo data → Add demo data**.
+- **Clear demo data** removes only demo rows, then tells every phone to reload its copy (`BusinessSettings.dataResetAt`).
+
 ## Backend API
 
 The tRPC API in `packages/api` is served by `apps/server` at `/trpc`. The full task breakdown is in [plans/backend-plan.md](plans/backend-plan.md).
