@@ -81,7 +81,7 @@ The app's `EXPO_PUBLIC_SERVER_URL` (set on EAS) is that domain, e.g. `https://ap
 
 ## Local Development and Demo Data
 
-1. Create the local database (Postgres 18 is at `C:\Program Files\PostgreSQL8in`):
+1. Create the local database (Postgres 18 is at `C:/Program Files/PostgreSQL/18/bin`):
 
    ```bash
    "/c/Program Files/PostgreSQL/18/bin/createdb.exe" -h localhost -U postgres cm_agent
