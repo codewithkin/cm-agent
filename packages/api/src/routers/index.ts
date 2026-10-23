@@ -1,6 +1,7 @@
 import { publicProcedure, router } from "../index";
 import { authRouter } from "./auth";
 import { customersRouter } from "./customers";
+import { demoRouter } from "./demo";
 import { devicesRouter } from "./devices";
 import { movementsRouter } from "./movements";
 import { reportsRouter } from "./reports";
@@ -28,5 +29,6 @@ export const appRouter = router({
   review: reviewRouter,
   reports: reportsRouter,
   sync: syncRouter,
+  demo: demoRouter,
 });
 export type AppRouter = typeof appRouter;
