@@ -22,6 +22,7 @@ import { syncNow } from "./sync";
 /*
  * Every change on a booth phone goes through here: it is saved to the local copy
  * straight away (so the screen updates offline) and queued for sync.push.
+ * Local rows keep dates as ISO strings, the same as rows from sync.pull.
  */
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -58,6 +59,7 @@ export function startShift(input: { servingUserId: string; countedById: string; 
   const device = requireDevice();
   const id = Crypto.randomUUID();
   const now = new Date();
+  const stamp = now.toISOString();
   enqueue({
     kind: "openShift",
     actorId: input.servingUserId,
@@ -69,7 +71,7 @@ export function startShift(input: { servingUserId: string; countedById: string; 
     deviceId: device.id,
     openedById: input.servingUserId,
     status: "OPEN",
-    openedAt: now,
+    openedAt: stamp,
     openingCashUsd: input.opening.cashUsd,
     openingFloatUsd: input.opening.floatUsd,
     openingCashZig: input.opening.cashZig,
@@ -83,8 +85,9 @@ export function startShift(input: { servingUserId: string; countedById: string; 
     closedWithUnrecordedSms: 0,
     reviewedAt: null,
     reviewedById: null,
-    createdAt: now,
-    updatedAt: now,
+    isDemo: false,
+    createdAt: stamp,
+    updatedAt: stamp,
   };
   upsertRows("shifts", [shift]);
   afterChange();
@@ -101,6 +104,7 @@ export function endShift(input: {
 }) {
   const { shift } = input;
   const now = new Date();
+  const stamp = now.toISOString();
   const tables = localDb.get();
   const expected = expectedBalances(
     openingOf(shift),
@@ -116,12 +120,12 @@ export function endShift(input: {
       counted: input.counted,
       note: input.note,
       acceptUnrecordedSms: true,
-      closedAt: now,
+      closedAt: stamp,
     },
   });
   patchRow("shifts", shift.id, {
     status: "CLOSED",
-    closedAt: now,
+    closedAt: stamp,
     closedById: input.countedById,
     expectedCashUsd: expected.cashUsd,
     expectedFloatUsd: expected.floatUsd,
@@ -133,7 +137,7 @@ export function endShift(input: {
     countedFloatZig: input.counted.floatZig,
     closeNote: input.note ?? null,
     closedWithUnrecordedSms: input.unrecordedSms,
-    updatedAt: now,
+    updatedAt: stamp,
   });
   afterChange();
   return { expected };
@@ -159,6 +163,7 @@ export function recordTransaction(shift: LocalShift, input: NewTransaction): Loc
   const user = requireUser();
   const id = Crypto.randomUUID();
   const now = new Date();
+  const stamp = now.toISOString();
   const tables = localDb.get();
 
   const entry = {
@@ -214,9 +219,10 @@ export function recordTransaction(shift: LocalShift, input: NewTransaction): Loc
       phone: input.customerPhone,
       name: input.customerName,
       idNumber: input.customerIdNumber,
-      firstSeenAt: existingCustomer?.firstSeenAt ?? now,
-      createdAt: existingCustomer?.createdAt ?? now,
-      updatedAt: now,
+      firstSeenAt: existingCustomer?.firstSeenAt ?? stamp,
+      isDemo: false,
+      createdAt: existingCustomer?.createdAt ?? stamp,
+      updatedAt: stamp,
     },
   ]);
 
@@ -235,7 +241,7 @@ export function recordTransaction(shift: LocalShift, input: NewTransaction): Loc
     shiftId: shift.id,
     deviceId: device.id,
     servedById: user.id,
-    occurredAt: now,
+    occurredAt: stamp,
     matchState,
     note: input.note ?? null,
     flaggedAt: null,
@@ -246,8 +252,9 @@ export function recordTransaction(shift: LocalShift, input: NewTransaction): Loc
     voidedById: null,
     reviewedAt: null,
     reviewedById: null,
-    createdAt: now,
-    updatedAt: now,
+    isDemo: false,
+    createdAt: stamp,
+    updatedAt: stamp,
     pending: true,
   };
   upsertRows("transactions", [transaction]);
@@ -268,6 +275,7 @@ export function recordMovement(input: {
   const user = requireUser();
   const id = Crypto.randomUUID();
   const now = new Date();
+  const stamp = now.toISOString();
   enqueue({
     kind: "movement",
     actorId: user.id,
@@ -283,12 +291,13 @@ export function recordMovement(input: {
       userId: user.id,
       shiftId: input.shiftId,
       deviceId: device.id,
-      occurredAt: now,
+      occurredAt: stamp,
       voidedAt: null,
       voidReason: null,
       voidedById: null,
-      createdAt: now,
-      updatedAt: now,
+      isDemo: false,
+      createdAt: stamp,
+      updatedAt: stamp,
       pending: true,
     },
   ]);
@@ -310,6 +319,7 @@ export function receiveSms(input: { sender: string; body: string; receivedAt: Da
   }
 
   const id = Crypto.randomUUID();
+  const receivedStamp = input.receivedAt.toISOString();
   const parsed = parseSms(input.body);
   enqueue({ kind: "sms", data: { id, sender: input.sender, body: input.body, receivedAt: input.receivedAt } });
 
@@ -319,7 +329,7 @@ export function receiveSms(input: { sender: string; body: string; receivedAt: Da
     sender: input.sender,
     body: input.body,
     bodyHash: "",
-    receivedAt: input.receivedAt,
+    receivedAt: receivedStamp,
     parseStatus: parsed.status,
     type: parsed.type,
     currency: parsed.currency,
@@ -333,8 +343,9 @@ export function receiveSms(input: { sender: string; body: string; receivedAt: Da
     ignoredReason: null,
     reviewedAt: null,
     reviewedById: null,
-    createdAt: input.receivedAt,
-    updatedAt: input.receivedAt,
+    isDemo: false,
+    createdAt: receivedStamp,
+    updatedAt: receivedStamp,
     pending: true,
   };
 

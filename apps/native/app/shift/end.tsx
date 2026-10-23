@@ -50,7 +50,7 @@ export default function EndShift() {
   );
 
   const latest = (currency: "USD" | "ZIG") =>
-    balanceSms.find((sms) => (sms.currency ?? "USD") === currency && toDate(sms.receivedAt) >= toDate(shift?.openedAt ?? 0));
+    balanceSms.find((sms) => (sms.currency ?? "USD") === currency && (!shift || toDate(sms.receivedAt) >= toDate(shift.openedAt)));
   const floatFromSms = { USD: latest("USD"), ZIG: latest("ZIG") };
 
   const [step, setStep] = useState(0);

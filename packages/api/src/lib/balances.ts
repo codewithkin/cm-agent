@@ -41,14 +41,15 @@ type TransactionLike = {
   currency: Currency;
   amount: number;
   commission: number | null;
-  voidedAt: Date | null;
+  /** Only checked for being set; the phone stores it as an ISO string. */
+  voidedAt: Date | string | null;
 };
 
 type MovementLike = {
   kind: MovementKind;
   currency: Currency;
   amount: number;
-  voidedAt: Date | null;
+  voidedAt: Date | string | null;
 };
 
 /**

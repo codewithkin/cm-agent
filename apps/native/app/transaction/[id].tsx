@@ -60,7 +60,7 @@ export default function TransactionDetail() {
     mutationFn: () => trpcClient.transactions.void.mutate({ transactionId: id, reason: cancelReason.trim() }),
     onSuccess: () => {
       haptic.warning();
-      patchRow("transactions", id, { voidedAt: new Date(), voidReason: cancelReason.trim() });
+      patchRow("transactions", id, { voidedAt: new Date().toISOString(), voidReason: cancelReason.trim() });
       setCancelling(false);
       void queryClient.invalidateQueries();
     },
@@ -71,7 +71,7 @@ export default function TransactionDetail() {
     mutationFn: () => trpcClient.transactions.flag.mutate({ transactionId: id, reason: reason.trim() }),
     onSuccess: () => {
       haptic.success();
-      patchRow("transactions", id, { flaggedAt: new Date(), flagReason: reason.trim() });
+      patchRow("transactions", id, { flaggedAt: new Date().toISOString(), flagReason: reason.trim() });
       setReporting(false);
       void remote.refetch();
     },
