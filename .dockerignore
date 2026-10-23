@@ -31,3 +31,9 @@ docker-compose.yml
 local.db
 local.db-*
 .data
+
+# Not needed in the server image
+designs
+plans
+apps/native/android
+apps/native/assets
