@@ -2,9 +2,11 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
+import { boothActions } from "@/components/booth/booth-actions";
 import { NoShiftCard } from "@/components/booth/no-shift-card";
 import { CountBubble, CurrencyBadge } from "@/components/ui/badges";
 import { Avatar, Card } from "@/components/ui/card";
+import { FabMenu } from "@/components/ui/fab";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { SyncChip } from "@/components/ui/sync-chip";
@@ -61,7 +63,11 @@ export default function ShiftTab() {
     isOwner ? router.push("/shift/end") : router.push({ pathname: "/owner-pin", params: { next: "end" } });
 
   return (
-    <Screen withTabBar header={{ title: "Shift", subtitle: device?.label, leading: null, large: true, right: <SyncChip /> }}>
+    <Screen
+      withTabBar
+      fab={shift ? <FabMenu actions={boothActions(isOwner)} /> : undefined}
+      header={{ title: "Shift", subtitle: device?.label, leading: null, large: true, right: <SyncChip /> }}
+    >
       {!shift ? (
         <NoShiftCard
           isOwner={isOwner}
