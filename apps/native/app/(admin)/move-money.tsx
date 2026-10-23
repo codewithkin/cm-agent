@@ -11,7 +11,6 @@ import { Field } from "@/components/ui/field";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { MoneyInput } from "@/components/ui/money-input";
 import { Screen } from "@/components/ui/screen";
-import { Segmented } from "@/components/ui/segmented";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { recordMovement } from "@/lib/actions";
@@ -36,7 +35,7 @@ function Change({ label, currency, before, after }: { label: string; currency: "
   const up = after > before;
   const same = after === before;
   return (
-    <View className={cn("flex-1 rounded-2xl p-3 gap-1", same ? "bg-page" : up ? "bg-leaf-soft" : "bg-peach")}>
+    <View className={cn("flex-1 rounded-2xl p-3 gap-1", same ? "bg-white border border-line" : up ? "bg-leaf-soft" : "bg-peach")}>
       <View className="flex-row items-center gap-1">
         <CurrencyBadge currency={currency} />
         <T weight="bold" className="text-[12px]">
@@ -64,7 +63,7 @@ export default function MoveMoney() {
   const [choice, setChoice] = useState(0);
   const [currency, setCurrency] = useState<"USD" | "ZIG">("USD");
   const [cents, setCents] = useState(0);
-  const [reason, setReason] = useState(CHOICES[0]?.label ?? "");
+  const [reason, setReason] = useState("");
 
   if (session?.user.role !== "OWNER") return <Redirect href="/no-access" />;
   const selected = CHOICES[choice] ?? CHOICES[0]!;
@@ -104,49 +103,37 @@ export default function MoveMoney() {
         {CHOICES.map((option, index) => {
           const active = index === choice;
           return (
-            <View key={option.label} style={{ width: "48.5%" }}>
-              <Tap
-                onPress={() => {
-                  haptic.select();
-                  setChoice(index);
-                  setReason(option.label);
-                }}
-                className={cn("rounded-2xl p-3 gap-1 border-2", active ? "bg-sun-soft border-ink" : "bg-white border-line")}
-              >
-                <View className="flex-row items-center justify-between">
-                  <Icon name={option.icon} size={20} />
-                  {active ? <Icon name="check-circle" size={18} /> : null}
-                </View>
-                <T weight="heavy" className="text-[13px]">
-                  {option.label}
-                </T>
-                <T weight="semibold" className="text-[11px] text-subtle">
-                  {option.hint}
-                </T>
-              </Tap>
-            </View>
+            <Tap
+              key={option.label}
+              scaleTo={0.94}
+              feedback={false}
+              onPress={() => {
+                haptic.select();
+                setChoice(index);
+              }}
+              className={cn("h-10 px-3 rounded-full flex-row items-center gap-1.5 border", active ? "bg-ink border-ink" : "bg-white border-line")}
+            >
+              <Icon name={option.icon} size={16} className={active ? "text-sun" : "text-ink-soft"} />
+              <T weight="heavy" className={cn("text-[13px]", active ? "text-white" : "text-ink")}>
+                {option.label}
+              </T>
+            </Tap>
           );
         })}
       </View>
 
-      <Segmented
-        value={currency}
-        onChange={setCurrency}
-        options={[
-          { value: "USD", label: "USD" },
-          { value: "ZIG", label: "ZiG", activeClass: "bg-sun", activeText: "text-ink" },
-        ]}
-      />
-      <MoneyInput currency={currency} label="Amount" cents={cents} onChange={setCents} />
+      <Card className="gap-0 py-1">
+        <MoneyInput currency={currency} label="Amount" cents={cents} onChange={setCents} onCurrencyChange={setCurrency} autoFocus />
+      </Card>
 
-      <Card title="After this" action={<T weight="bold" className="text-[11px] text-subtle">preview</T>}>
+      {cents > 0 ? (
         <View className="flex-row gap-2">
           <Change label="Cash" currency={currency} before={balances[cashKey]} after={balances[cashKey] + effect.cash * cents} />
           <Change label="EcoCash" currency={currency} before={balances[floatKey]} after={balances[floatKey] + effect.float * cents} />
         </View>
-      </Card>
+      ) : null}
 
-      <Field icon="edit-note" label="Note" value={reason} onChangeText={setReason} />
+      <Field icon="edit-note" placeholder="Note (optional)" value={reason} onChangeText={setReason} />
     </Screen>
   );
 }
