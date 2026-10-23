@@ -3,7 +3,7 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { bannerIn, bannerOut, enterUp, exitFade, layout } from "@/lib/motion";
+import { enterUp, exitFade, layout } from "@/lib/motion";
 
 import { Icon, type IconName } from "./icon";
 import { Tap } from "./tap";
@@ -46,7 +46,7 @@ const TONES: Record<Tone, { box: string; ink: string }> = {
   peach: { box: "bg-peach", ink: "text-peach-ink" },
 };
 
-/** Coloured message strip: warnings, info, "2 EcoCash SMS not saved". Drops in from above. */
+/** Coloured message strip: warnings, info, "2 EcoCash SMS not saved". Fades up into place, full width. */
 export function Banner({
   tone,
   icon,
@@ -80,7 +80,7 @@ export function Banner({
     </>
   );
   return (
-    <Animated.View entering={bannerIn} exiting={bannerOut} layout={layout}>
+    <Animated.View entering={enterUp(0)} exiting={exitFade} layout={layout} className="self-stretch">
       {onAction ? (
         <Tap
           onPress={onAction}
