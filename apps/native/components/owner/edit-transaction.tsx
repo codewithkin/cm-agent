@@ -67,6 +67,7 @@ export function EditTransaction({ transactionId, onDone }: { transactionId: stri
       <View className="flex-row gap-2">
         <Button label="Cancel" variant="light" size="md" className="flex-1" onPress={onDone} />
         <Button
+          variant="success"
           label="Save change"
           icon="check"
           size="md"

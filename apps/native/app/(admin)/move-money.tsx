@@ -96,7 +96,7 @@ export default function MoveMoney() {
   return (
     <Screen
       header={{ title: "Move money", subtitle: "Coline only", leading: "close" }}
-      footer={<Button label="Save" icon="check" disabled={cents <= 0} onPress={save} />}
+      footer={<Button variant="success" label="Save" icon="check" disabled={cents <= 0} onPress={save} />}
     >
       <T weight="heavy" className="text-[13px] text-ink-soft">
         What happened?

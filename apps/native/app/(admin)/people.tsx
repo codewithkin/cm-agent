@@ -72,7 +72,7 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
           </T>
         </View>
         {!owner && !person.active ? (
-          <Button label="Bring back" size="sm" variant="outline" loading={setActive.isPending} onPress={() => setActive.mutate(true)} />
+          <Button variant="success" label="Bring back" size="sm" loading={setActive.isPending} onPress={() => setActive.mutate(true)} />
         ) : !owner ? (
           <Icon name={open ? "expand-less" : "expand-more"} size={24} className="text-subtle" />
         ) : null}
@@ -85,10 +85,10 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
           ) : null}
           <View className="flex-row gap-2">
             <Button
+              variant="caution"
               label="New PIN"
               icon="key"
               size="md"
-              variant="outline"
               className="flex-1"
               loading={resetPin.isPending}
               onPress={() => resetPin.mutate(randomPin())}

@@ -117,9 +117,9 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
           <View className="flex-row gap-2">
             <Button label="Keep it" variant="light" size="md" className="flex-1" onPress={() => setCancelling(false)} />
             <Button
+              variant="destructive"
               label="Cancel entry"
               icon="block"
-              variant="danger"
               size="md"
               className="flex-1"
               loading={cancel.isPending}
@@ -134,15 +134,15 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
         <View className="flex-row gap-2 justify-end">
           {item.kind === "TRANSACTION" ? (
             item.category === "REPORTED" ? (
-              <Button label="Cancel it" icon="block" variant="outline" size="sm" onPress={() => setCancelling(true)} />
+              <Button variant="danger" label="Cancel it" icon="block" size="sm" onPress={() => setCancelling(true)} />
             ) : (
-              <Button label="Open" variant="outline" size="sm" onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: item.id } })} />
+              <Button variant="success" label="Open" size="sm" onPress={() => router.push({ pathname: "/transaction/[id]", params: { id: item.id } })} />
             )
           ) : null}
           {item.kind === "TRANSACTION" && item.category !== "NO_SMS" ? (
-            <Button label="Edit" icon="edit" size="sm" onPress={() => setEditing(true)} />
+            <Button variant="caution" label="Edit" icon="edit" size="sm" onPress={() => setEditing(true)} />
           ) : (
-            <Button label="It is fine" icon="check" size="sm" loading={checked.isPending} onPress={() => checked.mutate()} />
+            <Button variant="success" label="It is fine" icon="check" size="sm" loading={checked.isPending} onPress={() => checked.mutate()} />
           )}
         </View>
       ) : null}

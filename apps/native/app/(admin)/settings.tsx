@@ -100,7 +100,7 @@ export default function Settings() {
                 {(close) => (
                   <>
                     <Field value={name || data.businessName} onChangeText={setName} autoFocus />
-                    <Button label="Save" size="md" loading={save.isPending} onPress={() => save.mutate({ businessName: (name || data.businessName).trim() }, { onSuccess: close })} />
+                    <Button variant="success" label="Save" size="md" loading={save.isPending} onPress={() => save.mutate({ businessName: (name || data.businessName).trim() }, { onSuccess: close })} />
                   </>
                 )}
               </Row>
@@ -110,6 +110,7 @@ export default function Settings() {
                     <Field label="USD agent code" value={codes.usd || (data.agentCodeUsd ?? "")} onChangeText={(usd) => setCodes((c) => ({ ...c, usd }))} />
                     <Field label="ZiG agent code" value={codes.zig || (data.agentCodeZig ?? "")} onChangeText={(zig) => setCodes((c) => ({ ...c, zig }))} />
                     <Button
+                      variant="success"
                       label="Save"
                       size="md"
                       loading={save.isPending}
@@ -135,6 +136,7 @@ export default function Settings() {
                     <MoneyInput currency="USD" label="Warn below" cents={lowCash.usd || data.lowCashUsd} onChange={(usd) => setLowCash((c) => ({ ...c, usd }))} />
                     <MoneyInput currency="ZIG" label="Warn below" cents={lowCash.zig || data.lowCashZig} onChange={(zig) => setLowCash((c) => ({ ...c, zig }))} />
                     <Button
+                      variant="success"
                       label="Save"
                       size="md"
                       loading={save.isPending}

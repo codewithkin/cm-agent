@@ -117,6 +117,7 @@ export function OwnerAccountCard({ index = 0 }: { index?: number }) {
           </T>
         ) : null}
         <Button
+          variant="success"
           label="Save number"
           icon="check"
           size="md"
@@ -143,6 +144,7 @@ export function OwnerAccountCard({ index = 0 }: { index?: number }) {
           </T>
         ) : null}
         <Button
+          variant="success"
           label="Save password"
           icon="check"
           size="md"

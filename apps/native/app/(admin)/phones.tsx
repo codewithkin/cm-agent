@@ -110,7 +110,7 @@ function PhoneCard({ phone, index, isThis }: { phone: Phone; index: number; isTh
             </T>
             <View className="flex-row gap-2">
               <Button label="Keep it" size="md" variant="light" className="flex-1" onPress={() => setConfirming(false)} />
-              <Button label="Sign out" size="md" className="flex-1 bg-alarm" loading={revoke.isPending} onPress={() => revoke.mutate()} />
+              <Button variant="destructive" label="Sign out" size="md" className="flex-1" loading={revoke.isPending} onPress={() => revoke.mutate()} />
             </View>
           </Animated.View>
         ) : (

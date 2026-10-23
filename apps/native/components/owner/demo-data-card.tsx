@@ -93,7 +93,7 @@ export function DemoDataCard({ index = 4 }: { index?: number }) {
           </T>
           <View className="flex-row gap-2">
             <Button label="Keep it" size="md" variant="light" className="flex-1" onPress={() => setConfirming(false)} />
-            <Button label="Clear" icon="delete-sweep" size="md" className="flex-1 bg-alarm" loading={clear.isPending} onPress={() => clear.mutate()} />
+            <Button variant="destructive" label="Clear" icon="delete-sweep" size="md" className="flex-1" loading={clear.isPending} onPress={() => clear.mutate()} />
           </View>
         </Animated.View>
       ) : active ? (
