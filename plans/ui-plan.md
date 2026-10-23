@@ -23,6 +23,31 @@ Building the Expo app from `designs/CM Agent Screens (standalone).html` (v2 scre
 - **PIN unlock works offline**, using the salted verifier from `auth.deviceUsers`.
 - **Shared logic** (balances, matching, SMS parser, money, time) is imported from `@cm-agent/api/lib/*`, so the phone and server agree.
 
+## Motion and flow
+
+Animations use Reanimated (already installed) and haptics from `expo-haptics`. They should make the counter faster to use, not slower: every animation is under 350 ms and never blocks a tap.
+
+| Where | Motion |
+| --- | --- |
+| Anything tappable | Springs to 96% while pressed, light haptic on release |
+| Screen content | Cards and rows fade up in a short stagger on entry, fade out on exit |
+| Screen changes | Stack slides from the right; flows that finish something (new transaction, end shift) open as full-screen modals that slide up |
+| PIN pad | Dots fill with a pop; a wrong PIN shakes the dots with an error haptic |
+| Amount keypad | Digits slide in as they are typed; quick-amount chips bounce |
+| Stepper | The active step grows and fills; finished steps turn into ticks |
+| SMS waiting | Pulsing dot and a live timer; on arrival the card flips green with a success haptic |
+| Saved screen | The tick pops in with a spring, then the "Next customer" countdown bar drains |
+| Lists | New rows slide in; removed rows collapse (Reanimated layout transitions) |
+| Banners and sheets | Slide down from the top / up from the bottom |
+
+### Navigation flow
+
+1. **Start:** Splash → (first launch) owner sign-in → choose phone → SMS permission → Who is serving?
+2. **Every hand-over:** Who is serving? → PIN → Home (booth) or Today (owner phone). Idle for 2 minutes or "Change person" returns to Who is serving?
+3. **Booth tabs:** Home · Transactions · ＋ New · SMS · Shift. The ＋ opens New transaction as a modal; SMS arriving anywhere opens the incoming-SMS sheet.
+4. **Owner tabs:** Today · Check · History · Reports · More (people, phones, settings, who sees what).
+5. **Guards:** helpers who reach a Coline-only page see "No access" with a way back; nothing Coline-only appears in a helper's tabs.
+
 ## Sub-features
 
 ### 1. Backend changes for the design
@@ -54,6 +79,7 @@ Building the Expo app from `designs/CM Agent Screens (standalone).html` (v2 scre
 - [ ] Offline PIN check
 
 ### 3. Shared components
+- [ ] Motion presets and pressable with spring and haptics
 - [ ] Currency badge, status chips, sync chip
 - [ ] Buttons
 - [ ] Cards, banners, avatar
