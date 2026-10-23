@@ -152,7 +152,8 @@ The Expo app in `apps/native` follows `designs/CM Agent Screens (standalone).htm
 - **The owner phone reads live** through tRPC and React Query, keeping the last result on screen while offline.
 - **PIN unlock works offline** against the synced verifier (`lib/pin.ts`). Coline's PIN on a helper's phone approves the start and end of a shift.
 - **EcoCash SMS** are read with Google's SMS User Consent API through a small local Expo module (`modules/sms-reader`, Android only). While the booth screens are open the app listens for the next SMS; Android asks "Allow?" for each message and only allowed ones reach the app. No SMS permissions are requested.
-- **Motion** comes from `lib/motion.ts` (Reanimated presets and haptics) and the `Tap` pressable.
+- **Motion** is limited to press feedback, the PIN pad, toggles and progress (`lib/motion.ts`, the `Tap` pressable). Screens and cards have no entry or exit animations.
+- **Reports** (`reports.insights`) answer the owner's questions for today, this week, this month or last month, and save as an A4 PDF (`lib/report-pdf.ts`).
 
 ### Routes
 

@@ -25,20 +25,17 @@ Building the Expo app from `designs/CM Agent Screens (standalone).html` (v2 scre
 
 ## Motion and flow
 
-Animations use Reanimated (already installed) and haptics from `expo-haptics`. They should make the counter faster to use, not slower: every animation is under 350 ms and never blocks a tap.
+Motion is kept to feedback on what you touch, plus haptics from `expo-haptics`. Screens, cards, rows and banners appear at once with no entry or exit animations: those could leave a tab blank when it mounted while hidden, and they slowed the counter down.
 
 | Where | Motion |
 | --- | --- |
 | Anything tappable | Springs to 96% while pressed, light haptic on release |
-| Screen content | Cards and rows fade up in a short stagger on entry, fade out on exit |
-| Screen changes | Stack slides from the right; flows that finish something (new transaction, end shift) open as full-screen modals that slide up |
+| Screen changes | Native stack slides from the right; flows that finish something (new transaction, end shift) open as full-screen modals. Tabs switch instantly |
 | PIN pad | Dots fill with a pop; a wrong PIN shakes the dots with an error haptic |
-| Amount keypad | Digits slide in as they are typed; quick-amount chips bounce |
-| Stepper | The active step grows and fills; finished steps turn into ticks |
-| SMS waiting | Pulsing dot and a live timer; on arrival the card flips green with a success haptic |
-| Saved screen | The tick pops in with a spring, then the "Next customer" countdown bar drains |
-| Lists | New rows slide in; removed rows collapse (Reanimated layout transitions) |
-| Banners and sheets | Slide down from the top / up from the bottom |
+| Stepper, segmented control, switch | The active step, pill or knob moves to its new place |
+| SMS waiting | Pulsing dot and a live timer; on arrival the card turns green with a success haptic |
+| Saved screen | The "Next customer" countdown bar drains |
+| Sync chip | The icon spins while updating |
 
 ### Colour roles
 
