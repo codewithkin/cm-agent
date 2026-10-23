@@ -38,6 +38,11 @@
   --color-lilac-strong: #aeb6f2;
   --color-navy: #25306e;
 
+  /* Orange: change or edit something ("middle" actions) */
+  --color-tangerine: #e8892b;
+  --color-tangerine-ink: #a2461a;
+  --color-tangerine-soft: #fdebd8;
+
   /* Peach: Coline-only actions */
   --color-peach: #fde6d6;
   --color-peach-ink: #a2461a;

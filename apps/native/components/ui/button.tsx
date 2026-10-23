@@ -5,14 +5,36 @@ import { Icon, type IconName } from "./icon";
 import { Tap } from "./tap";
 import { T } from "./text";
 
-type Variant = "primary" | "sun" | "light" | "outline" | "danger" | "ghost";
+/**
+ * Colour says what a button does, the same everywhere in the app:
+ * - primary (black): go forward a step (Continue, Next).
+ * - success (green): finish, confirm or save (Done, It is fine, Save, Open).
+ * - caution (orange border): change something (Edit, Change, New PIN).
+ * - danger (soft red): start something destructive (Cancel it, Remove).
+ * - destructive (solid red): confirm it (Cancel entry, Sign out, Clear).
+ * - sun (yellow): add or bring money in (Add person, Add demo data).
+ * - light / outline / ghost: back out or a quiet secondary choice (Later, Keep it).
+ */
+export type ButtonVariant =
+  | "primary"
+  | "success"
+  | "caution"
+  | "danger"
+  | "destructive"
+  | "sun"
+  | "light"
+  | "outline"
+  | "ghost";
 
-const VARIANT: Record<Variant, { box: string; ink: string; spinner: string }> = {
+const VARIANT: Record<ButtonVariant, { box: string; ink: string; spinner: string }> = {
   primary: { box: "bg-ink", ink: "text-white", spinner: "#FFFFFF" },
+  success: { box: "bg-leaf", ink: "text-white", spinner: "#FFFFFF" },
+  caution: { box: "bg-white border-2 border-tangerine", ink: "text-tangerine-ink", spinner: "#A2461A" },
+  danger: { box: "bg-alarm-soft", ink: "text-alarm-ink", spinner: "#A32020" },
+  destructive: { box: "bg-alarm", ink: "text-white", spinner: "#FFFFFF" },
   sun: { box: "bg-sun", ink: "text-ink", spinner: "#141416" },
   light: { box: "bg-white", ink: "text-ink", spinner: "#141416" },
   outline: { box: "bg-white border border-line", ink: "text-ink", spinner: "#141416" },
-  danger: { box: "bg-alarm-soft", ink: "text-alarm-ink", spinner: "#A32020" },
   ghost: { box: "bg-transparent", ink: "text-ink-soft", spinner: "#4A4945" },
 };
 
@@ -20,7 +42,7 @@ type Props = {
   label: string;
   onPress?: () => void;
   icon?: IconName;
-  variant?: Variant;
+  variant?: ButtonVariant;
   size?: "lg" | "md" | "sm";
   loading?: boolean;
   disabled?: boolean;
