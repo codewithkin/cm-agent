@@ -51,91 +51,91 @@ Animations use Reanimated (already installed) and haptics from `expo-haptics`. T
 ## Sub-features
 
 ### 1. Backend changes for the design
-- [ ] `Shift.openingCountedById`
-- [ ] `Transaction.note`
-- [ ] `BusinessSettings.lowWarningOnBooths`
-- [ ] Shift open/close: owner counts, for a serving helper
-- [ ] Movements: owner only
-- [ ] Hide balances from helpers in `shifts.*`
-- [ ] Helpers see only their own transactions
-- [ ] Note on transactions saved without SMS
-- [ ] `auth.deviceUsers` serving info
-- [ ] `customers.byPhone`
-- [ ] Customer and problem counts in `shifts.get`
-- [ ] Richer review items
-- [ ] `lowWarningOnBooths` in settings
-- [ ] `sync.push` carries Coline's approval
+- [x] `Shift.openingCountedById`
+- [x] `Transaction.note`
+- [x] `BusinessSettings.lowWarningOnBooths`
+- [x] Shift open/close: owner counts, for a serving helper
+- [x] Movements: owner only
+- [x] Hide balances from helpers in `shifts.*`
+- [x] Helpers see only their own transactions
+- [x] Note on transactions saved without SMS
+- [x] `auth.deviceUsers` serving info
+- [x] `customers.byPhone`
+- [x] Customer and problem counts in `shifts.get`
+- [x] Richer review items
+- [x] `lowWarningOnBooths` in settings
+- [x] `sync.push` carries Coline's approval
 
 ### 2. App foundation
-- [ ] Design tokens (colours, radii) in the theme
-- [ ] Fonts: Manrope and JetBrains Mono
-- [ ] Text, Icon and money formatting helpers
-- [ ] Device and session storage
-- [ ] tRPC client sends device and session headers
-- [ ] Local store for offline records
-- [ ] Outbox for offline writes
-- [ ] Sync engine (push, pull, heartbeat)
-- [ ] Network status
-- [ ] Offline PIN check
+- [x] Design tokens (colours, radii) in the theme
+- [x] Fonts: Manrope and JetBrains Mono
+- [x] Text, Icon and money formatting helpers
+- [x] Device and session storage
+- [x] tRPC client sends device and session headers
+- [x] Local store for offline records
+- [x] Outbox for offline writes
+- [x] Sync engine (push, pull, heartbeat)
+- [x] Network status
+- [x] Offline PIN check
 
 ### 3. Shared components
-- [ ] Motion presets and pressable with spring and haptics
-- [ ] Currency badge, status chips, sync chip
-- [ ] Buttons
-- [ ] Cards, banners, avatar
-- [ ] Stepper
-- [ ] PIN pad
-- [ ] Amount keypad
-- [ ] Transaction row
-- [ ] Booth and owner bottom bars
-- [ ] Signature pad
-- [ ] Screen header
+- [x] Motion presets and pressable with spring and haptics
+- [x] Currency badge, status chips, sync chip
+- [x] Buttons
+- [x] Cards, banners, avatar
+- [x] Stepper
+- [x] PIN pad
+- [x] Amount keypad
+- [x] Transaction row
+- [x] Booth and owner bottom bars
+- [x] Signature pad
+- [x] Screen header
 
 ### 4. First launch (A1–A3)
-- [ ] Router setup and route guards (replaces the starter drawer)
-- [ ] A1 Splash
-- [ ] A2 Owner sign-in
-- [ ] A2 Choose phone
-- [ ] A3 Confirmation and SMS permission
+- [x] Router setup and route guards (replaces the starter drawer)
+- [x] A1 Splash
+- [x] A2 Owner sign-in
+- [x] A2 Choose phone
+- [x] A3 Confirmation and SMS permission
 
 ### 5. Every hand-over (A4–A6)
-- [ ] A4 Who is serving?
-- [ ] A5 PIN entry
-- [ ] A6 Set PIN
+- [x] A4 Who is serving?
+- [x] A5 PIN entry
+- [x] A6 Set PIN
 
 ### 6. Booth: serving customers (B1–B10)
-- [ ] B2 Home, no shift
-- [ ] B1 Start shift (Coline counts)
-- [ ] B2 Home, shift dashboard
-- [ ] SMS reader native module
-- [ ] B3 Incoming SMS sheet
-- [ ] B4 New transaction: amount and SMS wait
-- [ ] B4 Customer and name check
-- [ ] B5 Customer signature
-- [ ] B6 Saved
-- [ ] B7 Transactions list
-- [ ] B8 Transaction detail
-- [ ] B9 SMS inbox
-- [ ] B10 Move money
+- [x] B2 Home, no shift
+- [x] B1 Start shift (Coline counts)
+- [x] B2 Home, shift dashboard
+- [x] SMS reader native module
+- [x] B3 Incoming SMS sheet
+- [x] B4 New transaction: amount and SMS wait
+- [x] B4 Customer and name check
+- [x] B5 Customer signature
+- [x] B6 Saved
+- [x] B7 Transactions list
+- [x] B8 Transaction detail
+- [x] B9 SMS inbox
+- [x] B10 Move money
 
 ### 7. End the shift (B11–B13)
-- [ ] B11 Shift tab
-- [ ] B12 Coline PIN, count cash, count EcoCash, check
-- [ ] B13 Shift summary and share
+- [x] B11 Shift tab
+- [x] B12 Coline PIN, count cash, count EcoCash, check
+- [x] B13 Shift summary and share
 
 ### 8. Owner (C1–C11, X1)
-- [ ] Owner tab bar
-- [ ] C1 Today
-- [ ] C2 Review
-- [ ] C3 Day report and PDF
-- [ ] C4 History and CSV export
-- [ ] C5 Customer
-- [ ] C6 Monthly report
-- [ ] C7 Shift history
-- [ ] C8 People
-- [ ] C9 Phones
-- [ ] C10 Settings
-- [ ] C11 Who can see what
-- [ ] B2 Home for Coline on a booth phone
-- [ ] X1 No access
-- [ ] N1 Local notification for incoming SMS
+- [x] Owner tab bar
+- [x] C1 Today
+- [x] C2 Review
+- [x] C3 Day report and PDF
+- [x] C4 History and CSV export
+- [x] C5 Customer
+- [x] C6 Monthly report
+- [x] C7 Shift history
+- [x] C8 People
+- [x] C9 Phones
+- [x] C10 Settings
+- [x] C11 Who can see what
+- [x] B2 Home for Coline on a booth phone
+- [x] X1 No access
+- [x] N1 Local notification for incoming SMS
