@@ -27,6 +27,7 @@ import { localDb } from "@/lib/local-db";
 import { DURATION, enterUp, exitFade, haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
+import { smsReaderStore, suppressIncomingSheet } from "@/lib/sms";
 
 const STEPS = ["Amount", "Customer", "Sign"];
 /** SMS received this long before the screen opened still count as "just arrived". */
@@ -59,6 +60,10 @@ export default function NewTransaction() {
   const balances = useShiftBalances(shift);
   const unrecorded = useUnrecordedSms();
   const openedAt = useRef(new Date()).current;
+  const smsReader = useObservable(smsReaderStore);
+
+  // This screen handles arriving SMS itself (the cash-out gate), so no sheet on top of it.
+  useEffect(() => suppressIncomingSheet(), []);
 
   const [draft, setDraft] = useState<Draft>(() =>
     params.smsId ? draftFromSms(params.smsId) : { ...EMPTY_DRAFT, type: params.type ?? "CASH_OUT" },
@@ -201,7 +206,23 @@ export default function NewTransaction() {
             </View>
 
             {cashOut && cents > 0 && !draft.manual ? (
-              <SmsWait received={arrived} waitingSince={openedAt} currency={draft.currency} cents={cents} />
+              <>
+                <SmsWait received={arrived} waitingSince={openedAt} currency={draft.currency} cents={cents} />
+                {!arrived ? (
+                  <Animated.View entering={enterUp(0)} exiting={exitFade} className="flex-row items-center gap-2 px-2">
+                    <Icon
+                      name={smsReader === "unavailable" ? "sms-failed" : "touch-app"}
+                      size={16}
+                      className={smsReader === "unavailable" ? "text-alarm-ink" : "text-subtle"}
+                    />
+                    <T weight="semibold" className={smsReader === "unavailable" ? "flex-1 text-[12px] text-alarm-ink" : "flex-1 text-[12px] text-subtle"}>
+                      {smsReader === "unavailable"
+                        ? "This phone can't read SMS. Check the SMS on the agent line, then save without SMS."
+                        : "When Android asks to read the EcoCash SMS, tap Allow."}
+                    </T>
+                  </Animated.View>
+                ) : null}
+              </>
             ) : null}
             {draft.manual ? (
               <Animated.View entering={enterUp(0)} className="flex-row items-center gap-2 p-3 rounded-2xl bg-line">
