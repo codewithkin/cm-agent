@@ -3,17 +3,15 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { MoneyNowCard } from "@/components/booth/money-now-card";
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Avatar, Banner, Card } from "@/components/ui/card";
-import { FabMenu, type FabAction } from "@/components/ui/fab";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { SyncChip } from "@/components/ui/sync-chip";
 import { T } from "@/components/ui/text";
-import { useOpenShift } from "@/lib/booth";
-import { deviceStore } from "@/lib/device";
 import { amount, clock, greeting, initials } from "@/lib/format";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
@@ -24,23 +22,8 @@ export default function Today() {
   const session = useObservable(sessionStore);
   const today = useQuery({ ...trpc.reports.today.queryOptions(), enabled: Boolean(session?.sessionToken), refetchInterval: 30_000 });
   const data = today.data;
-  const device = useObservable(deviceStore);
-  const shift = useOpenShift();
-  const booth = device?.kind === "BOOTH";
-
-  const actions: FabAction[] = [
-    ...(booth
-      ? [{ icon: "receipt-long" as const, label: "New transaction", hint: "Cash-in or cash-out at this booth", onPress: () => router.push("/transaction/new") }]
-      : []),
-    ...(booth && shift
-      ? [{ icon: "swap-horiz" as const, label: "Move money", hint: "Float bought, cash taken or added", onPress: () => router.push("/move-money") }]
-      : []),
-    { icon: "person-add", label: "Add a person", hint: "A helper with their own PIN", onPress: () => router.push({ pathname: "/people", params: { add: "1" } }) },
-    { icon: "add-to-home-screen", label: "Add a phone", hint: "Set up another booth or owner phone", onPress: () => router.push({ pathname: "/phones", params: { add: "1" } }) },
-  ];
-
   return (
-    <Screen withTabBar fab={<FabMenu actions={actions} />}>
+    <Screen withTabBar fab={<AddMenu />}>
       <View className="flex-row items-center gap-2.5">
         <Avatar label={initials(session?.user.name ?? "CM")} owner />
         <View className="flex-1">

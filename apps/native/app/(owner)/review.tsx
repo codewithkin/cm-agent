@@ -4,6 +4,7 @@ import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { EditTransaction } from "@/components/owner/edit-transaction";
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -177,7 +178,7 @@ export default function Review() {
   }
 
   return (
-    <Screen withTabBar header={{ title: "To check", subtitle: `${items.length} things`, leading: null, large: true }}>
+    <Screen withTabBar fab={<AddMenu />} header={{ title: "To check", subtitle: `${items.length} things`, leading: null, large: true }}>
       <ChipFilter
         value={filter}
         onChange={setFilter}

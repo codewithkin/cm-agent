@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 
 import { ByPersonCard } from "@/components/booth/by-person-card";
-import { boothActions } from "@/components/booth/booth-actions";
+import { AddMenu } from "@/components/add-menu";
 import { MoneyNowCard } from "@/components/booth/money-now-card";
 import { MyShiftCard } from "@/components/booth/my-shift-card";
 import { NoShiftCard } from "@/components/booth/no-shift-card";
@@ -10,7 +10,6 @@ import { QuickActions } from "@/components/booth/quick-actions";
 import { RecentCard } from "@/components/booth/recent-card";
 import { ServingHeader } from "@/components/booth/serving-header";
 import { Banner } from "@/components/ui/card";
-import { FabMenu } from "@/components/ui/fab";
 import { Screen } from "@/components/ui/screen";
 import {
   BALANCE_LABEL,
@@ -40,7 +39,7 @@ export default function Home() {
   if (!session || !device) return null;
 
   return (
-    <Screen withTabBar fab={shift ? <FabMenu actions={boothActions(isOwner)} /> : undefined}>
+    <Screen withTabBar fab={<AddMenu />}>
       <ServingHeader session={session} since={shift?.openedAt ?? null} deviceLabel={device.label} />
 
       {!shift ? (

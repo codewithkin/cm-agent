@@ -1,6 +1,7 @@
 import { router, type Href } from "expo-router";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { Avatar } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
@@ -29,7 +30,7 @@ export default function More() {
   const device = useObservable(deviceStore);
 
   return (
-    <Screen withTabBar header={{ title: "More", leading: null, large: true }}>
+    <Screen withTabBar fab={<AddMenu />} header={{ title: "More", leading: null, large: true }}>
       <View className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-ink">
         <Avatar label={initials(session?.user.name ?? "CM")} owner />
         <View className="flex-1">

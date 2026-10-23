@@ -4,6 +4,7 @@ import { cn } from "heroui-native";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { BarChart } from "@/components/owner/bar-chart";
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -321,6 +322,7 @@ export default function Reports() {
   return (
     <Screen
       withTabBar
+      fab={<AddMenu />}
       header={{
         title: "Reports",
         subtitle: rangeLabel(from, to),

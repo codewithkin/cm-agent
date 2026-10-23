@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/ui/card";
@@ -111,6 +112,7 @@ export default function SmsInbox() {
   return (
     <Screen
       withTabBar
+      fab={<AddMenu />}
       header={{ title: "SMS inbox", subtitle: "EcoCash · today", leading: null, large: true, right: <SyncChip /> }}
     >
       {reader === "unavailable" ? (

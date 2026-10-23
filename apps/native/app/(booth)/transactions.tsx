@@ -2,11 +2,11 @@ import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { rowOf } from "@/components/booth/recent-card";
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Card } from "@/components/ui/card";
 import { ChipFilter } from "@/components/ui/chip-filter";
-import { Fab } from "@/components/ui/fab";
 import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
@@ -71,7 +71,7 @@ export default function Transactions() {
   return (
     <Screen
       withTabBar
-      fab={<Fab label="New transaction" onPress={() => router.push("/transaction/new")} />}
+      fab={<AddMenu />}
       header={{
         title: "Transactions",
         subtitle: isOwner ? "Everyone on this phone" : "Only yours",

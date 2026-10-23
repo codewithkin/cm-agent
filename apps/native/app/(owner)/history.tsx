@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 
+import { AddMenu } from "@/components/add-menu";
 import { LiveState } from "@/components/owner/live-state";
 import { IconButton } from "@/components/ui/button";
 import { ChipFilter } from "@/components/ui/chip-filter";
@@ -70,6 +71,7 @@ export default function History() {
   return (
     <Screen
       withTabBar
+      fab={<AddMenu />}
       header={{
         title: "History",
         subtitle: "All transactions",
