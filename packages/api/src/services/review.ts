@@ -11,18 +11,28 @@ const LIMIT = 200;
 
 export type ReviewKind = "TRANSACTION" | "SMS" | "SHIFT";
 
+/** The filter tabs on the review screen. */
+export type ReviewCategory = "REPORTED" | "NO_SMS" | "NO_MATCH" | "TYPED_IN" | "SMS_NOT_SAVED" | "SHIFT";
+
 export type ReviewItem = {
   kind: ReviewKind;
+  category: ReviewCategory;
   id: string;
   at: Date;
   deviceLabel: string;
   reasons: string[];
+  /** What the helper wrote, shown in quotes. */
+  quote: string | null;
+  person: { id: string; name: string } | null;
+  money: { type: "CASH_IN" | "CASH_OUT" | null; currency: "USD" | "ZIG" | null; amount: number | null } | null;
+  /** For a mismatch: the amount the SMS says. */
+  smsAmount: number | null;
 };
 
 const MATCH_REASONS: Partial<Record<MatchState, string>> = {
   NO_SMS: "No SMS found for this entry",
   MISMATCH: "SMS details differ from the entry",
-  MANUAL: "Recorded without an SMS",
+  MANUAL: "Saved without an SMS",
 };
 
 const BALANCE_LABELS = {
@@ -49,7 +59,13 @@ export async function loadReviewItems(db: Db): Promise<ReviewItem[]> {
         matchState: true,
         flagReason: true,
         flaggedAt: true,
+        note: true,
+        type: true,
+        currency: true,
+        amount: true,
         device: { select: { label: true } },
+        servedBy: { select: { id: true, name: true } },
+        sms: { select: { amount: true } },
       },
     }),
     db.smsMessage.findMany({
@@ -62,13 +78,20 @@ export async function loadReviewItems(db: Db): Promise<ReviewItem[]> {
       },
       orderBy: { receivedAt: "desc" },
       take: LIMIT,
-      select: { id: true, receivedAt: true, device: { select: { label: true } } },
+      select: {
+        id: true,
+        receivedAt: true,
+        type: true,
+        currency: true,
+        amount: true,
+        device: { select: { label: true } },
+      },
     }),
     db.shift.findMany({
       where: { status: "CLOSED", reviewedAt: null },
       orderBy: { closedAt: "desc" },
       take: LIMIT,
-      include: { device: { select: { label: true } } },
+      include: { device: { select: { label: true } }, openedBy: { select: { id: true, name: true } } },
     }),
   ]);
 
@@ -79,16 +102,39 @@ export async function loadReviewItems(db: Db): Promise<ReviewItem[]> {
     if (tx.flaggedAt) reasons.push(`Flagged: ${tx.flagReason ?? "no reason given"}`);
     const matchReason = MATCH_REASONS[tx.matchState];
     if (matchReason) reasons.push(matchReason);
-    items.push({ kind: "TRANSACTION", id: tx.id, at: tx.occurredAt, deviceLabel: tx.device.label, reasons });
+    const category: ReviewCategory = tx.flaggedAt
+      ? "REPORTED"
+      : tx.matchState === "MISMATCH"
+        ? "NO_MATCH"
+        : tx.matchState === "NO_SMS"
+          ? "NO_SMS"
+          : "TYPED_IN";
+    items.push({
+      kind: "TRANSACTION",
+      category,
+      id: tx.id,
+      at: tx.flaggedAt ?? tx.occurredAt,
+      deviceLabel: tx.device.label,
+      reasons,
+      quote: tx.flagReason ?? tx.note,
+      person: tx.servedBy,
+      money: { type: tx.type, currency: tx.currency, amount: tx.amount },
+      smsAmount: tx.matchState === "MISMATCH" ? (tx.sms?.amount ?? null) : null,
+    });
   }
 
   for (const sms of smsMessages) {
     items.push({
       kind: "SMS",
+      category: "SMS_NOT_SAVED",
       id: sms.id,
       at: sms.receivedAt,
       deviceLabel: sms.device.label,
       reasons: ["EcoCash SMS not recorded"],
+      quote: null,
+      person: null,
+      money: { type: sms.type, currency: sms.currency, amount: sms.amount },
+      smsAmount: null,
     });
   }
 
@@ -112,10 +158,15 @@ export async function loadReviewItems(db: Db): Promise<ReviewItem[]> {
     if (reasons.length === 0) continue;
     items.push({
       kind: "SHIFT",
+      category: "SHIFT",
       id: shift.id,
       at: shift.closedAt ?? shift.openedAt,
       deviceLabel: shift.device.label,
       reasons,
+      quote: shift.closeNote,
+      person: shift.openedBy,
+      money: null,
+      smsAmount: null,
     });
   }
 
