@@ -123,3 +123,9 @@ export function useRows<K extends TableName>(
 export function useLocalSettings() {
   return useObservable(localSettings);
 }
+
+/** The business name from Settings, or Coline's name until one is chosen. */
+export function useBusinessName() {
+  const settings = useLocalSettings();
+  return settings?.businessName && settings.businessName !== "[Business name]" ? settings.businessName : "Coline Murahwa";
+}

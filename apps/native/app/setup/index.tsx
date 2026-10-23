@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
-import { useLocalSettings } from "@/lib/local-db";
+import { useBusinessName } from "@/lib/local-db";
 
 /** A soft shape drifting behind the logo. */
 function Blob({ className, delay, style }: { className: string; delay: number; style: object }) {
@@ -25,8 +25,7 @@ function Blob({ className, delay, style }: { className: string; delay: number; s
 /** A1 Splash: logo lockup placeholder, then on to owner sign-in. */
 export default function Splash() {
   const insets = useSafeAreaInsets();
-  const settings = useLocalSettings();
-  const businessName = settings?.businessName && settings.businessName !== "[Business name]" ? settings.businessName : "Coline Murahwa";
+  const businessName = useBusinessName();
 
   useEffect(() => {
     const timer = setTimeout(() => router.replace("/setup/sign-in"), 1800);

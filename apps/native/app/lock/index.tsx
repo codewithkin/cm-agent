@@ -11,7 +11,7 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { deviceStore } from "@/lib/device";
 import { clock, dayLabel, initials, toDate } from "@/lib/format";
-import { useLocalSettings, useRows, type LocalUser } from "@/lib/local-db";
+import { useBusinessName, useRows, type LocalUser } from "@/lib/local-db";
 import { useObservable } from "@/lib/observable";
 import { syncNow } from "@/lib/sync";
 
@@ -55,7 +55,6 @@ function HelperCard({ user, servingSince, lastShift, index }: {
 /** A4 Lock · who is serving? Shown on launch, after 2 minutes idle and on "Change person". */
 export default function WhoIsServing() {
   const device = useObservable(deviceStore);
-  const settings = useLocalSettings();
   const users = useRows("users", (user) => user.active, (a, b) => a.name.localeCompare(b.name));
   const shifts = useRows("shifts", (shift) => shift.deviceId === device?.id, undefined, [device?.id]);
 
@@ -72,7 +71,7 @@ export default function WhoIsServing() {
       .map((shift) => toDate(shift.closedAt ?? shift.openedAt))
       .sort((a, b) => b.getTime() - a.getTime())[0] ?? null;
 
-  const name = settings?.businessName && settings.businessName !== "[Business name]" ? settings.businessName : "Coline Murahwa";
+  const name = useBusinessName();
 
   return (
     <Screen>
