@@ -28,7 +28,7 @@ function Stopwatch({ since }: { since: Date | string }) {
     return () => clearInterval(timer);
   }, []);
   return (
-    <T weight="monoBold" className="text-[34px] text-white" style={{ fontVariant: ["tabular-nums"] }}>
+    <T weight="mono" className="text-[34px] text-white" style={{ fontVariant: ["tabular-nums"] }}>
       {stopwatch(since)}
     </T>
   );
