@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { DemoDataCard } from "@/components/owner/demo-data-card";
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
@@ -189,6 +190,11 @@ export default function Settings() {
                 Senders read as EcoCash: {data.smsSenders.join(", ")}
               </T>
             </Card>
+
+            <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
+              DEMO DATA
+            </T>
+            <DemoDataCard index={3} />
 
             <T weight="heavy" className="text-[12px] text-subtle px-1 mt-2">
               RECORDS
