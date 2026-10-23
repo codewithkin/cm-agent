@@ -20,7 +20,7 @@ export default function OwnerLayout() {
 
   return (
     <Tabs
-      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#F4F3EF" }, animation: "shift" }}
+      screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: "#F4F3EF" } }}
       tabBar={(props) => (
         <FloatingTabBar
           {...props}
