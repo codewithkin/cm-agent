@@ -1,27 +1,27 @@
-import { Link, Stack } from "expo-router";
-import { Button, Surface } from "heroui-native";
-import { Text, View } from "react-native";
+import { router } from "expo-router";
+import { View } from "react-native";
+import Animated from "react-native-reanimated";
 
-import { Container } from "@/components/container";
+import { Button } from "@/components/ui/button";
+import { Icon } from "@/components/ui/icon";
+import { Screen } from "@/components/ui/screen";
+import { T } from "@/components/ui/text";
+import { popIn } from "@/lib/motion";
 
 export default function NotFoundScreen() {
   return (
-    <>
-      <Stack.Screen options={{ title: "Not Found" }} />
-      <Container>
-        <View className="flex-1 justify-center items-center p-4">
-          <Surface variant="secondary" className="items-center p-6 max-w-sm rounded-lg">
-            <Text className="text-4xl mb-3">🤔</Text>
-            <Text className="text-foreground font-medium text-lg mb-1">Page Not Found</Text>
-            <Text className="text-muted text-sm text-center mb-4">
-              The page you're looking for doesn't exist.
-            </Text>
-            <Link href="/" asChild>
-              <Button size="sm">Go Home</Button>
-            </Link>
-          </Surface>
-        </View>
-      </Container>
-    </>
+    <Screen scroll={false} footer={<Button label="Go home" icon="home" onPress={() => router.replace("/")} />}>
+      <View className="flex-1 items-center justify-center gap-3">
+        <Animated.View entering={popIn} className="w-20 h-20 rounded-full bg-lilac items-center justify-center">
+          <Icon name="explore-off" size={36} className="text-lilac-ink" />
+        </Animated.View>
+        <T weight="heavy" className="text-[22px]">
+          Page not found
+        </T>
+        <T weight="semibold" className="text-subtle text-center">
+          This page doesn't exist. Let's go back home.
+        </T>
+      </View>
+    </Screen>
   );
 }
