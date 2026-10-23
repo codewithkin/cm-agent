@@ -36,26 +36,6 @@ export function SignStep({ draft, update }: { draft: Draft; update: (patch: Part
       <View>
         <SignaturePad onChange={(signature) => update({ signature })} />
       </View>
-
-      <View className="flex-row items-center gap-3 p-3 rounded-3xl bg-white border border-line opacity-70">
-        <View className="w-10 h-10 rounded-xl bg-page items-center justify-center">
-          <Icon name="add-a-photo" size={20} className="text-subtle" />
-        </View>
-        <View className="flex-1">
-          <T weight="heavy" className="text-[14px]">
-            Add ID photo
-          </T>
-          <T weight="semibold" className="text-[12px] text-subtle">
-            Optional
-          </T>
-        </View>
-        <View className="flex-row items-center gap-1 px-2 h-6 rounded-full bg-page">
-          <Icon name="schedule" size={12} className="text-subtle" />
-          <T weight="bold" className="text-[10px] text-subtle">
-            Coming soon
-          </T>
-        </View>
-      </View>
     </View>
   );
 }

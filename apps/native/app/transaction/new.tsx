@@ -15,8 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
-import { Segmented } from "@/components/ui/segmented";
-import { Stepper } from "@/components/ui/stepper";
+import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { recordTransaction } from "@/lib/actions";
 import { useOpenShift, useShiftBalances, useUnrecordedSms } from "@/lib/booth";
@@ -77,6 +76,8 @@ export default function NewTransaction() {
         },
   );
   const [step, setStep] = useState(params.smsId ? 1 : 0);
+  // Cash-in or cash-out is picked before this screen (Add menu, Home) or read from the SMS.
+  const [typeChosen, setTypeChosen] = useState(Boolean(params.type || params.smsId));
   const [askingWhy, setAskingWhy] = useState(false);
   const update = (patch: Partial<Draft>) => setDraft((current) => ({ ...current, ...patch }));
 
@@ -122,6 +123,41 @@ export default function NewTransaction() {
             router.replace(isOwner ? "/shift/start" : { pathname: "/owner-pin", params: { next: "start" } })
           }
         />
+      </Screen>
+    );
+  }
+
+  if (!typeChosen) {
+    return (
+      <Screen header={{ title: "New transaction", leading: "close" }}>
+        <T weight="heavy" className="text-[22px] tracking-tight mt-2">
+          What is the customer doing?
+        </T>
+        {([
+          { type: "CASH_IN", label: "Cash-in", hint: "Gives cash, gets EcoCash", icon: "south-west", box: "bg-sun", ink: "text-ink" },
+          { type: "CASH_OUT", label: "Cash-out", hint: "Sends EcoCash, gets cash", icon: "north-east", box: "bg-ink", ink: "text-white" },
+        ] as const).map((option) => (
+          <Tap
+            key={option.type}
+            onPress={() => {
+              haptic.select();
+              update({ type: option.type });
+              setTypeChosen(true);
+            }}
+            className={`h-24 rounded-3xl px-4 flex-row items-center gap-3 ${option.box}`}
+          >
+            <Icon name={option.icon} size={28} className={option.ink} />
+            <View className="flex-1">
+              <T weight="heavy" className={`text-[20px] ${option.ink}`}>
+                {option.label}
+              </T>
+              <T weight="semibold" className={`text-[13px] ${option.ink} opacity-70`}>
+                {option.hint}
+              </T>
+            </View>
+            <Icon name="chevron-right" size={24} className={option.ink} />
+          </Tap>
+        ))}
       </Screen>
     );
   }
@@ -175,53 +211,24 @@ export default function NewTransaction() {
   return (
     <Screen
       header={{
-        title: step === 2 ? "Customer signs" : "New transaction",
-        subtitle: device.label,
+        title: cashOut ? "Cash-out" : "Cash-in",
+        subtitle: `Step ${step + 1} of 3 · ${STEPS[step]}`,
         leading: step === 0 ? "close" : "back",
         onLeading: step === 0 ? undefined : () => go(step - 1),
       }}
       footer={footer}
     >
-      <Stepper steps={STEPS} current={step} />
-
       <View key={step} className="gap-3">
         {step === 0 ? (
           <>
-            <View className="flex-row gap-2">
-              <Segmented
-                className="flex-[1.6]"
-                value={draft.type}
-                onChange={(type) => update({ type, smsId: null })}
-                options={[
-                  { value: "CASH_IN", label: "Cash-in", icon: "south-west", activeClass: "bg-sun", activeText: "text-ink" },
-                  { value: "CASH_OUT", label: "Cash-out", icon: "north-east" },
-                ]}
-              />
-              <Segmented
-                className="flex-1"
-                value={draft.currency}
-                onChange={(currency) => update({ currency, smsId: null })}
-                options={[
-                  { value: "USD", label: "USD" },
-                  { value: "ZIG", label: "ZiG", activeClass: "bg-sun", activeText: "text-ink" },
-                ]}
-              />
-            </View>
-
             {cashOut && cents > 0 && !draft.manual ? (
               <>
                 <SmsWait received={arrived} waitingSince={openedAt} currency={draft.currency} cents={cents} />
-                {!arrived ? (
+                {!arrived && smsReader === "unavailable" ? (
                   <View className="flex-row items-center gap-2 px-2">
-                    <Icon
-                      name={smsReader === "unavailable" ? "sms-failed" : "touch-app"}
-                      size={16}
-                      className={smsReader === "unavailable" ? "text-alarm-ink" : "text-subtle"}
-                    />
-                    <T weight="semibold" className={smsReader === "unavailable" ? "flex-1 text-[12px] text-alarm-ink" : "flex-1 text-[12px] text-subtle"}>
-                      {smsReader === "unavailable"
-                        ? "This phone can't read SMS. Check the SMS on the agent line, then save without SMS."
-                        : "When Android asks to read the EcoCash SMS, tap Allow."}
+                    <Icon name="sms-failed" size={16} className="text-alarm-ink" />
+                    <T weight="semibold" className="flex-1 text-[12px] text-alarm-ink">
+                      This phone can't read SMS. Check the SMS on the agent line, then save without SMS.
                     </T>
                   </View>
                 ) : null}
@@ -236,7 +243,11 @@ export default function NewTransaction() {
               </View>
             ) : null}
 
-            <AmountDisplay text={draft.amountText} currency={draft.currency} />
+            <AmountDisplay
+              text={draft.amountText}
+              currency={draft.currency}
+              onCurrencyChange={draft.smsId ? undefined : (currency) => update({ currency, smsId: null })}
+            />
             {isOwner && cashAfter !== null && cents > 0 ? (
               <View className="flex-row items-center justify-center gap-1.5">
                 <Icon name="payments" size={16} className={cashAfter < 0 ? "text-alarm" : "text-subtle"} />
