@@ -28,7 +28,7 @@ export function DemoDataCard({ index = 4 }: { index?: number }) {
   };
 
   const apply = useMutation({
-    mutationFn: () => trpcClient.demo.apply.mutate(),
+    mutationFn: () => trpcClient.demo.add.mutate(),
     onSuccess: async (result) => {
       haptic.success();
       setMessage(

@@ -6,7 +6,7 @@ import { applyDemoData, clearDemoData, hasDemoData } from "../../services/demo";
 export const demoRouter = router({
   status: ownerProcedure.query(({ ctx }) => hasDemoData(ctx.db)),
 
-  apply: ownerProcedure.mutation(({ ctx }) =>
+  add: ownerProcedure.mutation(({ ctx }) =>
     ctx.db.$transaction((tx) => applyDemoData(tx, ctx.user.id), { timeout: 60_000 }),
   ),
 
