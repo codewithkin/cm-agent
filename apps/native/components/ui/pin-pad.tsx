@@ -86,16 +86,16 @@ export function PinPad({ onComplete, error, disabled }: Props) {
     <View className="gap-6">
       <View className="items-center gap-4">
         {/* Fixed height so the dots don't jump when the message appears. */}
-        <View className="h-9 items-center justify-center">
+        <View className="min-h-[52px] items-center justify-center px-4">
           {shown ? (
             <Animated.View
               entering={enterFade}
               exiting={exitFade}
-              className="flex-row items-center gap-1.5 h-9 px-3.5 rounded-full bg-alarm-soft"
+              className="flex-row items-center gap-1.5 min-h-9 px-3.5 py-2 rounded-2xl bg-alarm-soft"
               accessibilityLiveRegion="polite"
             >
               <Icon name="error" size={18} className="text-alarm-ink" />
-              <T weight="bold" className="text-[13px] text-alarm-ink">
+              <T weight="bold" className="shrink text-[13px] leading-[18px] text-alarm-ink text-center">
                 {shown}
               </T>
             </Animated.View>
