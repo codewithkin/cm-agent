@@ -1,8 +1,10 @@
 import { cn } from "heroui-native";
 import { View } from "react-native";
 
+import { haptic } from "@/lib/motion";
 
 import { Icon, type IconName } from "./icon";
+import { Tap } from "./tap";
 import { T } from "./text";
 
 export type Currency = "USD" | "ZIG";
@@ -75,6 +77,36 @@ export function CountBubble({ count }: { count: number }) {
       <T weight="heavy" className="text-[10px] text-white">
         {count > 99 ? "99+" : count}
       </T>
+    </View>
+  );
+}
+
+/** A small USD | ZiG switch: the chosen one is filled. Sits next to an amount instead of a big toggle. */
+export function CurrencySwitch({ value, onChange }: { value: Currency; onChange: (currency: Currency) => void }) {
+  return (
+    <View className="flex-row p-0.5 rounded-lg bg-line self-center" accessibilityRole="radiogroup" accessibilityLabel="Currency">
+      {(["USD", "ZIG"] as const).map((currency) => {
+        const active = currency === value;
+        return (
+          <Tap
+            key={currency}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: active }}
+            feedback={false}
+            scaleTo={0.9}
+            onPress={() => {
+              if (active) return;
+              haptic.select();
+              onChange(currency);
+            }}
+            className={cn("h-7 px-2.5 rounded-md items-center justify-center", active && (currency === "USD" ? "bg-ink" : "bg-sun"))}
+          >
+            <T weight="heavy" className={cn("text-[11px]", active ? (currency === "USD" ? "text-white" : "text-ink") : "text-subtle")} style={{ letterSpacing: 0.4 }}>
+              {currency === "USD" ? "USD" : "ZiG"}
+            </T>
+          </Tap>
+        );
+      })}
     </View>
   );
 }

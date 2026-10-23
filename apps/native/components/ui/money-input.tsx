@@ -7,7 +7,7 @@ import { amount, centsFromInput } from "@/lib/format";
 import { FONT_FAMILY } from "@/lib/fonts";
 import { DURATION } from "@/lib/motion";
 
-import { CurrencyBadge, type Currency } from "./badges";
+import { CurrencyBadge, CurrencySwitch, type Currency } from "./badges";
 import { Icon, type IconName } from "./icon";
 import { T } from "./text";
 
@@ -20,6 +20,7 @@ export function MoneyInput({
   onChange,
   changed,
   autoFocus,
+  onCurrencyChange,
 }: {
   currency: Currency;
   label: string;
@@ -29,6 +30,8 @@ export function MoneyInput({
   /** Highlights the row when it differs from what was expected. */
   changed?: boolean;
   autoFocus?: boolean;
+  /** Shows a small USD | ZiG switch in place of the badge. */
+  onCurrencyChange?: (currency: Currency) => void;
 }) {
   const [text, setText] = useState(amount(cents).replace(/,/g, ""));
   const focus = useSharedValue(0);
@@ -46,7 +49,7 @@ export function MoneyInput({
   return (
     <View className={cn("flex-row items-center gap-2.5 py-2.5", changed && "bg-sun-soft -mx-2 px-2 rounded-2xl")}>
       {icon ? <Icon name={icon} size={20} className="text-subtle" /> : null}
-      <CurrencyBadge currency={currency} />
+      {onCurrencyChange ? <CurrencySwitch value={currency} onChange={onCurrencyChange} /> : <CurrencyBadge currency={currency} />}
       <T weight="bold" className="flex-1 text-[14px]">
         {label}
       </T>

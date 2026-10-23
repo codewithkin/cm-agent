@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { amount, centsFromInput } from "@/lib/format";
 import { haptic } from "@/lib/motion";
 
-import { CurrencyBadge, type Currency } from "./badges";
+import { CurrencyBadge, CurrencySwitch, type Currency } from "./badges";
 import { Keypad, type KeypadKey } from "./keypad";
 import { Tap } from "./tap";
 import { T } from "./text";
@@ -22,12 +22,20 @@ export function applyAmountKey(text: string, key: KeypadKey): string {
   return text + key;
 }
 
-/** The big amount, with its currency badge. */
-export function AmountDisplay({ text, currency }: { text: string; currency: Currency }) {
+/** The big amount, with a small USD | ZiG switch (or just the badge when the currency is fixed). */
+export function AmountDisplay({
+  text,
+  currency,
+  onCurrencyChange,
+}: {
+  text: string;
+  currency: Currency;
+  onCurrencyChange?: (currency: Currency) => void;
+}) {
   const shown = text ? amount(centsFromInput(text)) : "0.00";
   return (
-    <View className="flex-row items-center justify-center gap-2 h-16">
-      <CurrencyBadge currency={currency} size="md" />
+    <View className="flex-row items-center justify-center gap-2.5 h-16">
+      {onCurrencyChange ? <CurrencySwitch value={currency} onChange={onCurrencyChange} /> : <CurrencyBadge currency={currency} size="md" />}
       <T weight="heavy" className="text-[44px] leading-[52px]" style={{ fontVariant: ["tabular-nums"] }}>
         {shown}
       </T>
