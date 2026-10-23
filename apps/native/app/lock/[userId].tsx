@@ -1,6 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -11,7 +10,7 @@ import { T } from "@/components/ui/text";
 import { useOpenShift } from "@/lib/booth";
 import { clock, initials } from "@/lib/format";
 import { localDb } from "@/lib/local-db";
-import { enterUp, haptic, popIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { unlockWithPin } from "@/lib/pin";
 
 /** A5 PIN entry. Online the server checks it; offline the phone does. */
@@ -46,7 +45,7 @@ export default function PinEntry() {
       }}
     >
       <View className="flex-1 justify-between pb-4">
-        <Animated.View entering={popIn} className="items-center gap-2 mt-2">
+        <View className="items-center gap-2 mt-2">
           <Avatar label={initials(user?.name ?? "?")} owner={owner} size={64} />
           <T weight="heavy" className="text-[20px]">
             {user?.name ?? "Unknown person"}
@@ -54,11 +53,11 @@ export default function PinEntry() {
           <T weight="semibold" className="text-subtle">
             Enter your PIN
           </T>
-        </Animated.View>
+        </View>
 
-        <Animated.View entering={enterUp(2)}>
+        <View>
           <PinPad onComplete={submit} />
-        </Animated.View>
+        </View>
 
         <Tap
           onPress={() => router.push({ pathname: "/lock/forgot-pin", params: { userId } })}

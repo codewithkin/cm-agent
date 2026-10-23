@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { NoShiftCard } from "@/components/booth/no-shift-card";
 import { CountBubble, CurrencyBadge } from "@/components/ui/badges";
@@ -17,7 +16,6 @@ import { deviceStore } from "@/lib/device";
 import { amount, clock, initials, stopwatch } from "@/lib/format";
 import { lockNow } from "@/lib/idle-lock";
 import { localDb } from "@/lib/local-db";
-import { enterUp } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -73,7 +71,7 @@ export default function ShiftTab() {
         />
       ) : (
         <>
-          <Animated.View entering={enterUp(0)} className="bg-ink rounded-3xl p-4 gap-3">
+          <View className="bg-ink rounded-3xl p-4 gap-3">
             <View className="flex-row items-center gap-3">
               <Avatar label={initials(opener?.name ?? session?.user.name ?? "?")} size={40} />
               <View className="flex-1">
@@ -97,16 +95,16 @@ export default function ShiftTab() {
               </T>
               <Stopwatch since={shift.openedAt} />
             </View>
-          </Animated.View>
+          </View>
 
-          <Animated.View entering={enterUp(1)} className="flex-row gap-2">
+          <View className="flex-row gap-2">
             <Action icon="swap-horiz" label="Change person" onPress={lockNow} />
             <Action icon="sms" label="SMS" badge={unrecorded} onPress={() => router.push("/sms")} />
             <Action icon="lock" label="End shift" dark onPress={endShift} />
-          </Animated.View>
+          </View>
 
           {isOwner ? (
-            <Animated.View entering={enterUp(2)}>
+            <View>
               <Tap onPress={() => router.push("/move-money")} className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-peach">
                 <Icon name="swap-horiz" size={22} className="text-peach-ink" />
                 <T weight="heavy" className="flex-1 text-peach-ink">
@@ -114,14 +112,14 @@ export default function ShiftTab() {
                 </T>
                 <Icon name="chevron-right" size={22} className="text-peach-ink" />
               </Tap>
-            </Animated.View>
+            </View>
           ) : (
-            <Animated.View entering={enterUp(2)} className="flex-row items-center gap-2 px-1">
+            <View className="flex-row items-center gap-2 px-1">
               <Icon name="verified-user" size={16} className="text-subtle" />
               <T weight="semibold" className="text-[12px] text-subtle">
                 Only Coline can count the money
               </T>
-            </Animated.View>
+            </View>
           )}
 
           <Card index={3} title="Money in and out">

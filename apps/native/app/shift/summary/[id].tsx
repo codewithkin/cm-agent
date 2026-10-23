@@ -1,6 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Share, View } from "react-native";
-import Animated, { ZoomIn } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -12,7 +11,6 @@ import { useShiftTransactions, useSummary } from "@/lib/booth";
 import { deviceStore } from "@/lib/device";
 import { amount, clock, dayLabel, duration, initials } from "@/lib/format";
 import { localDb, useLocalSettings } from "@/lib/local-db";
-import { enterUp } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 
 /** B13 Shift summary: a card Coline can share on WhatsApp. */
@@ -48,14 +46,14 @@ export default function ShiftSummary() {
 
   return (
     <View className="flex-1 bg-sun px-4 gap-4" style={{ paddingTop: insets.top + 16, paddingBottom: insets.bottom + 12 }}>
-      <Animated.View entering={ZoomIn.springify().damping(12)} className="self-center flex-row items-center gap-1.5 h-9 px-3.5 rounded-full bg-ink">
+      <View className="self-center flex-row items-center gap-1.5 h-9 px-3.5 rounded-full bg-ink">
         <Icon name="task-alt" size={18} className="text-sun" />
         <T weight="heavy" className="text-white">
           Shift ended
         </T>
-      </Animated.View>
+      </View>
 
-      <Animated.View entering={enterUp(1)} className="flex-1 bg-white rounded-[28px] p-4 gap-4">
+      <View className="flex-1 bg-white rounded-[28px] p-4 gap-4">
         <View className="flex-row items-center gap-3">
           <Avatar label="CM" owner />
           <View className="flex-1">
@@ -130,7 +128,7 @@ export default function ShiftSummary() {
             </T>
           </View>
         </View>
-      </Animated.View>
+      </View>
 
       <View className="flex-row gap-2">
         <Button label="Share" icon="share" variant="light" className="flex-1" onPress={share} />

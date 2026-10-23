@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { LiveState } from "@/components/owner/live-state";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ import { Screen } from "@/components/ui/screen";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { initials } from "@/lib/format";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { syncNow } from "@/lib/sync";
 import { trpc, trpcClient, type RouterOutputs } from "@/utils/trpc";
 
@@ -49,7 +48,7 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
   });
 
   return (
-    <Animated.View entering={enterUp(index)} exiting={exitFade} layout={layout} className={cn(index > 0 && "border-t border-line")}>
+    <View className={cn(index > 0 && "border-t border-line")}>
       <Tap
         onPress={() => !owner && person.active && setOpen((value) => !value)}
         scaleTo={0.99}
@@ -79,7 +78,7 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
       </Tap>
 
       {open ? (
-        <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-3 gap-2">
+        <View className="pb-3 gap-2">
           {newPin ? (
             <Banner tone="leaf" icon="key" text={`New PIN for ${person.name}: ${newPin}. They choose their own when they sign in.`} />
           ) : null}
@@ -103,9 +102,9 @@ function PersonRow({ person, index }: { person: Person; index: number }) {
               onPress={() => setActive.mutate(false)}
             />
           </View>
-        </Animated.View>
+        </View>
       ) : null}
-    </Animated.View>
+    </View>
   );
 }
 

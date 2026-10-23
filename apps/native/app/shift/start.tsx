@@ -1,7 +1,7 @@
 import { BALANCE_KEYS, ZERO_BALANCES, type Balances } from "@cm-agent/api/lib/balances";
 import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
-import Animated from "react-native-reanimated";
+import { View } from "react-native";
 
 import { CountingChip } from "@/components/booth/counting-chip";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { useOpenShift } from "@/lib/booth";
 import { deviceStore } from "@/lib/device";
 import { amount, clock, dayLabel, toDate } from "@/lib/format";
 import { useRows } from "@/lib/local-db";
-import { enterUp, exitFade, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -88,7 +88,7 @@ export default function StartShift() {
         {ROWS.map((row) => {
           const changed = changedKeys.includes(row.key);
           return (
-            <Animated.View key={row.key}>
+            <View key={row.key}>
               <MoneyInput
                 currency={row.currency}
                 label={row.label}
@@ -97,19 +97,19 @@ export default function StartShift() {
                 onChange={(cents) => setCounts((current) => ({ ...current, [row.key]: cents }))}
               />
               {changed && lastCount ? (
-                <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-2">
+                <View className="pb-2">
                   <T weight="bold" className="text-[12px] text-sun-ink">
                     {dayLabel(last?.closedAt ?? new Date())}: {amount(lastCount[row.key])}. Add a note.
                   </T>
-                </Animated.View>
+                </View>
               ) : null}
-            </Animated.View>
+            </View>
           );
         })}
       </Card>
 
       {changedKeys.length > 0 ? (
-        <Animated.View entering={enterUp(2)} exiting={exitFade}>
+        <View>
           <Field
             label="Why is it different?"
             icon="edit-note"
@@ -117,7 +117,7 @@ export default function StartShift() {
             value={note}
             onChangeText={setNote}
           />
-        </Animated.View>
+        </View>
       ) : null}
 
       <T weight="semibold" className="text-[12px] text-subtle text-center">

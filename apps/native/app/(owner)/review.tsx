@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { EditTransaction } from "@/components/owner/edit-transaction";
 import { LiveState } from "@/components/owner/live-state";
@@ -16,7 +15,7 @@ import { Icon, type IconName } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { amount, clock, dayLabel, initials, localDateKey } from "@/lib/format";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { trpc, trpcClient, type RouterOutputs } from "@/utils/trpc";
@@ -57,7 +56,7 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
 
   const money = item.money;
   return (
-    <Animated.View entering={enterUp(index)} exiting={exitFade} layout={layout} className="bg-white rounded-3xl border border-line p-3.5 gap-3">
+    <View className="bg-white rounded-3xl border border-line p-3.5 gap-3">
       <View className="flex-row items-start gap-3">
         <View className={cn("w-10 h-10 rounded-xl items-center justify-center", look.box)}>
           <Icon name={look.icon} size={20} className={look.ink} />
@@ -112,7 +111,7 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
       {editing ? <EditTransaction transactionId={item.id} onDone={() => setEditing(false)} /> : null}
 
       {cancelling ? (
-        <Animated.View entering={enterUp(0)} className="gap-2">
+        <View className="gap-2">
           <Field placeholder="Why cancel it?" value={reason} onChangeText={setReason} autoFocus />
           <View className="flex-row gap-2">
             <Button label="Keep it" variant="light" size="md" className="flex-1" onPress={() => setCancelling(false)} />
@@ -127,7 +126,7 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
               onPress={() => cancel.mutate()}
             />
           </View>
-        </Animated.View>
+        </View>
       ) : null}
 
       {!editing && !cancelling ? (
@@ -146,7 +145,7 @@ function ReviewCard({ item, index }: { item: Item; index: number }) {
           )}
         </View>
       ) : null}
-    </Animated.View>
+    </View>
   );
 }
 
@@ -192,7 +191,7 @@ export default function Review() {
       />
       <LiveState query={queue}>
         {shown.length === 0 ? (
-          <Animated.View entering={enterUp(1)} className="items-center py-14 gap-2">
+          <View className="items-center py-14 gap-2">
             <Icon name="task-alt" size={44} className="text-leaf-bright" />
             <T weight="heavy" className="text-[18px]">
               Nothing to check
@@ -200,7 +199,7 @@ export default function Review() {
             <T weight="semibold" className="text-subtle">
               Every entry matches its SMS.
             </T>
-          </Animated.View>
+          </View>
         ) : (
           [...byDay].map(([day, dayItems]) => (
             <View key={day} className="gap-2">

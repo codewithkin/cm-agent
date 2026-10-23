@@ -3,7 +3,6 @@ import { Redirect, router } from "expo-router";
 import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,7 @@ import { recordMovement } from "@/lib/actions";
 import { useOpenShift, useShiftBalances } from "@/lib/booth";
 import { amount } from "@/lib/format";
 import type { LocalMovement } from "@/lib/local-db";
-import { enterUp, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -105,7 +104,7 @@ export default function MoveMoney() {
         {CHOICES.map((option, index) => {
           const active = index === choice;
           return (
-            <Animated.View key={option.label} entering={enterUp(index)} layout={layout} style={{ width: "48.5%" }}>
+            <View key={option.label} style={{ width: "48.5%" }}>
               <Tap
                 onPress={() => {
                   haptic.select();
@@ -125,7 +124,7 @@ export default function MoveMoney() {
                   {option.hint}
                 </T>
               </Tap>
-            </Animated.View>
+            </View>
           );
         })}
       </View>

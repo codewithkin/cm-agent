@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,6 @@ import { isUnrecordedSms } from "@/lib/booth";
 import { deviceStore } from "@/lib/device";
 import { amount, clock, localDateKey, maskPhone, toDate } from "@/lib/format";
 import { useRows, type LocalSms } from "@/lib/local-db";
-import { enterUp, exitFade, layout } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { smsReaderStore } from "@/lib/sms";
 
@@ -34,7 +32,7 @@ function SmsCard({ sms, index, unrecorded }: { sms: LocalSms; index: number; unr
   const customer = useRows("customers", (row) => row.phone === sms.counterpartyPhone, undefined, [sms.counterpartyPhone])[0];
   const received = toDate(sms.receivedAt);
   return (
-    <Animated.View entering={enterUp(index)} exiting={exitFade} layout={layout} className="bg-white rounded-3xl border border-line p-3.5 gap-3">
+    <View className="bg-white rounded-3xl border border-line p-3.5 gap-3">
       <View className="flex-row items-center gap-3">
         <TypeTile type={sms.type ?? "CASH_OUT"} />
         <View className="flex-1">
@@ -68,11 +66,11 @@ function SmsCard({ sms, index, unrecorded }: { sms: LocalSms; index: number; unr
         </View>
       ) : null}
       {open ? (
-        <Animated.View entering={enterUp(0)} exiting={exitFade} className="rounded-2xl bg-page p-3">
+        <View className="rounded-2xl bg-page p-3">
           <T weight="mono" className="text-[12px] text-ink-soft">
             {sms.body}
           </T>
-        </Animated.View>
+        </View>
       ) : null}
       <View className="flex-row gap-2">
         <Button label={open ? "Hide SMS" : "View SMS"} variant="outline" size="md" className="flex-1" onPress={() => setOpen((value) => !value)} />
@@ -87,7 +85,7 @@ function SmsCard({ sms, index, unrecorded }: { sms: LocalSms; index: number; unr
           />
         ) : null}
       </View>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -130,10 +128,10 @@ export default function SmsInbox() {
         ]}
       />
       {shown.length === 0 ? (
-        <Animated.View entering={enterUp(1)} className="items-center py-12 gap-2">
+        <View className="items-center py-12 gap-2">
           <Icon name="mark-chat-read" size={40} className="text-leaf-bright" />
           <T weight="heavy">{tab === "NOT_SAVED" ? "Every SMS today is saved" : "Nothing here"}</T>
-        </Animated.View>
+        </View>
       ) : (
         shown.map((sms, index) => (
           <SmsCard key={sms.id} sms={sms} index={index} unrecorded={isUnrecordedSms(sms, device?.id)} />

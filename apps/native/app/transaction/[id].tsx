@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { EditTransaction } from "@/components/owner/edit-transaction";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
@@ -17,7 +16,7 @@ import { TypeTile } from "@/components/ui/transaction-row";
 import { statusOf } from "@/lib/booth";
 import { amount, clock, dayLabel, maskPhone } from "@/lib/format";
 import { localDb, patchRow } from "@/lib/local-db";
-import { enterUp, exitFade, haptic, popIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { onlineStore } from "@/lib/network";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
@@ -111,10 +110,10 @@ export default function TransactionDetail() {
         )
       }
     >
-      <Animated.View entering={enterUp(0)} className="items-center gap-2 py-4">
-        <Animated.View entering={popIn}>
+      <View className="items-center gap-2 py-4">
+        <View>
           <TypeTile type={tx.type} size={56} />
-        </Animated.View>
+        </View>
         <T weight="bold" className="text-subtle">
           {tx.type === "CASH_OUT" ? "Cash-out" : "Cash-in"}
         </T>
@@ -130,7 +129,7 @@ export default function TransactionDetail() {
             Cancelled by Coline · {tx.voidReason}
           </T>
         ) : null}
-      </Animated.View>
+      </View>
 
       <Card index={1} className="gap-0 py-1">
         {isOwner ? (
@@ -150,9 +149,9 @@ export default function TransactionDetail() {
           right={<Toggle label="View" open={showSignature} onPress={() => setShowSignature((value) => !value)} />}
         />
         {showSignature ? (
-          <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-3">
+          <View className="pb-3">
             <SignatureView signature={remote.data?.transaction.signature} />
-          </Animated.View>
+          </View>
         ) : null}
         <InfoRow
           icon="sms"
@@ -161,13 +160,13 @@ export default function TransactionDetail() {
           right={sms ? <Toggle label="Show" open={showSms} onPress={() => setShowSms((value) => !value)} /> : <T weight="bold" className="text-[13px] text-subtle">None</T>}
         />
         {showSms && sms ? (
-          <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-3">
+          <View className="pb-3">
             <View className="rounded-2xl bg-page p-3">
               <T weight="mono" className="text-[12px] text-ink-soft">
                 {sms.body}
               </T>
             </View>
-          </Animated.View>
+          </View>
         ) : null}
       </Card>
 

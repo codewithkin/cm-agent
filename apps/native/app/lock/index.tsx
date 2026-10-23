@@ -2,7 +2,6 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar, Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -13,7 +12,6 @@ import { T } from "@/components/ui/text";
 import { deviceStore } from "@/lib/device";
 import { clock, dayLabel, initials, toDate } from "@/lib/format";
 import { useLocalSettings, useRows, type LocalUser } from "@/lib/local-db";
-import { enterUp, layout } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { syncNow } from "@/lib/sync";
 
@@ -24,7 +22,7 @@ function HelperCard({ user, servingSince, lastShift, index }: {
   index: number;
 }) {
   return (
-    <Animated.View entering={enterUp(index)} layout={layout} className="flex-1">
+    <View className="flex-1">
       <Tap
         onPress={() => router.push({ pathname: "/lock/[userId]", params: { userId: user.id } })}
         accessibilityLabel={`${user.name}, enter PIN`}
@@ -50,7 +48,7 @@ function HelperCard({ user, servingSince, lastShift, index }: {
           </View>
         )}
       </Tap>
-    </Animated.View>
+    </View>
   );
 }
 
@@ -78,7 +76,7 @@ export default function WhoIsServing() {
 
   return (
     <Screen>
-      <Animated.View entering={enterUp(0)} className="flex-row items-center gap-2">
+      <View className="flex-row items-center gap-2">
         <View className="w-8 h-8 rounded-lg bg-ink items-center justify-center">
           <T weight="heavy" className="text-[11px] text-sun">
             CM
@@ -88,13 +86,13 @@ export default function WhoIsServing() {
           {name}
         </T>
         <SyncChip />
-      </Animated.View>
+      </View>
 
-      <Animated.View entering={enterUp(1)}>
+      <View>
         <T weight="heavy" className="text-[30px] tracking-tight mt-6 mb-2">
           Who is serving?
         </T>
-      </Animated.View>
+      </View>
 
       {users.length === 0 ? (
         <Card index={2} className="items-center py-8">
@@ -121,7 +119,7 @@ export default function WhoIsServing() {
       ) : null}
 
       {owner ? (
-        <Animated.View entering={enterUp(helpers.length + 2)}>
+        <View>
           <Tap
             onPress={() => router.push({ pathname: "/lock/[userId]", params: { userId: owner.id } })}
             scaleTo={0.98}
@@ -143,7 +141,7 @@ export default function WhoIsServing() {
             </View>
             <Icon name="chevron-right" size={22} className="text-subtle" />
           </Tap>
-        </Animated.View>
+        </View>
       ) : null}
     </Screen>
   );

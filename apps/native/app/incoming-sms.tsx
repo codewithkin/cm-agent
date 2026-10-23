@@ -1,6 +1,5 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -13,7 +12,6 @@ import { TypeTile } from "@/components/ui/transaction-row";
 import { deviceStore } from "@/lib/device";
 import { amount, initials, maskPhone } from "@/lib/format";
 import { useRows } from "@/lib/local-db";
-import { DURATION, sheetIn, sheetOut } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { incomingSmsStore } from "@/lib/sms";
 
@@ -42,17 +40,13 @@ export default function IncomingSms() {
 
   return (
     <View className="flex-1 justify-end">
-      <Animated.View
-        entering={FadeIn.duration(DURATION.base)}
-        exiting={FadeOut.duration(DURATION.fast)}
+      <View
         className="absolute inset-0 bg-black/40"
       >
         <Tap feedback={false} scaleTo={1} className="flex-1" onPress={close} accessibilityLabel="Close" />
-      </Animated.View>
+      </View>
 
-      <Animated.View
-        entering={sheetIn}
-        exiting={sheetOut}
+      <View
         className="bg-page rounded-t-[32px] px-4 pt-3 gap-3"
         style={{ paddingBottom: insets.bottom + 16 }}
       >
@@ -121,7 +115,7 @@ export default function IncomingSms() {
           <Button label="Later" icon="schedule" variant="outline" className="flex-1" onPress={close} />
           <Button variant="success" label="Save it" icon="arrow-forward" className="flex-[1.4]" onPress={save} />
         </View>
-      </Animated.View>
+      </View>
     </View>
   );
 }

@@ -1,6 +1,5 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -9,7 +8,7 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { useOpenShift } from "@/lib/booth";
 import { clock } from "@/lib/format";
-import { enterUp, haptic, popIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { verifyOwnerPin } from "@/lib/pin";
 import { sessionStore } from "@/lib/session";
 
@@ -51,20 +50,20 @@ export default function OwnerPin() {
       }}
     >
       <View className="flex-1 justify-between pb-6">
-        <Animated.View entering={popIn} className="items-center gap-2 mt-4">
+        <View className="items-center gap-2 mt-4">
           <Avatar label="CM" owner size={72} />
           <T weight="heavy" className="text-[22px]">
             Coline counts the money
           </T>
-          <Animated.View entering={enterUp(1)} className="items-center">
+          <View className="items-center">
             <T weight="semibold" className="text-subtle text-center">
               Only Coline can {next === "end" ? "end" : "start"} a shift.
             </T>
             <T weight="semibold" className="text-subtle text-center">
               Coline, enter your PIN.
             </T>
-          </Animated.View>
-        </Animated.View>
+          </View>
+        </View>
         <PinPad onComplete={submit} />
       </View>
     </Screen>

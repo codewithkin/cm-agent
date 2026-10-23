@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useMemo, useState } from "react";
 import { ScrollView, Share, View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
 
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -14,7 +13,7 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { amount, clock, initials, localDateKey, monthLabel, wholeAmount } from "@/lib/format";
 import { reportHtml, sharePdf } from "@/lib/export";
-import { DURATION, enterUp, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { trpc } from "@/utils/trpc";
@@ -124,7 +123,7 @@ export default function DayReport() {
 
       <LiveState query={report}>
         {data && money ? (
-          <Animated.View key={date} entering={FadeIn.duration(DURATION.base)} className="gap-3">
+          <View key={date} className="gap-3">
             <Card index={0} className="bg-ink border-0">
               <T weight="heavy" className="text-white text-[18px]">
                 {data.shifts.length} shifts · {data.totals.transactionCount} transactions
@@ -204,7 +203,7 @@ export default function DayReport() {
 
             <Card index={3} title="By person">
               {data.perHelper.map((row, index) => (
-                <Animated.View key={row.userId} entering={enterUp(index)} className="flex-row items-center">
+                <View key={row.userId} className="flex-row items-center">
                   <View className="flex-1 flex-row items-center gap-2">
                     <Avatar label={initials(row.name)} size={28} />
                     <T weight="bold" className="text-[13px]">
@@ -217,7 +216,7 @@ export default function DayReport() {
                   <T weight="heavy" className="w-28 text-right">
                     USD {wholeAmount(row.summary.USD.cashInValue + row.summary.USD.cashOutValue)}
                   </T>
-                </Animated.View>
+                </View>
               ))}
               {data.perHelper.length === 0 ? (
                 <T weight="semibold" className="text-subtle text-[13px]">
@@ -225,7 +224,7 @@ export default function DayReport() {
                 </T>
               ) : null}
             </Card>
-          </Animated.View>
+          </View>
         ) : null}
       </LiveState>
     </Screen>

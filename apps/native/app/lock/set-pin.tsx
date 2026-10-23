@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated, { SlideInRight, SlideOutLeft } from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -11,7 +10,7 @@ import { Stepper } from "@/components/ui/stepper";
 import { T } from "@/components/ui/text";
 import { initials } from "@/lib/format";
 import { lockNow } from "@/lib/idle-lock";
-import { DURATION, haptic, popIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { onlineStore } from "@/lib/network";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
@@ -49,26 +48,22 @@ export default function SetPin() {
       <View className="flex-1 justify-between pb-4">
         <View className="gap-6">
           <Stepper steps={["New PIN", "Confirm"]} current={step} />
-          <Animated.View entering={popIn} className="items-center gap-2">
+          <View className="items-center gap-2">
             <View className="w-12 h-12 rounded-full bg-leaf-soft items-center justify-center">
               <Icon name="key" size={24} className="text-leaf" />
             </View>
-            <Animated.View
-              key={step}
-              entering={SlideInRight.duration(DURATION.base)}
-              exiting={SlideOutLeft.duration(DURATION.fast)}
-            >
+            <View key={step}>
               <T weight="heavy" className="text-[22px] text-center">
                 {step === 0 ? "Choose your own PIN" : "Enter your new PIN again"}
               </T>
-            </Animated.View>
+            </View>
             <View className="flex-row items-center gap-2">
               <Avatar label={initials(session.user.name)} size={24} />
               <T weight="semibold" className="text-subtle">
                 {session.user.name}
               </T>
             </View>
-          </Animated.View>
+          </View>
         </View>
         <PinPad
           key={step}

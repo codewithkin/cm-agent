@@ -1,20 +1,18 @@
 import { router } from "expo-router";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
-import { popIn } from "@/lib/motion";
 
 export default function NotFoundScreen() {
   return (
     <Screen scroll={false} footer={<Button label="Go home" icon="home" onPress={() => router.replace("/")} />}>
       <View className="flex-1 items-center justify-center gap-3">
-        <Animated.View entering={popIn} className="w-20 h-20 rounded-full bg-lilac items-center justify-center">
+        <View className="w-20 h-20 rounded-full bg-lilac items-center justify-center">
           <Icon name="explore-off" size={36} className="text-lilac-ink" />
-        </Animated.View>
+        </View>
         <T weight="heavy" className="text-[22px]">
           Page not found
         </T>

@@ -2,16 +2,7 @@ import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
-import Animated, {
-  FadeIn,
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withTiming,
-  ZoomIn,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Icon } from "@/components/ui/icon";
@@ -28,7 +19,7 @@ function Blob({ className, delay, style }: { className: string; delay: number; s
     );
   }, [delay, drift]);
   const animated = useAnimatedStyle(() => ({ transform: [{ translateY: drift.value * -10 }, { rotate: `${drift.value * 6}deg` }] }));
-  return <Animated.View entering={FadeIn.delay(delay).duration(500)} className={className} style={[style, animated]} />;
+  return <Animated.View className={className} style={[style, animated]} />;
 }
 
 /** A1 Splash: logo lockup placeholder, then on to owner sign-in. */
@@ -48,14 +39,13 @@ export default function Splash() {
       <Blob className="absolute w-36 h-52 rounded-[80px] bg-lilac-strong" style={{ right: -50, top: "44%" }} delay={300} />
 
       <Animated.View
-        entering={ZoomIn.springify().damping(12)}
         className="w-28 h-28 rounded-[32px] bg-ink items-center justify-center"
       >
         <T weight="heavy" className="text-[40px] text-sun">
           CM
         </T>
       </Animated.View>
-      <Animated.View entering={FadeIn.delay(250).duration(400)} className="items-center mt-5">
+      <Animated.View className="items-center mt-5">
         <T weight="heavy" className="text-[26px] tracking-tight">
           {businessName}
         </T>
@@ -65,7 +55,6 @@ export default function Splash() {
       </Animated.View>
 
       <Animated.View
-        entering={FadeIn.delay(600).duration(400)}
         className="absolute flex-row items-center gap-1"
         style={{ bottom: insets.bottom + 24 }}
       >

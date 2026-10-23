@@ -2,7 +2,6 @@ import { normalizePhone } from "@cm-agent/api/lib/phone";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
-import Animated, { SlideInLeft, SlideInRight, SlideOutLeft, SlideOutRight } from "react-native-reanimated";
 
 import { NoShiftCard } from "@/components/booth/no-shift-card";
 import { CustomerStep } from "@/components/transaction/customer-step";
@@ -24,7 +23,7 @@ import { useOpenShift, useShiftBalances, useUnrecordedSms } from "@/lib/booth";
 import { deviceStore } from "@/lib/device";
 import { amount, toDate } from "@/lib/format";
 import { localDb } from "@/lib/local-db";
-import { DURATION, enterUp, exitFade, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { smsReaderStore, suppressIncomingSheet } from "@/lib/sms";
@@ -69,7 +68,6 @@ export default function NewTransaction() {
     params.smsId ? draftFromSms(params.smsId) : { ...EMPTY_DRAFT, type: params.type ?? "CASH_OUT" },
   );
   const [step, setStep] = useState(params.smsId ? 1 : 0);
-  const [direction, setDirection] = useState<1 | -1>(1);
   const [askingWhy, setAskingWhy] = useState(false);
   const update = (patch: Partial<Draft>) => setDraft((current) => ({ ...current, ...patch }));
 
@@ -125,7 +123,6 @@ export default function NewTransaction() {
   const cashAfter = balances ? balances[cashKey] + (cashOut ? -cents : cents) : null;
 
   function go(next: number) {
-    setDirection(next > step ? 1 : -1);
     setStep(next);
   }
 
@@ -166,9 +163,6 @@ export default function NewTransaction() {
       <Button variant="success" label="Save" icon="check" disabled={!draft.signature || !draftPhone(draft)} onPress={save} />
     );
 
-  const enter = direction === 1 ? SlideInRight : SlideInLeft;
-  const exit = direction === 1 ? SlideOutLeft : SlideOutRight;
-
   return (
     <Screen
       header={{
@@ -181,7 +175,7 @@ export default function NewTransaction() {
     >
       <Stepper steps={STEPS} current={step} />
 
-      <Animated.View key={step} entering={enter.duration(DURATION.base)} exiting={exit.duration(DURATION.fast)} className="gap-3">
+      <View key={step} className="gap-3">
         {step === 0 ? (
           <>
             <View className="flex-row gap-2">
@@ -209,7 +203,7 @@ export default function NewTransaction() {
               <>
                 <SmsWait received={arrived} waitingSince={openedAt} currency={draft.currency} cents={cents} />
                 {!arrived ? (
-                  <Animated.View entering={enterUp(0)} exiting={exitFade} className="flex-row items-center gap-2 px-2">
+                  <View className="flex-row items-center gap-2 px-2">
                     <Icon
                       name={smsReader === "unavailable" ? "sms-failed" : "touch-app"}
                       size={16}
@@ -220,22 +214,22 @@ export default function NewTransaction() {
                         ? "This phone can't read SMS. Check the SMS on the agent line, then save without SMS."
                         : "When Android asks to read the EcoCash SMS, tap Allow."}
                     </T>
-                  </Animated.View>
+                  </View>
                 ) : null}
               </>
             ) : null}
             {draft.manual ? (
-              <Animated.View entering={enterUp(0)} className="flex-row items-center gap-2 p-3 rounded-2xl bg-line">
+              <View className="flex-row items-center gap-2 p-3 rounded-2xl bg-line">
                 <Icon name="flag" size={18} className="text-ink-soft" />
                 <T weight="bold" className="flex-1 text-[13px] text-ink-soft">
                   Saving without SMS · Coline will check it
                 </T>
-              </Animated.View>
+              </View>
             ) : null}
 
             <AmountDisplay text={draft.amountText} currency={draft.currency} />
             {isOwner && cashAfter !== null && cents > 0 ? (
-              <Animated.View entering={enterUp(0)} exiting={exitFade} className="flex-row items-center justify-center gap-1.5">
+              <View className="flex-row items-center justify-center gap-1.5">
                 <Icon name="payments" size={16} className={cashAfter < 0 ? "text-alarm" : "text-subtle"} />
                 <T weight="bold" className={cashAfter < 0 ? "text-[13px] text-alarm" : "text-[13px] text-subtle"}>
                   Cash left after:
@@ -244,7 +238,7 @@ export default function NewTransaction() {
                 <T weight="heavy" className="text-[13px]">
                   {amount(cashAfter)}
                 </T>
-              </Animated.View>
+              </View>
             ) : null}
 
             {askingWhy ? (
@@ -286,7 +280,7 @@ export default function NewTransaction() {
         ) : null}
 
         {step === 2 ? <SignStep draft={draft} update={update} /> : null}
-      </Animated.View>
+      </View>
     </Screen>
   );
 }

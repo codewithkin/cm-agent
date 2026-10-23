@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useState, type ReactNode } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { DemoDataCard } from "@/components/owner/demo-data-card";
 import { LiveState } from "@/components/owner/live-state";
@@ -19,7 +18,7 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { amount, wholeAmount } from "@/lib/format";
 import { saveSettings } from "@/lib/local-db";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { trpc, trpcClient, type RouterInputs } from "@/utils/trpc";
 
 type Update = RouterInputs["settings"]["update"];
@@ -40,7 +39,7 @@ function Row({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <Animated.View layout={layout} className={cn(!first && "border-t border-line")}>
+    <View className={cn(!first && "border-t border-line")}>
       <Tap onPress={() => children && setOpen((value) => !value)} scaleTo={0.99} className="flex-row items-center gap-3 py-3.5">
         <Icon name={icon} size={20} className="text-subtle" />
         <T weight="bold" className="flex-1 text-[14px]">
@@ -52,11 +51,11 @@ function Row({
         {children ? <Icon name={open ? "expand-less" : "chevron-right"} size={20} className="text-subtle" /> : null}
       </Tap>
       {open && children ? (
-        <Animated.View entering={enterUp(0)} exiting={exitFade} className="pb-3 gap-2">
+        <View className="pb-3 gap-2">
           {children(() => setOpen(false))}
-        </Animated.View>
+        </View>
       ) : null}
-    </Animated.View>
+    </View>
   );
 }
 
@@ -177,7 +176,7 @@ export default function Settings() {
                 <Button label="Test" size="md" disabled={!testSms.trim()} loading={preview.isPending} onPress={() => preview.mutate(testSms)} />
               </View>
               {preview.data ? (
-                <Animated.View entering={enterUp(0)} className="p-3 rounded-2xl bg-page gap-1.5">
+                <View className="p-3 rounded-2xl bg-page gap-1.5">
                   <StatusChip status={preview.data.status === "PARSED" ? "MATCHED" : preview.data.status === "PARTIAL" ? "NO_SMS" : "MISMATCH"} />
                   <T weight="bold" className="text-[13px]">
                     {preview.data.type === "CASH_IN" ? "Cash-in" : preview.data.type === "CASH_OUT" ? "Cash-out" : "Type not found"}
@@ -192,7 +191,7 @@ export default function Settings() {
                     Phone {preview.data.counterpartyPhone ?? "—"} · Ref {preview.data.reference ?? "—"}
                     {preview.data.balanceAfter !== null ? ` · Balance ${amount(preview.data.balanceAfter)}` : ""}
                   </T>
-                </Animated.View>
+                </View>
               ) : null}
               <T weight="semibold" className="text-[12px] text-subtle">
                 Senders read as EcoCash: {data.smsSenders.join(", ")}

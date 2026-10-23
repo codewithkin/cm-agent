@@ -1,7 +1,6 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Button } from "@/components/ui/button";
 import { Banner } from "@/components/ui/card";
@@ -10,7 +9,7 @@ import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { localDb } from "@/lib/local-db";
-import { enterUp, haptic, popIn } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { onlineStore } from "@/lib/network";
 import { useObservable } from "@/lib/observable";
 import { syncNow } from "@/lib/sync";
@@ -31,9 +30,9 @@ export default function ForgotPin() {
     return (
       <Screen scroll={false} header={{ title: "Forgot PIN", leading: "back" }}>
         <View className="flex-1 items-center justify-center gap-4 px-4">
-          <Animated.View entering={popIn} className="w-20 h-20 rounded-full bg-lilac items-center justify-center">
+          <View className="w-20 h-20 rounded-full bg-lilac items-center justify-center">
             <Icon name="support-agent" size={36} className="text-lilac-ink" />
-          </Animated.View>
+          </View>
           <T weight="heavy" className="text-[22px] text-center">
             Ask Coline for a new PIN
           </T>
@@ -76,7 +75,7 @@ export default function ForgotPin() {
         />
       }
     >
-      <Animated.View entering={enterUp(0)} className="gap-4">
+      <View className="gap-4">
         <Field label="Phone number" icon="call" prefix="+263" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
         <Field label="Password" icon="lock" secret value={password} onChangeText={setPassword} />
         <Field
@@ -88,7 +87,7 @@ export default function ForgotPin() {
           value={pin}
           onChangeText={(text) => setPin(text.replace(/\D/g, ""))}
         />
-      </Animated.View>
+      </View>
       {!online ? <Banner tone="danger" icon="wifi-off" text="You need internet to reset your PIN." /> : null}
       {error ? <Banner tone="danger" icon="error" text={error} /> : null}
     </Screen>

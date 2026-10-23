@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { SetupSteps } from "@/components/setup-steps";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,6 @@ import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
-import { enterUp } from "@/lib/motion";
 import { onlineStore } from "@/lib/network";
 import { useObservable } from "@/lib/observable";
 import { setupDraft } from "@/lib/setup-draft";
@@ -41,7 +39,7 @@ export default function OwnerSignIn() {
     >
       <SetupSteps current={0} />
 
-      <Animated.View entering={enterUp(1)} className="gap-2 mt-4">
+      <View className="gap-2 mt-4">
         <View className="w-12 h-12 rounded-2xl bg-sun-soft items-center justify-center">
           <Icon name="admin-panel-settings" size={26} className="text-sun-ink" />
         </View>
@@ -51,9 +49,9 @@ export default function OwnerSignIn() {
         <T weight="semibold" className="text-subtle">
           Done once per phone.
         </T>
-      </Animated.View>
+      </View>
 
-      <Animated.View entering={enterUp(2)} className="gap-4 mt-2">
+      <View className="gap-4 mt-2">
         <Field
           label="Phone number"
           icon="call"
@@ -74,15 +72,15 @@ export default function OwnerSignIn() {
           onChangeText={setPassword}
           returnKeyType="go"
         />
-      </Animated.View>
+      </View>
 
-      <Animated.View entering={enterUp(3)}>
+      <View>
         <Banner
           tone={online ? "lilac" : "danger"}
           icon={online ? "wifi" : "wifi-off"}
           text={online ? "You need internet for this step only." : "No internet. Connect to finish setting up this phone."}
         />
-      </Animated.View>
+      </View>
     </Screen>
   );
 }

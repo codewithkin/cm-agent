@@ -13,7 +13,6 @@ import { TypeTile } from "@/components/ui/transaction-row";
 import { statusOf, useOpenShift, useShiftTransactions, useSummary } from "@/lib/booth";
 import { amount, clock, maskPhone } from "@/lib/format";
 import { localDb } from "@/lib/local-db";
-import { enterUp, popIn } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -58,17 +57,17 @@ export default function Saved() {
     <View className="flex-1 bg-sun" style={{ paddingTop: insets.top + 24, paddingBottom: insets.bottom + 12 }}>
       <View className="flex-1 px-4 gap-4">
         <View className="items-center gap-3">
-          <Animated.View entering={popIn} className="w-24 h-24 rounded-full bg-ink items-center justify-center">
+          <Animated.View className="w-24 h-24 rounded-full bg-ink items-center justify-center">
             <Icon name="check" size={52} className="text-sun" />
           </Animated.View>
-          <Animated.View entering={enterUp(1)}>
+          <Animated.View>
             <T weight="heavy" className="text-[32px] tracking-tight">
               Saved
             </T>
           </Animated.View>
         </View>
 
-        <Animated.View entering={enterUp(2)} className="bg-white rounded-3xl p-3.5 gap-3">
+        <Animated.View className="bg-white rounded-3xl p-3.5 gap-3">
           <View className="flex-row items-center gap-3">
             <TypeTile type={tx.type} size={44} />
             <View className="flex-1 gap-1">
@@ -91,7 +90,7 @@ export default function Saved() {
           </View>
         </Animated.View>
 
-        <Animated.View entering={enterUp(3)} className="bg-white/70 rounded-3xl p-3.5 gap-2">
+        <Animated.View className="bg-white/70 rounded-3xl p-3.5 gap-2">
           <T weight="heavy">My shift today</T>
           <View className="flex-row gap-2">
             <Stat label="Cash out">

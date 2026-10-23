@@ -4,7 +4,6 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { useMemo } from "react";
 import { ActivityIndicator, View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { LiveState } from "@/components/owner/live-state";
 import { Avatar } from "@/components/ui/card";
@@ -13,7 +12,6 @@ import { Screen } from "@/components/ui/screen";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { clock, dayLabel, initials, localDateKey } from "@/lib/format";
-import { enterUp } from "@/lib/motion";
 import { trpc, type RouterOutputs } from "@/utils/trpc";
 
 type Shift = RouterOutputs["shifts"]["list"]["items"][number];
@@ -36,7 +34,7 @@ export default function Shifts() {
     <Screen header={{ title: "Shift history", subtitle: "Newest first" }}>
       <LiveState query={list}>
         {days.map(([day, shifts], dayIndex) => (
-          <Animated.View key={day} entering={enterUp(dayIndex)} className="gap-1">
+          <View key={day} className="gap-1">
             <T weight="heavy" className="text-[12px] text-subtle px-1">
               {dayLabel(shifts[0]!.openedAt)}
             </T>
@@ -86,7 +84,7 @@ export default function Shifts() {
                 );
               })}
             </View>
-          </Animated.View>
+          </View>
         ))}
         {list.hasNextPage ? (
           <Tap onPress={() => void list.fetchNextPage()} className="h-12 rounded-full bg-white border border-line items-center justify-center">

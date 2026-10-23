@@ -1,14 +1,7 @@
 import { router } from "expo-router";
 import { useEffect } from "react";
 import { View } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from "react-native-reanimated";
 
 import { SetupSteps } from "@/components/setup-steps";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
@@ -19,7 +12,7 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { TypeTile } from "@/components/ui/transaction-row";
 import { deviceStore } from "@/lib/device";
-import { enterUp, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { ensureNotificationPermission } from "@/lib/notifications";
 
@@ -104,13 +97,13 @@ export default function SmsPermission() {
         </View>
       </Card>
 
-      <Animated.View entering={enterUp(2)}>
+      <Animated.View>
         <T weight="heavy" className="text-[24px] tracking-tight">
           Let the app read EcoCash SMS
         </T>
       </Animated.View>
       {POINTS.map((point, index) => (
-        <Animated.View key={point.text} entering={enterUp(index + 3)} className="flex-row items-center gap-3">
+        <Animated.View key={point.text} className="flex-row items-center gap-3">
           <View className="w-9 h-9 rounded-full bg-leaf-soft items-center justify-center">
             <Icon name={point.icon} size={18} className="text-leaf" />
           </View>

@@ -3,7 +3,6 @@ import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { SetupSteps } from "@/components/setup-steps";
 import { Button } from "@/components/ui/button";
@@ -13,7 +12,7 @@ import { Screen } from "@/components/ui/screen";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { saveDevice, type DeviceKind } from "@/lib/device";
-import { enterUp, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { clearSetupDraft, setupDraft } from "@/lib/setup-draft";
 import { syncNow } from "@/lib/sync";
 import { trpcClient } from "@/utils/trpc";
@@ -67,16 +66,16 @@ export default function ChoosePhone() {
       footer={<Button label="Continue" icon="arrow-forward" loading={saving} onPress={register} />}
     >
       <SetupSteps current={1} />
-      <Animated.View entering={enterUp(1)}>
+      <View>
         <T weight="heavy" className="text-[26px] tracking-tight mt-4">
           What is this phone?
         </T>
-      </Animated.View>
+      </View>
 
       {CHOICES.map((choice, index) => {
         const active = index === selected;
         return (
-          <Animated.View key={choice.label} entering={enterUp(index + 2)} layout={layout}>
+          <View key={choice.label}>
             <Tap
               onPress={() => {
                 haptic.select();
@@ -111,7 +110,7 @@ export default function ChoosePhone() {
                 className={active ? "text-ink" : "text-line-strong"}
               />
             </Tap>
-          </Animated.View>
+          </View>
         );
       })}
 

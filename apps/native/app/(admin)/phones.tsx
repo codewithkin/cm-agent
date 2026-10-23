@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { LiveState } from "@/components/owner/live-state";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,7 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { deviceStore } from "@/lib/device";
 import { clock } from "@/lib/format";
-import { enterUp, exitFade, haptic, layout } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { outboxStore } from "@/lib/outbox";
 import { syncNow, syncStore } from "@/lib/sync";
@@ -49,9 +48,7 @@ function PhoneCard({ phone, index, isThis }: { phone: Phone; index: number; isTh
       : { label: "No internet", icon: "cloud-off" as const, box: "bg-amber-soft", ink: "text-amber-ink" };
 
   return (
-    <Animated.View
-      entering={enterUp(index)}
-      layout={layout}
+    <View
       className={cn("bg-white rounded-3xl p-3.5 gap-3 border-2", !upToDate && !isThis ? "border-sun" : "border-line")}
     >
       <View className="flex-row items-center gap-3">
@@ -104,7 +101,7 @@ function PhoneCard({ phone, index, isThis }: { phone: Phone; index: number; isTh
 
       {!isThis ? (
         confirming ? (
-          <Animated.View entering={enterUp(0)} exiting={exitFade} className="gap-2 p-3 rounded-2xl bg-alarm-soft">
+          <View className="gap-2 p-3 rounded-2xl bg-alarm-soft">
             <T weight="heavy" className="text-alarm-ink">
               Sign out {phone.label}? Only do this if it's lost or stolen.
             </T>
@@ -112,12 +109,12 @@ function PhoneCard({ phone, index, isThis }: { phone: Phone; index: number; isTh
               <Button label="Keep it" size="md" variant="light" className="flex-1" onPress={() => setConfirming(false)} />
               <Button variant="destructive" label="Sign out" size="md" className="flex-1" loading={revoke.isPending} onPress={() => revoke.mutate()} />
             </View>
-          </Animated.View>
+          </View>
         ) : (
           <Button label="Lost this phone?" icon="phonelink-erase" size="sm" variant="ghost" onPress={() => setConfirming(true)} />
         )
       ) : null}
-    </Animated.View>
+    </View>
   );
 }
 

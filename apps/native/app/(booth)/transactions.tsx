@@ -1,7 +1,6 @@
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { rowOf } from "@/components/booth/recent-card";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -17,7 +16,6 @@ import { TransactionRow } from "@/components/ui/transaction-row";
 import { useOpenShift, useShiftTransactions, useSummary } from "@/lib/booth";
 import { amount, toDate } from "@/lib/format";
 import type { LocalTransaction } from "@/lib/local-db";
-import { enterUp, layout } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -126,15 +124,15 @@ export default function Transactions() {
       <Field icon="search" placeholder="Search name, phone or reference" value={search} onChangeText={setSearch} />
 
       {groups.length === 0 ? (
-        <Animated.View entering={enterUp(2)} className="items-center py-10 gap-2">
+        <View className="items-center py-10 gap-2">
           <Icon name={tab === "PROBLEMS" ? "task-alt" : "receipt-long"} size={36} className="text-line-strong" />
           <T weight="semibold" className="text-subtle">
             {tab === "PROBLEMS" ? "No problems. Everything matches." : search || filter !== "ALL" ? "Nothing matches" : "No transactions yet this shift"}
           </T>
-        </Animated.View>
+        </View>
       ) : (
         groups.map(([label, rows], groupIndex) => (
-          <Animated.View key={label} layout={layout} entering={enterUp(groupIndex + 2)} className="gap-1">
+          <View key={label} className="gap-1">
             <T weight="heavy" className="text-[12px] text-subtle px-1">
               {label}
             </T>
@@ -149,7 +147,7 @@ export default function Transactions() {
                 />
               ))}
             </View>
-          </Animated.View>
+          </View>
         ))
       )}
     </Screen>

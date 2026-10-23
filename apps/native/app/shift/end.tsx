@@ -3,7 +3,6 @@ import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { cn } from "heroui-native";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
-import Animated, { SlideInLeft, SlideInRight, SlideOutLeft, SlideOutRight } from "react-native-reanimated";
 
 import { CountingChip } from "@/components/booth/counting-chip";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -20,7 +19,7 @@ import { useOpenShift, useShiftBalances, useShiftTransactions, useUnrecordedSms 
 import { deviceStore } from "@/lib/device";
 import { amount, clock, toDate } from "@/lib/format";
 import { localDb, useLocalSettings, useRows } from "@/lib/local-db";
-import { DURATION, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -54,7 +53,6 @@ export default function EndShift() {
   const floatFromSms = { USD: latest("USD"), ZIG: latest("ZIG") };
 
   const [step, setStep] = useState(0);
-  const [direction, setDirection] = useState<1 | -1>(1);
   const [endAnyway, setEndAnyway] = useState(false);
   const [note, setNote] = useState("");
   const [counted, setCounted] = useState<Balances>(() => ({
@@ -75,7 +73,6 @@ export default function EndShift() {
 
   const set = (key: keyof Balances) => (cents: number) => setCounted((current) => ({ ...current, [key]: cents }));
   const go = (next: number) => {
-    setDirection(next > step ? 1 : -1);
     setStep(next);
   };
   const customers = new Set(transactions.filter((tx) => !tx.voidedAt).map((tx) => tx.customerPhone)).size;
@@ -100,8 +97,6 @@ export default function EndShift() {
       <Button variant="success" label="End shift" icon="lock" disabled={outside.length > 0 && !note.trim()} onPress={finish} />
     );
 
-  const enter = direction === 1 ? SlideInRight : SlideInLeft;
-  const exit = direction === 1 ? SlideOutLeft : SlideOutRight;
   const opener = localDb.get().users[shift.openedById];
 
   return (
@@ -117,7 +112,7 @@ export default function EndShift() {
       <Stepper steps={["Cash", "EcoCash", "Check"]} current={step} />
       <CountingChip />
 
-      <Animated.View key={step} entering={enter.duration(DURATION.base)} exiting={exit.duration(DURATION.fast)} className="gap-3">
+      <View key={step} className="gap-3">
         {step === 0 ? (
           <>
             <T weight="heavy" className="text-[24px] tracking-tight">
@@ -233,7 +228,7 @@ export default function EndShift() {
             </Card>
           </>
         ) : null}
-      </Animated.View>
+      </View>
     </Screen>
   );
 }

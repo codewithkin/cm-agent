@@ -1,6 +1,5 @@
 import { router, type Href } from "expo-router";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/ui/icon";
@@ -10,7 +9,6 @@ import { T } from "@/components/ui/text";
 import { deviceStore } from "@/lib/device";
 import { initials } from "@/lib/format";
 import { lockNow } from "@/lib/idle-lock";
-import { enterUp } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -32,7 +30,7 @@ export default function More() {
 
   return (
     <Screen withTabBar header={{ title: "More", leading: null, large: true }}>
-      <Animated.View entering={enterUp(0)} className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-ink">
+      <View className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-ink">
         <Avatar label={initials(session?.user.name ?? "CM")} owner />
         <View className="flex-1">
           <T weight="heavy" className="text-white">
@@ -42,10 +40,10 @@ export default function More() {
             Owner · {device?.label}
           </T>
         </View>
-      </Animated.View>
+      </View>
 
       {device?.kind === "BOOTH" ? (
-        <Animated.View entering={enterUp(1)}>
+        <View>
           <Tap onPress={() => router.replace("/home")} className="flex-row items-center gap-3 p-3.5 rounded-3xl bg-sun">
             <Icon name="storefront" size={22} />
             <T weight="heavy" className="flex-1">
@@ -53,12 +51,12 @@ export default function More() {
             </T>
             <Icon name="chevron-right" size={22} />
           </Tap>
-        </Animated.View>
+        </View>
       ) : null}
 
       <View className="bg-white rounded-3xl border border-line px-3.5">
         {ITEMS.map((item, index) => (
-          <Animated.View key={item.label} entering={enterUp(index + 2)}>
+          <View key={item.label}>
             <Tap
               onPress={() => router.push(item.href)}
               scaleTo={0.98}
@@ -77,18 +75,18 @@ export default function More() {
               </View>
               <Icon name="chevron-right" size={22} className="text-subtle" />
             </Tap>
-          </Animated.View>
+          </View>
         ))}
       </View>
 
-      <Animated.View entering={enterUp(ITEMS.length + 2)}>
+      <View>
         <Tap onPress={lockNow} className="flex-row items-center justify-center gap-2 h-12 rounded-full bg-white border border-line">
           <Icon name="lock" size={18} />
           <T weight="heavy" className="text-[14px]">
             Lock the app
           </T>
         </Tap>
-      </Animated.View>
+      </View>
     </Screen>
   );
 }

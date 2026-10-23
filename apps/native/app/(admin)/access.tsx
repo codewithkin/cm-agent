@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { Avatar, Banner, Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
@@ -7,7 +6,6 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { initials } from "@/lib/format";
 import { useRows } from "@/lib/local-db";
-import { enterUp } from "@/lib/motion";
 
 const RULES: { label: string; helpers: boolean }[] = [
   { label: "Serve customers", helpers: true },
@@ -35,14 +33,14 @@ export default function Access() {
   return (
     <Screen header={{ title: "Who can see what", subtitle: "Set by Coline" }}>
       <View className="flex-row gap-2">
-        <Animated.View entering={enterUp(0)} className="flex-1 rounded-3xl bg-sun-soft p-3.5 gap-2">
+        <View className="flex-1 rounded-3xl bg-sun-soft p-3.5 gap-2">
           <Avatar label="CM" owner />
           <T weight="heavy">Coline</T>
           <T weight="semibold" className="text-[12px] text-sun-ink">
             Sees and does everything
           </T>
-        </Animated.View>
-        <Animated.View entering={enterUp(1)} className="flex-1 rounded-3xl bg-lilac p-3.5 gap-2">
+        </View>
+        <View className="flex-1 rounded-3xl bg-lilac p-3.5 gap-2">
           <View className="flex-row">
             {helpers.slice(0, 3).map((helper, index) => (
               <View key={helper.id} style={{ marginLeft: index ? -10 : 0 }}>
@@ -54,7 +52,7 @@ export default function Access() {
           <T weight="semibold" className="text-[12px] text-lilac-ink">
             See only their own work
           </T>
-        </Animated.View>
+        </View>
       </View>
 
       <Card index={2} className="gap-0 py-1">
@@ -68,9 +66,8 @@ export default function Access() {
           </T>
         </View>
         {RULES.map((rule, index) => (
-          <Animated.View
+          <View
             key={rule.label}
-            entering={enterUp(index + 3)}
             className={index < RULES.length - 1 ? "flex-row items-center py-3 border-b border-line" : "flex-row items-center py-3"}
           >
             <T weight="bold" className="flex-1 text-[13px]">
@@ -82,7 +79,7 @@ export default function Access() {
             <View className="w-16 items-center">
               <Mark allowed={rule.helpers} />
             </View>
-          </Animated.View>
+          </View>
         ))}
       </Card>
 

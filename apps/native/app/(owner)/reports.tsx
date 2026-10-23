@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
-import Animated, { FadeIn } from "react-native-reanimated";
 
 import { BarChart } from "@/components/owner/bar-chart";
 import { LiveState } from "@/components/owner/live-state";
@@ -14,7 +13,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { T } from "@/components/ui/text";
 import { amount, initials, localDateKey, monthLabel, wholeAmount } from "@/lib/format";
 import { reportHtml, sharePdf } from "@/lib/export";
-import { DURATION, enterUp, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { trpc } from "@/utils/trpc";
@@ -102,7 +101,7 @@ export default function Reports() {
 
       <LiveState query={report}>
         {data ? (
-          <Animated.View key={month} entering={FadeIn.duration(DURATION.base)} className="gap-3">
+          <View key={month} className="gap-3">
             <Card index={1}>
               <T weight="bold" className="text-[12px] text-subtle">
                 Money handled · USD
@@ -141,7 +140,7 @@ export default function Reports() {
                   </T>
                 </View>
                 {data.perHelper.map((row, index) => (
-                  <Animated.View key={row.userId} entering={enterUp(index)} className="flex-row items-center">
+                  <View key={row.userId} className="flex-row items-center">
                     <View className="flex-1 flex-row items-center gap-2">
                       <Avatar label={initials(row.name)} size={28} />
                       <T weight="bold" className="text-[13px]">
@@ -154,7 +153,7 @@ export default function Reports() {
                     <T weight="heavy" className="w-28 text-right">
                       USD {wholeAmount(row.summary.USD.cashInValue + row.summary.USD.cashOutValue)}
                     </T>
-                  </Animated.View>
+                  </View>
                 ))}
                 <View className="flex-row items-center border-t border-line pt-2">
                   <T weight="heavy" className="flex-1">
@@ -171,13 +170,13 @@ export default function Reports() {
             ) : (
               <Card index={2} title="Top customers">
                 {data.topCustomers.map((customer, index) => (
-                  <Animated.View key={customer.phone} entering={enterUp(index)} className="flex-row items-center gap-2">
+                  <View key={customer.phone} className="flex-row items-center gap-2">
                     <Avatar label={initials(customer.name)} size={28} />
                     <T weight="bold" className="flex-1 text-[13px]">
                       {customer.name}
                     </T>
                     <T weight="heavy">{customer.count} visits</T>
-                  </Animated.View>
+                  </View>
                 ))}
               </Card>
             )}
@@ -194,7 +193,7 @@ export default function Reports() {
                 ))}
               </View>
             </Card>
-          </Animated.View>
+          </View>
         ) : null}
       </LiveState>
     </Screen>

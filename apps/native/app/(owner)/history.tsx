@@ -2,7 +2,6 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { LiveState } from "@/components/owner/live-state";
 import { IconButton } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import { T } from "@/components/ui/text";
 import { TransactionRow } from "@/components/ui/transaction-row";
 import { amount, clock, dayLabel, localDateKey, maskPhone } from "@/lib/format";
 import { shareCsv } from "@/lib/export";
-import { enterUp, haptic } from "@/lib/motion";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { trpc, trpcClient, type RouterOutputs } from "@/utils/trpc";
@@ -100,17 +99,17 @@ export default function History() {
 
       <LiveState query={list}>
         {days.length === 0 ? (
-          <Animated.View entering={enterUp(1)} className="items-center py-12 gap-2">
+          <View className="items-center py-12 gap-2">
             <Icon name="manage-search" size={40} className="text-line-strong" />
             <T weight="semibold" className="text-subtle">
               Nothing matches
             </T>
-          </Animated.View>
+          </View>
         ) : (
           days.map(([day, rows], dayIndex) => {
             const usdOut = rows.filter((tx) => !tx.voidedAt && tx.currency === "USD" && tx.type === "CASH_OUT").reduce((sum, tx) => sum + tx.amount, 0);
             return (
-              <Animated.View key={day} entering={enterUp(dayIndex)} className="gap-1">
+              <View key={day} className="gap-1">
                 <View className="flex-row justify-between px-1">
                   <T weight="heavy" className="text-[12px] text-subtle">
                     {day === localDateKey() ? `Today · ${dayLabel(rows[0]!.occurredAt)}` : dayLabel(rows[0]!.occurredAt)}
@@ -140,7 +139,7 @@ export default function History() {
                     />
                   ))}
                 </View>
-              </Animated.View>
+              </View>
             );
           })
         )}

@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { cn } from "heroui-native";
 import { View } from "react-native";
-import Animated from "react-native-reanimated";
 
 import { MoneyNowCard } from "@/components/booth/money-now-card";
 import { LiveState } from "@/components/owner/live-state";
@@ -13,7 +12,6 @@ import { Screen } from "@/components/ui/screen";
 import { SyncChip } from "@/components/ui/sync-chip";
 import { T } from "@/components/ui/text";
 import { amount, clock, greeting, initials } from "@/lib/format";
-import { enterUp } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { trpc } from "@/utils/trpc";
@@ -26,7 +24,7 @@ export default function Today() {
 
   return (
     <Screen withTabBar>
-      <Animated.View entering={enterUp(0)} className="flex-row items-center gap-2.5">
+      <View className="flex-row items-center gap-2.5">
         <Avatar label={initials(session?.user.name ?? "CM")} owner />
         <View className="flex-1">
           <T weight="semibold" className="text-[12px] text-subtle">
@@ -37,12 +35,12 @@ export default function Today() {
           </T>
         </View>
         <SyncChip />
-      </Animated.View>
+      </View>
 
       <LiveState query={today}>
         {data ? (
           <>
-            <Animated.View entering={enterUp(1)} className="bg-ink rounded-[28px] p-4 gap-3">
+            <View className="bg-ink rounded-[28px] p-4 gap-3">
               <T weight="bold" className="text-[12px] text-white/60">
                 Today · both phones
               </T>
@@ -69,7 +67,7 @@ export default function Today() {
                   </View>
                 ))}
               </View>
-            </Animated.View>
+            </View>
 
             {data.reviewCount > 0 ? (
               <Banner
