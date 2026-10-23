@@ -44,3 +44,24 @@ export function dateKeysInRange(range: DateRange): string[] {
   }
   return keys;
 }
+
+/** From the start of the first day to the end of the last day, both Zimbabwe dates. */
+export function periodRange(fromKey: string, toKey: string): DateRange {
+  return { start: dayRange(fromKey).start, end: dayRange(toKey).end };
+}
+
+/** The same number of days straight before a range, for "compared with last time". */
+export function previousRange(range: DateRange): DateRange {
+  const length = range.end.getTime() - range.start.getTime();
+  return { start: new Date(range.start.getTime() - length), end: range.start };
+}
+
+/** Hour of the day in Zimbabwe, 0 to 23. */
+export function harareHour(date: Date): number {
+  return new Date(date.getTime() + HARARE_OFFSET_MS).getUTCHours();
+}
+
+/** Day of the week in Zimbabwe: 0 is Monday, 6 is Sunday. */
+export function harareWeekday(date: Date): number {
+  return (new Date(date.getTime() + HARARE_OFFSET_MS).getUTCDay() + 6) % 7;
+}
