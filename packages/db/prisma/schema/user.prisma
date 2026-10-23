@@ -18,6 +18,8 @@ model User {
   transactions      Transaction[]
   movements         Movement[]
   auditEvents       AuditEvent[]
+  /// Sample data from "Add demo data"; removed by "Clear demo data".
+  isDemo            Boolean @default(false)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

@@ -16,5 +16,7 @@ model BusinessSettings {
   /// SMS senders treated as EcoCash confirmations, compared case-insensitively.
   smsSenders    String[] @default(["EcoCash"])
   retentionDays Int      @default(1825)
+  /// Set when data is wiped (e.g. demo data cleared); phones then reload their local copy.
+  dataResetAt   DateTime?
   updatedAt     DateTime @updatedAt
 }
