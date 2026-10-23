@@ -1,6 +1,6 @@
 import { router } from "../../index";
 import { day } from "./day";
-import { exportCsv } from "./export-csv";
+import { exportLog } from "./export-log";
 import { insights } from "./insights";
 import { logbook } from "./logbook";
 import { month } from "./month";
@@ -11,6 +11,6 @@ export const reportsRouter = router({
   day,
   month,
   insights,
-  exportCsv,
+  exportLog,
   logbook,
 });
