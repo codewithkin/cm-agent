@@ -155,7 +155,7 @@ export default function NewTransaction() {
       waitingForSms ? (
         <>
           <Button label="Wait for the SMS to pay" icon="lock" disabled />
-          <Button label="Save without SMS" icon="flag" variant="ghost" size="md" disabled={cents <= 0} onPress={() => setAskingWhy(true)} />
+          <Button variant="caution" label="Save without SMS" icon="flag" size="md" disabled={cents <= 0} onPress={() => setAskingWhy(true)} />
         </>
       ) : (
         <Button label="Next: customer" icon="arrow-forward" disabled={cents <= 0} onPress={() => go(1)} />
@@ -163,7 +163,7 @@ export default function NewTransaction() {
     ) : step === 1 ? (
       <Button label="Next: customer signs" icon="draw" disabled={!customerReady(draft)} onPress={() => go(2)} />
     ) : (
-      <Button label="Save" icon="check" disabled={!draft.signature || !draftPhone(draft)} onPress={save} />
+      <Button variant="success" label="Save" icon="check" disabled={!draft.signature || !draftPhone(draft)} onPress={save} />
     );
 
   const enter = direction === 1 ? SlideInRight : SlideInLeft;
@@ -256,6 +256,7 @@ export default function NewTransaction() {
                 <View className="flex-row gap-2">
                   <Button label="Cancel" variant="light" size="md" className="flex-1" onPress={() => setAskingWhy(false)} />
                   <Button
+                    variant="caution"
                     label="Continue"
                     size="md"
                     className="flex-1"

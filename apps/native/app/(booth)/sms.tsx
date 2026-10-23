@@ -78,6 +78,7 @@ function SmsCard({ sms, index, unrecorded }: { sms: LocalSms; index: number; unr
         <Button label={open ? "Hide SMS" : "View SMS"} variant="outline" size="md" className="flex-1" onPress={() => setOpen((value) => !value)} />
         {unrecorded ? (
           <Button
+            variant="success"
             label="Save"
             icon="add"
             size="md"

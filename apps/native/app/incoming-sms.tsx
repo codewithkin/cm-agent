@@ -119,7 +119,7 @@ export default function IncomingSms() {
 
         <View className="flex-row gap-2">
           <Button label="Later" icon="schedule" variant="outline" className="flex-1" onPress={close} />
-          <Button label="Save it" icon="arrow-forward" className="flex-[1.4]" onPress={save} />
+          <Button variant="success" label="Save it" icon="arrow-forward" className="flex-[1.4]" onPress={save} />
         </View>
       </Animated.View>
     </View>

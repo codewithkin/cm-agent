@@ -101,13 +101,13 @@ export default function TransactionDetail() {
           tx.voidedAt || editing || cancelling ? undefined : (
             <View className="flex-row gap-2">
               <Button label="Cancel it" icon="block" variant="danger" className="flex-1" disabled={!online} onPress={() => setCancelling(true)} />
-              <Button label="Edit" icon="edit" className="flex-1" disabled={!online} onPress={() => setEditing(true)} />
+              <Button variant="caution" label="Edit" icon="edit" className="flex-1" disabled={!online} onPress={() => setEditing(true)} />
             </View>
           )
         ) : reporting ? undefined : flagged ? (
           <Banner tone="amber" icon="flag" text={`Reported to Coline: "${tx.flagReason ?? ""}"`} />
         ) : (
-          <Button label="Report to Coline" icon="flag" variant="outline" onPress={() => setReporting(true)} />
+          <Button variant="caution" label="Report to Coline" icon="flag" onPress={() => setReporting(true)} />
         )
       }
     >
@@ -191,10 +191,11 @@ export default function TransactionDetail() {
           <View className="flex-row gap-2">
             <Button label="Keep it" variant="light" size="md" className="flex-1" onPress={() => setCancelling(false)} />
             <Button
+              variant="destructive"
               label="Cancel entry"
               icon="block"
               size="md"
-              className="flex-1 bg-alarm"
+              className="flex-1"
               loading={cancel.isPending}
               disabled={!cancelReason.trim()}
               onPress={() => cancel.mutate()}
@@ -213,6 +214,7 @@ export default function TransactionDetail() {
           <View className="flex-row gap-2">
             <Button label="Cancel" variant="light" size="md" className="flex-1" onPress={() => setReporting(false)} />
             <Button
+              variant="caution"
               label="Send to Coline"
               icon="flag"
               size="md"

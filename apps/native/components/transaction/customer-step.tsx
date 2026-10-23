@@ -77,8 +77,8 @@ export function CustomerStep({
                 </T>
               </View>
               <View className="flex-row gap-2">
-                <Button label="Yes, correct" icon="check" size="md" className="flex-1 bg-leaf" onPress={confirmSaved} />
-                <Button label="Change" icon="edit" size="md" variant="light" onPress={() => setEditing(true)} />
+                <Button variant="success" label="Yes, correct" icon="check" size="md" className="flex-1" onPress={confirmSaved} />
+                <Button variant="caution" label="Change" icon="edit" size="md" onPress={() => setEditing(true)} />
               </View>
             </Animated.View>
           )}
