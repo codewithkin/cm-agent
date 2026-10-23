@@ -12,7 +12,7 @@ import { Avatar, Card } from "@/components/ui/card";
 import { Screen } from "@/components/ui/screen";
 import { Segmented } from "@/components/ui/segmented";
 import { T } from "@/components/ui/text";
-import { amount, initials, monthLabel, wholeAmount } from "@/lib/format";
+import { amount, initials, localDateKey, monthLabel, wholeAmount } from "@/lib/format";
 import { reportHtml, sharePdf } from "@/lib/export";
 import { DURATION, enterUp, haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
@@ -38,7 +38,7 @@ export default function Reports() {
   const thisMonth = month === monthKey(new Date());
 
   const handledUsd = data ? data.totals.USD.cashInValue + data.totals.USD.cashOutValue : 0;
-  const todayIndex = data ? data.daily.findIndex((day) => day.date === new Date().toISOString().slice(0, 10)) : -1;
+  const todayIndex = data ? data.daily.findIndex((day) => day.date === localDateKey()) : -1;
   const lastDay = thisMonth && todayIndex >= 0 ? todayIndex + 1 : data?.daily.length ?? 0;
   const values = (data?.daily ?? [])
     .slice(0, lastDay)
