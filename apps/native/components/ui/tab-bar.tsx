@@ -18,13 +18,10 @@ export type TabItem = {
   badge?: number;
 };
 
-/** The parts of React Navigation's tab bar props this bar uses. */
+/** The parts of Expo Router's tab bar props (BottomTabBarProps) this bar uses. */
 type TabBarProps = {
   state: { index: number; routes: { key: string; name: string }[] };
-  navigation: {
-    emit: (event: { type: "tabPress"; target: string; canPreventDefault: true }) => { defaultPrevented: boolean };
-    navigate: (name: string) => void;
-  };
+  navigateToTab: (routeKey: string) => void;
 };
 
 type Props = TabBarProps & {
@@ -37,7 +34,7 @@ type Props = TabBarProps & {
  * The floating white bar from the design: the active tab is a black pill with
  * its label, the others are icons; the pill slides between tabs.
  */
-export function FloatingTabBar({ state, navigation, items, centerAction }: Props) {
+export function FloatingTabBar({ state, navigateToTab, items, centerAction }: Props) {
   const insets = useSafeAreaInsets();
   const activeName = state.routes[state.index]?.name;
   const half = Math.ceil(items.length / 2);
@@ -53,8 +50,7 @@ export function FloatingTabBar({ state, navigation, items, centerAction }: Props
           accessibilityState={{ selected: active }}
           scaleTo={0.9}
           onPress={() => {
-            const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });
-            if (!active && !event.defaultPrevented) navigation.navigate(route.name);
+            if (!active) navigateToTab(route.key);
           }}
           className={cn("h-12 flex-row items-center gap-1.5 rounded-full", active ? "bg-ink pl-3 pr-4" : "w-11 justify-center")}
         >
