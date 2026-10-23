@@ -1,9 +1,10 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useLocalSearchParams } from "expo-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import Animated from "react-native-reanimated";
 
+import { EditTransaction } from "@/components/owner/edit-transaction";
 import { CurrencyBadge, StatusChip } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
 import { Banner, Card, InfoRow } from "@/components/ui/card";
@@ -32,7 +33,7 @@ function Toggle({ label, open, onPress }: { label: string; open: boolean; onPres
   );
 }
 
-/** B8 Transaction detail. Helpers can report a problem to Coline. */
+/** B8 Transaction detail. Helpers can report a problem; Coline can edit or cancel it. */
 export default function TransactionDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const session = useObservable(sessionStore);
@@ -49,6 +50,22 @@ export default function TransactionDetail() {
   const [showSms, setShowSms] = useState(false);
   const [reporting, setReporting] = useState(false);
   const [reason, setReason] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const queryClient = useQueryClient();
+  const isOwner = session?.user.role === "OWNER";
+
+  const cancel = useMutation({
+    mutationFn: () => trpcClient.transactions.void.mutate({ transactionId: id, reason: cancelReason.trim() }),
+    onSuccess: () => {
+      haptic.warning();
+      patchRow("transactions", id, { voidedAt: new Date(), voidReason: cancelReason.trim() });
+      setCancelling(false);
+      void queryClient.invalidateQueries();
+    },
+    onError: () => haptic.error(),
+  });
 
   const flag = useMutation({
     mutationFn: () => trpcClient.transactions.flag.mutate({ transactionId: id, reason: reason.trim() }),
@@ -80,7 +97,14 @@ export default function TransactionDetail() {
     <Screen
       header={{ title: "Transaction", subtitle: `${dayLabel(tx.occurredAt)} · ${clock(tx.occurredAt)}` }}
       footer={
-        reporting ? undefined : flagged ? (
+        isOwner ? (
+          tx.voidedAt || editing || cancelling ? undefined : (
+            <View className="flex-row gap-2">
+              <Button label="Cancel it" icon="block" variant="danger" className="flex-1" disabled={!online} onPress={() => setCancelling(true)} />
+              <Button label="Edit" icon="edit" className="flex-1" disabled={!online} onPress={() => setEditing(true)} />
+            </View>
+          )
+        ) : reporting ? undefined : flagged ? (
           <Banner tone="amber" icon="flag" text={`Reported to Coline: "${tx.flagReason ?? ""}"`} />
         ) : (
           <Button label="Report to Coline" icon="flag" variant="outline" onPress={() => setReporting(true)} />
@@ -109,7 +133,13 @@ export default function TransactionDetail() {
       </Animated.View>
 
       <Card index={1} className="gap-0 py-1">
-        <InfoRow icon="person" label="Customer" value={tx.customerName} />
+        {isOwner ? (
+          <Tap onPress={() => router.push({ pathname: "/customer/[id]", params: { id: tx.customerId } })} scaleTo={0.99}>
+            <InfoRow icon="person" label="Customer" right={<T weight="heavy" className="text-[14px] underline">{tx.customerName}</T>} />
+          </Tap>
+        ) : (
+          <InfoRow icon="person" label="Customer" value={tx.customerName} />
+        )}
         <InfoRow icon="call" label="Phone" value={maskPhone(tx.customerPhone)} />
         <InfoRow icon="badge" label="ID" value={tx.customerIdNumber} />
         <InfoRow icon="tag" label="Reference" value={tx.reference ?? "—"} />
@@ -146,6 +176,32 @@ export default function TransactionDetail() {
       <T weight="semibold" className="text-[12px] text-subtle text-center">
         Saved by {servedBy} · {clock(tx.createdAt)}
       </T>
+
+      {editing ? <EditTransaction transactionId={id} onDone={() => setEditing(false)} /> : null}
+
+      {cancelling ? (
+        <Card index={0} className="bg-alarm-soft border-0">
+          <T weight="heavy" className="text-alarm-ink">
+            Cancel this entry?
+          </T>
+          <T weight="semibold" className="text-[13px] text-alarm-ink">
+            It stays in the logbook, crossed out, and its SMS goes back to "not saved".
+          </T>
+          <Field placeholder="Why? e.g. wrong amount" value={cancelReason} onChangeText={setCancelReason} autoFocus />
+          <View className="flex-row gap-2">
+            <Button label="Keep it" variant="light" size="md" className="flex-1" onPress={() => setCancelling(false)} />
+            <Button
+              label="Cancel entry"
+              icon="block"
+              size="md"
+              className="flex-1 bg-alarm"
+              loading={cancel.isPending}
+              disabled={!cancelReason.trim()}
+              onPress={() => cancel.mutate()}
+            />
+          </View>
+        </Card>
+      ) : null}
 
       {reporting ? (
         <Card index={0} className="bg-amber-soft border-0">
