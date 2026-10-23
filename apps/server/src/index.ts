@@ -5,7 +5,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 
 import { createContext } from "./context";
-import { ENV } from "./env.server";
+import "./env.server";
 
 const app = new Hono();
 
@@ -13,7 +13,8 @@ app.use(logger());
 app.use(
   "/*",
   cors({
-    origin: ENV.CORS_ORIGIN,
+    // The phones authenticate with bearer tokens, not cookies, so any origin is safe.
+    origin: "*",
     allowMethods: ["GET", "POST", "OPTIONS"],
     allowHeaders: ["content-type", "authorization", "x-session-token"],
   }),
