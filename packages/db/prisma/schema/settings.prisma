@@ -11,6 +11,8 @@ model BusinessSettings {
   lowCashZig    Int      @default(0)
   lowFloatUsd   Int      @default(5000)
   lowFloatZig   Int      @default(0)
+  /// Show "cash is low" warnings to helpers on the booth phones (no amounts).
+  lowWarningOnBooths Boolean @default(true)
   /// SMS senders treated as EcoCash confirmations, compared case-insensitively.
   smsSenders    String[] @default(["EcoCash"])
   retentionDays Int      @default(1825)
