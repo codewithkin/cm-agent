@@ -3,7 +3,7 @@ import { useEffect } from "react";
 
 import { FloatingTabBar } from "@/components/ui/tab-bar";
 import { useUnrecordedSms } from "@/lib/booth";
-import { notifyIncomingSms, watchNotificationTaps } from "@/lib/notifications";
+import { ensureNotificationPermission, notifyPendingSms } from "@/lib/notifications";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 import { incomingSmsStore, startSmsReader } from "@/lib/sms";
@@ -13,20 +13,17 @@ export default function BoothLayout() {
   const session = useObservable(sessionStore);
   const unrecorded = useUnrecordedSms().length;
 
-  // Read EcoCash SMS while the booth tabs are open; new ones open the incoming-SMS sheet.
+  // Listen for EcoCash SMS (with consent) while the booth tabs are open;
+  // each one the person allows opens the incoming-SMS sheet.
   useEffect(() => {
-    let stop: (() => void) | undefined;
-    void startSmsReader((sms) => void notifyIncomingSms(sms)).then((cleanup) => {
-      stop = cleanup;
-    });
+    void ensureNotificationPermission();
+    const stop = startSmsReader({ onPending: () => void notifyPendingSms() });
     const unsubscribe = incomingSmsStore.subscribe(() => {
       if (incomingSmsStore.get()) router.push("/incoming-sms");
     });
-    const stopTaps = watchNotificationTaps();
     return () => {
-      stop?.();
+      stop();
       unsubscribe();
-      stopTaps();
     };
   }, []);
 

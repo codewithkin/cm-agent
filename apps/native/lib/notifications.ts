@@ -1,11 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { AppState } from "react-native";
 
-import { amount, maskPhone } from "./format";
-import { localDb, type LocalSms } from "./local-db";
-import { incomingSmsStore } from "./sms";
-
-// Show notifications even while the app is open, but quietly (the sheet is already up).
+// Banners only while the app is in the background; in front, the consent sheet shows instead.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: AppState.currentState !== "active",
@@ -17,38 +13,26 @@ Notifications.setNotificationHandler({
 
 let permissionAsked = false;
 
-async function ensurePermission() {
+/** Android 13+ asks before an app may show notifications (POST_NOTIFICATIONS). */
+export async function ensureNotificationPermission() {
   if (permissionAsked) return;
   permissionAsked = true;
   const { status } = await Notifications.getPermissionsAsync();
   if (status !== "granted") await Notifications.requestPermissionsAsync();
 }
 
-/** N1 "New cash-out · USD 50.00 · EcoCash SMS from 0772 ••• 123. Tap to save it." */
-export async function notifyIncomingSms(sms: LocalSms) {
-  if (AppState.currentState === "active") return;
-  await ensurePermission();
-  const kind = sms.type === "CASH_IN" ? "cash-in" : "cash-out";
-  const money = sms.currency && sms.amount !== null ? ` · ${sms.currency === "USD" ? "USD" : "ZiG"} ${amount(sms.amount)}` : "";
+/**
+ * N1: an EcoCash SMS arrived while the app was in the background. Android's
+ * "allow this message" sheet appears as soon as the app is opened again.
+ */
+export async function notifyPendingSms() {
+  await ensureNotificationPermission();
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: `New ${kind}${money}`,
-      body: `EcoCash SMS${sms.counterpartyPhone ? ` from ${maskPhone(sms.counterpartyPhone)}` : ""}. Tap to save it.`,
-      data: { smsId: sms.id },
+      title: "New EcoCash SMS",
+      body: "Open the app and tap Allow to save it.",
+      data: { kind: "pending-sms" },
     },
     trigger: null,
   });
-}
-
-/** Tapping the notification opens the incoming-SMS sheet for that SMS. Returns a stop function. */
-export function watchNotificationTaps() {
-  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-    const smsId = response.notification.request.content.data?.smsId;
-    if (typeof smsId !== "string") return;
-    const sms = localDb.get().smsMessages[smsId];
-    if (!sms || sms.transactionId) return;
-    // The booth tabs open the sheet whenever this store is set.
-    incomingSmsStore.set(sms);
-  });
-  return () => subscription.remove();
 }
