@@ -73,7 +73,7 @@ Run standalone Node/Bun tools that use Varlock from the owning app directory so 
 
 | Variable | Who sets it |
 | --- | --- |
-| `OWNER_SETUP_CODE` | You. At least 12 characters; typed once in the app to create Coline's owner account |
+| `OWNER_SETUP_CODE` | You. At least 12 characters; Coline's starting password (phone `+263 775 101 506`). She can change both in Settings |
 | `SERVICE_USER_POSTGRES`, `SERVICE_PASSWORD_POSTGRES` | Coolify generates them (locally they default to `cm_agent`) |
 | `SERVICE_FQDN_SERVER_3000` | Coolify, from the domain you give the `server` service |
 
@@ -89,9 +89,9 @@ The app's `EXPO_PUBLIC_SERVER_URL` (set on EAS) is that domain, e.g. `https://ap
 
 2. In `apps/server/.env`, set `DATABASE_URL=postgresql://postgres:<your password>@localhost:5432/cm_agent` and `OWNER_SETUP_CODE` (any 12+ characters).
 3. Apply the migrations: `pnpm --filter @cm-agent/db exec prisma migrate deploy`.
-4. Start the server: `pnpm run dev:server`. In development it always makes sure there is a local owner and demo data. You can also run `pnpm --filter server seed`.
+4. Start the server: `pnpm run dev:server`. It always makes sure Coline's account exists, and in development it also adds the demo data. You can also run `pnpm --filter server seed`.
 
-Local sign-in: owner phone `0771234567`, password `localdev123`, PIN `1234`. Demo helpers: `Helper 1 (demo)` PIN `1111`, `Helper 2 (demo)` PIN `2222`.
+Coline's account is created automatically on first start (locally and in production): phone `+263 775 101 506`, password = the value of `OWNER_SETUP_CODE`, first PIN `1506` (she is asked to choose a new one). She can change the phone number and password in **Settings → Owner account**. Demo helpers: `Helper 1 (demo)` PIN `1111`, `Helper 2 (demo)` PIN `2222`.
 
 **Demo data** is a week on a "Demo booth" phone: closed shifts with counts, matched SMS, and a few problems for the review queue (no SMS, a mismatch, a reported entry, a cancelled one, a short shift, an unsaved SMS). Every demo row is tagged `isDemo`.
 
