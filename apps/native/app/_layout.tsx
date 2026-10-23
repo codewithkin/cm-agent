@@ -88,7 +88,7 @@ export default function Layout() {
     <QueryClientProvider client={queryClient}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardProvider>
-          <HeroUINativeProvider>
+          <HeroUINativeProvider config={{ devInfo: { stylingPrinciples: false } }}>
             <StatusBar style="dark" />
             {/* Any touch restarts the 2-minute idle lock. */}
             <View
