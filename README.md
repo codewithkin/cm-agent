@@ -129,20 +129,24 @@ The Expo app in `apps/native` follows `designs/CM Agent Screens (standalone).htm
 - **Booth phones are offline-first.** Records live in a local SQLite store (`lib/local-db.ts`). Every change goes into an outbox (`lib/outbox.ts`) that `sync.push` sends when there is internet; `sync.pull` brings changes down (`lib/sync.ts`).
 - **The owner phone reads live** through tRPC and React Query, keeping the last result on screen while offline.
 - **PIN unlock works offline** against the synced verifier (`lib/pin.ts`). Coline's PIN on a helper's phone approves the start and end of a shift.
-- **EcoCash SMS** are read by a small local Expo module (`modules/sms-reader`, Android only) and parsed with the same parser as the server.
+- **EcoCash SMS** are read with Google's SMS User Consent API through a small local Expo module (`modules/sms-reader`, Android only). While the booth screens are open the app listens for the next SMS; Android asks "Allow?" for each message and only allowed ones reach the app. No SMS permissions are requested.
 - **Motion** comes from `lib/motion.ts` (Reanimated presets and haptics) and the `Tap` pressable.
 
 ### Routes
 
 | Path | Screens |
 | --- | --- |
-| `/setup/*` | A1 splash, A2 owner sign-in and choose phone, A3 SMS permission |
+| `/setup/*` | A1 splash, A2 owner sign-in and choose phone, A3 how SMS reading works |
 | `/lock/*` | A4 who is serving, A5 PIN, A6 set PIN, forgot PIN |
 | `(booth)` tabs | B2 home, B7 transactions, B9 SMS inbox, B11 shift |
 | `/transaction/*` | B4–B5 new transaction, B6 saved, B8 detail |
 | `/shift/*`, `/owner-pin` | B1 start, B12 end, B13 summary, Coline's PIN |
 | `(owner)` tabs | C1 today, C2 review, C4 history, C6 reports, more |
 | `(admin)` | C3 day report, C5 customer, C7 shifts, C8 people, C9 phones, C10 settings, C11 access, B10 move money (Coline only) |
+
+### Android permissions
+
+The app asks for only `INTERNET`, `ACCESS_NETWORK_STATE`, `VIBRATE` and `POST_NOTIFICATIONS` (set in `app.json` under `android.permissions`). SMS, phone state, call log, microphone, storage, exact alarms and drawing over other apps are explicitly removed (`android.blockedPermissions`), so Play Protect and Play review don't flag the app.
 
 ### Running on a phone
 

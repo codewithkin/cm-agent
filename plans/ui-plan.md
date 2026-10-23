@@ -42,7 +42,7 @@ Animations use Reanimated (already installed) and haptics from `expo-haptics`. T
 
 ### Navigation flow
 
-1. **Start:** Splash → (first launch) owner sign-in → choose phone → SMS permission → Who is serving?
+1. **Start:** Splash → (first launch) owner sign-in → choose phone → how SMS reading works → Who is serving?
 2. **Every hand-over:** Who is serving? → PIN → Home (booth) or Today (owner phone). Idle for 2 minutes or "Change person" returns to Who is serving?
 3. **Booth tabs:** Home · Transactions · ＋ New · SMS · Shift. The ＋ opens New transaction as a modal; SMS arriving anywhere opens the incoming-SMS sheet.
 4. **Owner tabs:** Today · Check · History · Reports · More (people, phones, settings, who sees what).
@@ -96,7 +96,7 @@ Animations use Reanimated (already installed) and haptics from `expo-haptics`. T
 - [x] A1 Splash
 - [x] A2 Owner sign-in
 - [x] A2 Choose phone
-- [x] A3 Confirmation and SMS permission
+- [x] A3 Confirmation and how SMS reading works
 
 ### 5. Every hand-over (A4–A6)
 - [x] A4 Who is serving?
@@ -107,7 +107,7 @@ Animations use Reanimated (already installed) and haptics from `expo-haptics`. T
 - [x] B2 Home, no shift
 - [x] B1 Start shift (Coline counts)
 - [x] B2 Home, shift dashboard
-- [x] SMS reader native module
+- [x] SMS reader native module (SMS User Consent API, no SMS permissions)
 - [x] B3 Incoming SMS sheet
 - [x] B4 New transaction: amount and SMS wait
 - [x] B4 Customer and name check

@@ -291,4 +291,4 @@ There are no email sign-ups and no third-party logins. Coline has one owner acco
   - Per-person 4-digit PINs, hashed. The hashes are synced to registered devices so unlocking works offline.
   - The active person's ID is attached to every write and to the audit log.
 - **Prisma models** (from the spec): `Transaction`, `Customer`, `Shift`, `Movement`, `SmsMessage`, `User`, `Device`, `AuditEvent`. Money as integer cents with a currency enum. Unique EcoCash reference. No hard deletes.
-- **SMS reading:** needs a native module (`READ_SMS` / `RECEIVE_SMS`). Fine here because the app is sideloaded, not published on Play.
+- **SMS reading:** Google's SMS User Consent API in a local native module. No `READ_SMS` / `RECEIVE_SMS`: Android asks the person to allow each SMS, which keeps the app acceptable to Play Protect and Play review.
