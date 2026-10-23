@@ -18,6 +18,7 @@ import { countedBalances, expectedSnapshot } from "../../services/shifts";
 
 const MAX_DAYS = 366;
 const TOP = 5;
+const TOP_PER_CURRENCY = 3;
 
 /** Shortages and extra money per currency, both as positive cents. */
 function splitVariance(variance: Balances) {
@@ -184,9 +185,14 @@ export const insights = ownerProcedure
       firsts.flatMap((row) => (row._min.occurredAt ? [[row.customerPhone, row._min.occurredAt] as const] : [])),
     );
 
-    const largest = [...transactions]
-      .sort((a, b) => b.amount - a.amount)
-      .slice(0, TOP)
+    // Biggest per currency: a ZiG amount is not comparable with a USD one.
+    const largest = (["USD", "ZIG"] as const)
+      .flatMap((currency) =>
+        transactions
+          .filter((tx) => tx.currency === currency)
+          .sort((a, b) => b.amount - a.amount)
+          .slice(0, TOP_PER_CURRENCY),
+      )
       .map((tx) => ({
         id: tx.id,
         type: tx.type,
