@@ -11,6 +11,21 @@ import {
   shiftExpectedBalances,
 } from "../../services/shifts";
 
+const HIDDEN_COUNTS = {
+  openingCashUsd: null,
+  openingFloatUsd: null,
+  openingCashZig: null,
+  openingFloatZig: null,
+  expectedCashUsd: null,
+  expectedFloatUsd: null,
+  expectedCashZig: null,
+  expectedFloatZig: null,
+  countedCashUsd: null,
+  countedFloatUsd: null,
+  countedCashZig: null,
+  countedFloatZig: null,
+};
+
 /** Everything on the shift summary card: counts, values, balances and flags. */
 export const get = userProcedure
   .input(z.object({ shiftId: z.uuid() }))
@@ -40,12 +55,14 @@ export const get = userProcedure
 
     const expected = expectedSnapshot(shift) ?? (await shiftExpectedBalances(ctx.db, shift));
     const counted = countedBalances(shift);
+    // Helpers never see the money balances, only what they handled.
+    const isOwner = ctx.user.role === "OWNER";
     return {
-      shift: details,
-      opening: openingBalances(shift),
-      expected,
-      counted,
-      variance: counted ? subtractBalances(counted, expected) : null,
+      shift: isOwner ? details : { ...details, ...HIDDEN_COUNTS },
+      opening: isOwner ? openingBalances(shift) : null,
+      expected: isOwner ? expected : null,
+      counted: isOwner ? counted : null,
+      variance: isOwner && counted ? subtractBalances(counted, expected) : null,
       summary: summarizeTransactions(transactions),
       matchStates: Object.fromEntries(matchCounts.map((row) => [row.matchState, row._count._all])),
       flaggedCount: flagged,

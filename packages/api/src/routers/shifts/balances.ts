@@ -6,7 +6,10 @@ import { loadVisibleShift } from "../../services/access";
 import { getSettings } from "../../services/settings";
 import { findOpenShift, shiftExpectedBalances } from "../../services/shifts";
 
-/** The four live numbers on the home screen, plus which ones are below the warning level. */
+/**
+ * The four live numbers on the home screen, plus which are below the warning level.
+ * Helpers only get the warnings (if Coline turned them on), never the amounts.
+ */
 export const balances = userProcedure
   .input(z.object({ shiftId: z.uuid().optional() }).optional())
   .query(async ({ ctx, input }) => {
@@ -18,5 +21,9 @@ export const balances = userProcedure
       shiftExpectedBalances(ctx.db, shift),
       getSettings(ctx.db),
     ]);
-    return { shiftId: shift.id, expected, low: lowBalances(expected, settings) };
+    const low = lowBalances(expected, settings);
+    if (ctx.user.role !== "OWNER") {
+      return { shiftId: shift.id, expected: null, low: settings.lowWarningOnBooths ? low : [] };
+    }
+    return { shiftId: shift.id, expected, low };
   });
