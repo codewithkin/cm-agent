@@ -2,13 +2,18 @@ import { useQuery } from "@tanstack/react-query";
 import { Redirect, Tabs } from "expo-router";
 
 import { FloatingTabBar } from "@/components/ui/tab-bar";
+import { useOpenShift } from "@/lib/booth";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
+import { useSmsListener } from "@/lib/sms-listener";
 import { trpc } from "@/utils/trpc";
 
 /** Owner tabs: Today · Check · History · Reports · More. Coline only. */
 export default function OwnerLayout() {
   const session = useObservable(sessionStore);
+  // Coline can serve from her own phone too: listen for SMS while a shift is open on it.
+  const shift = useOpenShift();
+  useSmsListener(Boolean(shift) && session?.user.role === "OWNER");
   const review = useQuery({
     ...trpc.review.queue.queryOptions(),
     enabled: Boolean(session?.sessionToken) && session?.user.role === "OWNER",

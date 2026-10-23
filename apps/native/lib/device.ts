@@ -33,3 +33,8 @@ export async function forgetDevice() {
   await SecureStore.deleteItemAsync(KEY);
   deviceStore.set(null);
 }
+
+/** Where "done" goes back to: Coline's Today on the owner phone, the booth Home elsewhere. */
+export function homeHref(): "/today" | "/home" {
+  return deviceStore.get()?.kind === "OWNER" ? "/today" : "/home";
+}

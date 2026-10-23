@@ -12,7 +12,7 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { startShift } from "@/lib/actions";
 import { useOpenShift } from "@/lib/booth";
-import { deviceStore } from "@/lib/device";
+import { deviceStore, homeHref } from "@/lib/device";
 import { amount, clock, dayLabel, toDate } from "@/lib/format";
 import { useRows } from "@/lib/local-db";
 import { haptic } from "@/lib/motion";
@@ -60,14 +60,14 @@ export default function StartShift() {
 
   if (!session || !ownerId) return null;
   // Someone already opened a shift on this phone.
-  if (open && !started) return <Redirect href="/home" />;
+  if (open && !started) return <Redirect href={homeHref()} />;
 
   function confirm() {
     if (!session || !ownerId) return;
     setStarted(true);
     startShift({ servingUserId: session.user.id, countedById: ownerId, opening: counts, note: note.trim() || undefined });
     haptic.success();
-    router.dismissTo("/home");
+    router.dismissTo(homeHref());
   }
 
   return (

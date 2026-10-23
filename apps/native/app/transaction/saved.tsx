@@ -13,6 +13,7 @@ import { TypeTile } from "@/components/ui/transaction-row";
 import { statusOf, useOpenShift, useShiftTransactions, useSummary } from "@/lib/booth";
 import { amount, clock, maskPhone } from "@/lib/format";
 import { localDb } from "@/lib/local-db";
+import { homeHref } from "@/lib/device";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
@@ -46,7 +47,7 @@ export default function Saved() {
   const progress = useSharedValue(1);
   useEffect(() => {
     progress.value = withTiming(0, { duration: NEXT_CUSTOMER_MS, easing: Easing.linear });
-    const timer = setTimeout(() => router.dismissTo("/home"), NEXT_CUSTOMER_MS);
+    const timer = setTimeout(() => router.dismissTo(homeHref()), NEXT_CUSTOMER_MS);
     return () => clearTimeout(timer);
   }, [progress]);
   const barStyle = useAnimatedStyle(() => ({ width: `${progress.value * 100}%` }));
@@ -122,7 +123,7 @@ export default function Saved() {
           onPress={() => router.replace({ pathname: "/transaction/[id]", params: { id: tx.id } })}
         />
         <Tap
-          onPress={() => router.dismissTo("/home")}
+          onPress={() => router.dismissTo(homeHref())}
           className="flex-[1.5] h-14 rounded-full bg-ink overflow-hidden items-center justify-center"
           accessibilityLabel="Next customer"
         >

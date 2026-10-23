@@ -16,7 +16,7 @@ import { Stepper } from "@/components/ui/stepper";
 import { T } from "@/components/ui/text";
 import { endShift } from "@/lib/actions";
 import { useOpenShift, useShiftBalances, useShiftTransactions, useUnrecordedSms } from "@/lib/booth";
-import { deviceStore } from "@/lib/device";
+import { deviceStore, homeHref } from "@/lib/device";
 import { amount, clock, toDate } from "@/lib/format";
 import { localDb, useLocalSettings, useRows } from "@/lib/local-db";
 import { haptic } from "@/lib/motion";
@@ -69,7 +69,7 @@ export default function EndShift() {
 
   if (ended) return <Redirect href={{ pathname: "/shift/summary/[id]", params: { id: ended } }} />;
   if (!session || !ownerId) return <Redirect href="/no-access" />;
-  if (!shift || !expected || !variance) return <Redirect href="/home" />;
+  if (!shift || !expected || !variance) return <Redirect href={homeHref()} />;
 
   const set = (key: keyof Balances) => (cents: number) => setCounted((current) => ({ ...current, [key]: cents }));
   const go = (next: number) => {

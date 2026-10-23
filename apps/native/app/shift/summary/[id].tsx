@@ -9,7 +9,7 @@ import { Avatar } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
 import { useShiftTransactions, useSummary } from "@/lib/booth";
-import { deviceStore } from "@/lib/device";
+import { deviceStore, homeHref } from "@/lib/device";
 import { reportHtml, savePdf } from "@/lib/export";
 import { amount, clock, dayLabel, duration, initials, localDateKey } from "@/lib/format";
 import { localDb, useBusinessName } from "@/lib/local-db";
@@ -154,7 +154,7 @@ export default function ShiftSummary() {
 
       <View className="flex-row gap-2">
         <Button label="Save PDF" icon="picture-as-pdf" variant="light" className="flex-1" loading={pdf.isPending} onPress={() => pdf.mutate()} />
-        <Button variant="success" label="Done" icon="check" className="flex-1" onPress={() => router.dismissTo("/home")} />
+        <Button variant="success" label="Done" icon="check" className="flex-1" onPress={() => router.dismissTo(homeHref())} />
       </View>
     </View>
   );
