@@ -2,6 +2,7 @@
   "expo": {
     "name": "CM Agent",
     "slug": "cm-agent",
+    "owner": "codewithkin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,7 +10,7 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.cm-agent"
+      "bundleIdentifier": "com.codewithkin.colinemurahwa"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.cmagent"
+      "package": "com.codewithkin.colinemurahwa"
     },
     "web": {
       "bundler": "metro",
