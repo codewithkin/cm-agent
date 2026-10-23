@@ -24,6 +24,8 @@ model Transaction {
   servedBy         User            @relation(fields: [servedById], references: [id])
   occurredAt       DateTime        @default(now())
   matchState       MatchState
+  /// Why it was saved without an SMS, e.g. "Customer's phone was off".
+  note             String?
   flaggedAt        DateTime?
   flagReason       String?
   flaggedById      String?
