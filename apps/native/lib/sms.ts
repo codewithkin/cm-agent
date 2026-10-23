@@ -4,7 +4,7 @@ import { AppState, Platform } from "react-native";
 import { addSmsReaderListener, smsReaderAvailable, startListening, stopListening } from "@/modules/sms-reader";
 
 import { receiveSms } from "./actions";
-import { localSettings, type LocalSms } from "./local-db";
+import { localDb, localSettings, type LocalSms } from "./local-db";
 import { observable } from "./observable";
 
 /*
@@ -48,6 +48,22 @@ function handle(body: string, receivedAt: number) {
   const sender = ecoCashSender();
   const stored = receiveSms({ sender, body, receivedAt: new Date(receivedAt) }, [sender]);
   if (stored && !stored.transactionId && sheetSuppressed === 0) incomingSmsStore.set(stored);
+}
+
+/**
+ * An EcoCash SMS typed or pasted in by hand (e.g. "Deny" was tapped, or it came
+ * before the app was open). Stored like a received one. Returns it, or the copy
+ * already stored, or null when it doesn't read as an EcoCash SMS.
+ */
+export function savePastedSms(body: string): LocalSms | null {
+  const text = body.trim();
+  if (parseSms(text).status === "UNPARSED") return null;
+  const sender = ecoCashSender();
+  return (
+    receiveSms({ sender, body: text, receivedAt: new Date() }, [sender]) ??
+    Object.values(localDb.get().smsMessages).find((sms) => sms.body === text) ??
+    null
+  );
 }
 
 async function listen() {

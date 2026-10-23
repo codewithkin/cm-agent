@@ -65,6 +65,7 @@ function RootStack() {
       <Stack.Screen name="shift/start" options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }} />
       <Stack.Screen name="shift/end" options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }} />
       <Stack.Screen name="owner-pin" options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }} />
+      <Stack.Screen name="paste-sms" options={{ presentation: "fullScreenModal", animation: "slide_from_bottom" }} />
       <Stack.Screen name="(admin)" />
       <Stack.Screen
         name="incoming-sms"
