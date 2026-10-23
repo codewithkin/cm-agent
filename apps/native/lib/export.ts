@@ -1,20 +1,42 @@
-import { File, Paths } from "expo-file-system";
+import { Directory, File, Paths } from "expo-file-system";
+import { getContentUriAsync } from "expo-file-system/legacy";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
-/** Saves CSV text to a file and opens the share sheet (WhatsApp, Drive, email…). */
-export async function shareCsv(filename: string, csv: string) {
-  const file = new File(Paths.cache, filename);
+import { openFile } from "@/modules/file-viewer";
+
+const PDF = "application/pdf";
+
+/** "Day report 2026-10-23" → "Day-report-2026-10-23", safe as a file name. */
+const fileName = (title: string) => title.replace(/[^\w-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "") || "report";
+
+type PdfOptions = { landscape?: boolean };
+
+/** Renders HTML to an A4 PDF and keeps it in the app's Reports folder. Returns the saved file. */
+async function writePdf(html: string, title: string, { landscape }: PdfOptions = {}): Promise<File> {
+  const { uri } = await Print.printToFileAsync({ html, width: landscape ? 842 : 595, height: landscape ? 595 : 842 });
+  const folder = new Directory(Paths.document, "reports");
+  if (!folder.exists) folder.create();
+  const file = new File(folder, `${fileName(title)}.pdf`);
   if (file.exists) file.delete();
-  file.create();
-  file.write(csv);
-  await Sharing.shareAsync(file.uri, { mimeType: "text/csv", dialogTitle: filename, UTI: "public.comma-separated-values-text" });
+  await new File(uri).move(file);
+  return file;
 }
 
-/** Renders HTML to a PDF and opens the share sheet; `save` only prints it to a file. */
+/**
+ * Saves the PDF and opens it straight away in the phone's PDF viewer, where it
+ * can be printed or shared. Falls back to the share sheet when there is no viewer.
+ */
+export async function savePdf(html: string, title: string, options?: PdfOptions) {
+  const file = await writePdf(html, title, options);
+  if (openFile(await getContentUriAsync(file.uri), PDF)) return;
+  await Sharing.shareAsync(file.uri, { mimeType: PDF, dialogTitle: title, UTI: "com.adobe.pdf" });
+}
+
+/** Saves the PDF and opens the share sheet (WhatsApp, Drive, email…). */
 export async function sharePdf(html: string, title: string) {
-  const { uri } = await Print.printToFileAsync({ html, width: 595, height: 842 });
-  await Sharing.shareAsync(uri, { mimeType: "application/pdf", dialogTitle: title, UTI: "com.adobe.pdf" });
+  const file = await writePdf(html, title);
+  await Sharing.shareAsync(file.uri, { mimeType: PDF, dialogTitle: title, UTI: "com.adobe.pdf" });
 }
 
 const escape = (text: string) =>
