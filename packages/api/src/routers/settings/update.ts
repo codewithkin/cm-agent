@@ -20,6 +20,7 @@ export const update = ownerProcedure
         lowCashZig: centsSchema,
         lowFloatUsd: centsSchema,
         lowFloatZig: centsSchema,
+        lowWarningOnBooths: z.boolean(),
         smsSenders: z.array(z.string().trim().min(1).max(40)).min(1).max(10),
         retentionDays: z.number().int().min(365).max(3650),
       })
