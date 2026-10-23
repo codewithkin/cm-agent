@@ -40,6 +40,22 @@ Animations use Reanimated (already installed) and haptics from `expo-haptics`. T
 | Lists | New rows slide in; removed rows collapse (Reanimated layout transitions) |
 | Banners and sheets | Slide down from the top / up from the bottom |
 
+### Colour roles
+
+Every button says what it does by colour (`components/ui/button.tsx`), so people learn it once:
+
+| Colour | Means | Examples |
+| --- | --- | --- |
+| Black | Go forward a step | Continue, Next: customer |
+| Green | Finish, confirm, save | Save, Done, It is fine, Open, Yes correct |
+| Orange border | Change something | Edit, Change, New PIN, Save without SMS, End anyway |
+| Soft red | Start something destructive | Cancel it, Remove, Clear demo data |
+| Solid red | Confirm the destructive step | Cancel entry, Sign out, Clear |
+| Yellow | Add or bring money in | Add person, Add demo data, Cash-in |
+| White / outline / plain | Back out or a quiet choice | Later, Keep it, Go back |
+
+Status colours follow the same idea: green matched, amber no SMS or low money, red no match or not saved, lilac information.
+
 ### Navigation flow
 
 1. **Start:** Splash → (first launch) owner sign-in → choose phone → how SMS reading works → Who is serving?
