@@ -1,7 +1,10 @@
 import { router } from "expo-router";
 
+import { ByPersonCard } from "@/components/booth/by-person-card";
+import { MoneyNowCard } from "@/components/booth/money-now-card";
 import { MyShiftCard } from "@/components/booth/my-shift-card";
 import { NoShiftCard } from "@/components/booth/no-shift-card";
+import { OwnerToolsLink } from "@/components/booth/owner-tools-link";
 import { QuickActions } from "@/components/booth/quick-actions";
 import { RecentCard } from "@/components/booth/recent-card";
 import { ServingHeader } from "@/components/booth/serving-header";
@@ -20,7 +23,7 @@ import { deviceStore } from "@/lib/device";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
 
-/** B2 Home: no shift, or the shift dashboard. */
+/** B2 Home: no shift, the helper's shift dashboard, or Coline's view with all the money. */
 export default function Home() {
   const session = useObservable(sessionStore);
   const device = useObservable(deviceStore);
@@ -47,7 +50,14 @@ export default function Home() {
         />
       ) : (
         <>
-          <MyShiftCard summary={summary} index={1} />
+          {isOwner && balances ? (
+            <>
+              <MoneyNowCard balances={balances} low={low} index={1} />
+              <OwnerToolsLink index={2} />
+            </>
+          ) : (
+            <MyShiftCard summary={summary} index={1} />
+          )}
           <QuickActions index={2} />
           {unrecorded.length > 0 ? (
             <Banner
@@ -58,7 +68,7 @@ export default function Home() {
               onAction={() => router.push("/sms")}
             />
           ) : null}
-          {low.map((key) => (
+          {(isOwner ? [] : low).map((key) => (
             <Banner
               key={key}
               tone="amber"
@@ -66,7 +76,8 @@ export default function Home() {
               text={isOwner ? `${BALANCE_LABEL[key]} is low.` : `${BALANCE_LABEL[key]} is low. Tell Coline.`}
             />
           ))}
-          <RecentCard transactions={mine} index={4} />
+          {isOwner ? <ByPersonCard transactions={mine} index={4} /> : null}
+          <RecentCard transactions={mine} index={5} />
         </>
       )}
     </Screen>
