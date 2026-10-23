@@ -23,6 +23,9 @@ export async function createMovement(
   actor: Actor,
   input: z.infer<typeof createMovementInput>,
 ) {
+  if (actor.role !== "OWNER") {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Only Coline can move money" });
+  }
   const shift = await findOpenShift(db, actor.deviceId);
   if (!shift) {
     throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Open a shift before recording movements" });
