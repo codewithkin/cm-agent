@@ -14,7 +14,7 @@ import { Icon } from "@/components/ui/icon";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { amount, clock, dayLabel, initials, wholeAmount } from "@/lib/format";
-import { sharePdf } from "@/lib/export";
+import { savePdf } from "@/lib/export";
 import {
   answers,
   changeLabel,
@@ -28,7 +28,7 @@ import {
   type Insights,
   type PeriodKey,
 } from "@/lib/insights";
-import { useLocalSettings } from "@/lib/local-db";
+import { useBusinessName } from "@/lib/local-db";
 import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { insightsPdfHtml } from "@/lib/report-pdf";
@@ -299,7 +299,7 @@ function ToCheck({ data }: { data: Insights }) {
 /** C6 Reports: pick a period; each card answers one question Coline asks. Save it all as a PDF. */
 export default function Reports() {
   const session = useObservable(sessionStore);
-  const settings = useLocalSettings();
+  const businessName = useBusinessName();
   const [period, setPeriod] = useState<PeriodKey>("TODAY");
   const { from, to } = useMemo(() => periodDates(period), [period]);
   const report = useQuery({
@@ -308,13 +308,11 @@ export default function Reports() {
   });
   const data = report.data;
   const text = data ? answers(data) : null;
-  const businessName =
-    settings?.businessName && settings.businessName !== "[Business name]" ? settings.businessName : "Coline Murahwa";
 
   const pdf = useMutation({
     mutationFn: async () => {
       if (!data) return;
-      await sharePdf(insightsPdfHtml(data, businessName), `Report ${from} to ${to}`);
+      await savePdf(insightsPdfHtml(data, businessName), `Report ${from} to ${to}`);
     },
     onSuccess: () => haptic.success(),
     onError: () => haptic.error(),
@@ -332,7 +330,7 @@ export default function Reports() {
       }}
       footer={
         data ? (
-          <Button label="Save or share PDF" icon="picture-as-pdf" loading={pdf.isPending} onPress={() => pdf.mutate()} />
+          <Button label="Save PDF" icon="picture-as-pdf" loading={pdf.isPending} onPress={() => pdf.mutate()} />
         ) : undefined
       }
     >

@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { cn } from "heroui-native";
 import { useMemo, useState } from "react";
-import { ScrollView, Share, View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { LiveState } from "@/components/owner/live-state";
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -12,7 +12,7 @@ import { Screen } from "@/components/ui/screen";
 import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { amount, clock, initials, localDateKey, monthLabel, wholeAmount } from "@/lib/format";
-import { reportHtml, sharePdf } from "@/lib/export";
+import { reportHtml, savePdf, sharePdf } from "@/lib/export";
 import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 import { sessionStore } from "@/lib/session";
@@ -78,14 +78,8 @@ export default function DayReport() {
     ]);
   }
 
-  const pdf = useMutation({ mutationFn: () => sharePdf(html(), `Day report ${date}`), onSuccess: () => haptic.success() });
-
-  async function shareText() {
-    if (!data) return;
-    await Share.share({
-      message: `Day report ${date}: ${data.totals.transactionCount} transactions. Earned USD ${amount(data.totals.USD.commission)} · ZiG ${amount(data.totals.ZIG.commission)}.`,
-    });
-  }
+  const pdf = useMutation({ mutationFn: () => savePdf(html(), `Day report ${date}`), onSuccess: () => haptic.success() });
+  const share = useMutation({ mutationFn: () => sharePdf(html(), `Day report ${date}`) });
 
   return (
     <Screen
@@ -94,7 +88,7 @@ export default function DayReport() {
         data ? (
           <View className="flex-row gap-2">
             <Button label="Save PDF" icon="picture-as-pdf" variant="outline" className="flex-1" loading={pdf.isPending} onPress={() => pdf.mutate()} />
-            <Button label="Share" icon="share" className="flex-1" onPress={shareText} />
+            <Button label="Share PDF" icon="share" className="flex-1" loading={share.isPending} onPress={() => share.mutate()} />
           </View>
         ) : undefined
       }

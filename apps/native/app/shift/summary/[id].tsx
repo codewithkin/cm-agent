@@ -1,5 +1,6 @@
+import { useMutation } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
-import { Share, View } from "react-native";
+import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { CurrencyBadge } from "@/components/ui/badges";
@@ -9,20 +10,27 @@ import { Icon } from "@/components/ui/icon";
 import { T } from "@/components/ui/text";
 import { useShiftTransactions, useSummary } from "@/lib/booth";
 import { deviceStore } from "@/lib/device";
-import { amount, clock, dayLabel, duration, initials } from "@/lib/format";
-import { localDb, useLocalSettings } from "@/lib/local-db";
+import { reportHtml, savePdf } from "@/lib/export";
+import { amount, clock, dayLabel, duration, initials, localDateKey } from "@/lib/format";
+import { localDb, useBusinessName } from "@/lib/local-db";
+import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
 
-/** B13 Shift summary: a card Coline can share on WhatsApp. */
+/** B13 Shift summary: a card Coline can save as a PDF and share. */
 export default function ShiftSummary() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const tables = useObservable(localDb);
-  const settings = useLocalSettings();
   const device = useObservable(deviceStore);
   const shift = tables.shifts[id];
   const transactions = useShiftTransactions(id);
   const summary = useSummary(transactions);
+  const businessName = useBusinessName();
+  const pdf = useMutation({
+    mutationFn: () => savePdf(summaryHtml(), `Shift ${shift ? localDateKey(shift.openedAt) : ""} ${tables.users[shift?.openedById ?? ""]?.name ?? ""}`),
+    onSuccess: () => haptic.success(),
+    onError: () => haptic.error(),
+  });
 
   if (!shift) return null;
   const helper = tables.users[shift.openedById];
@@ -30,18 +38,32 @@ export default function ShiftSummary() {
   const customers = new Set(live.map((tx) => tx.customerPhone)).size;
   const problems = live.filter((tx) => tx.matchState === "NO_SMS" || tx.matchState === "MISMATCH" || tx.flaggedAt).length;
   const end = shift.closedAt ?? new Date();
-  const businessName = settings?.businessName && settings.businessName !== "[Business name]" ? settings.businessName : "Coline Murahwa";
 
-  async function share() {
-    const lines = [
-      `${businessName} · Shift summary ${dayLabel(shift!.openedAt)}`,
-      `${helper?.name ?? ""} · ${clock(shift!.openedAt)}–${clock(end)} (${duration(shift!.openedAt, end)})`,
-      `Transactions ${live.length} · Customers ${customers} · Problems ${problems}`,
-      `USD: in ${amount(summary.USD.cashInValue)} · out ${amount(summary.USD.cashOutValue)}`,
-      `ZiG: in ${amount(summary.ZIG.cashInValue)} · out ${amount(summary.ZIG.cashOutValue)}`,
-      `Earned: USD ${amount(summary.USD.commission)} · ZiG ${amount(summary.ZIG.commission)}`,
-    ];
-    await Share.share({ message: lines.join("\n") });
+  function summaryHtml() {
+    const name = helper?.name ?? "";
+    return reportHtml(`${businessName} · Shift summary`, `${dayLabel(shift!.openedAt)} · ${name} · ${clock(shift!.openedAt)}–${clock(end)} (${duration(shift!.openedAt, end)})`, [
+      {
+        heading: "This shift",
+        rows: [
+          ["", "Count"],
+          ["Transactions", String(live.length)],
+          ["Customers", String(customers)],
+          ["Problems", String(problems)],
+        ],
+      },
+      {
+        heading: "Money",
+        rows: [
+          ["", "Cash-in", "Cash-out", "Earned"],
+          ...(["USD", "ZIG"] as const).map((currency) => [
+            currency === "USD" ? "USD" : "ZiG",
+            amount(summary[currency].cashInValue),
+            amount(summary[currency].cashOutValue),
+            amount(summary[currency].commission),
+          ]),
+        ],
+      },
+    ]);
   }
 
   return (
@@ -131,7 +153,7 @@ export default function ShiftSummary() {
       </View>
 
       <View className="flex-row gap-2">
-        <Button label="Share" icon="share" variant="light" className="flex-1" onPress={share} />
+        <Button label="Save PDF" icon="picture-as-pdf" variant="light" className="flex-1" loading={pdf.isPending} onPress={() => pdf.mutate()} />
         <Button variant="success" label="Done" icon="check" className="flex-1" onPress={() => router.dismissTo("/home")} />
       </View>
     </View>
