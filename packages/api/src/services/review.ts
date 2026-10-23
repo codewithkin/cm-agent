@@ -12,7 +12,7 @@ const LIMIT = 200;
 export type ReviewKind = "TRANSACTION" | "SMS" | "SHIFT";
 
 /** The filter tabs on the review screen. */
-export type ReviewCategory = "REPORTED" | "NO_SMS" | "NO_MATCH" | "TYPED_IN" | "SMS_NOT_SAVED" | "SHIFT";
+export type ReviewCategory = "REPORTED" | "NO_SMS" | "NO_MATCH" | "SMS_NOT_SAVED" | "SHIFT";
 
 export type ReviewItem = {
   kind: ReviewKind;
@@ -106,9 +106,7 @@ export async function loadReviewItems(db: Db): Promise<ReviewItem[]> {
       ? "REPORTED"
       : tx.matchState === "MISMATCH"
         ? "NO_MATCH"
-        : tx.matchState === "NO_SMS"
-          ? "NO_SMS"
-          : "TYPED_IN";
+        : "NO_SMS";
     items.push({
       kind: "TRANSACTION",
       category,
