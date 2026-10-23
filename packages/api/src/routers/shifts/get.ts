@@ -41,7 +41,16 @@ export const get = userProcedure
       }),
       ctx.db.transaction.findMany({
         where: { shiftId: shift.id, voidedAt: null },
-        select: { type: true, currency: true, amount: true, fee: true, commission: true },
+        select: {
+          type: true,
+          currency: true,
+          amount: true,
+          fee: true,
+          commission: true,
+          customerPhone: true,
+          matchState: true,
+          flaggedAt: true,
+        },
       }),
       ctx.db.transaction.groupBy({
         by: ["matchState"],
@@ -66,5 +75,9 @@ export const get = userProcedure
       summary: summarizeTransactions(transactions),
       matchStates: Object.fromEntries(matchCounts.map((row) => [row.matchState, row._count._all])),
       flaggedCount: flagged,
+      customerCount: new Set(transactions.map((tx) => tx.customerPhone)).size,
+      problemCount: transactions.filter(
+        (tx) => tx.flaggedAt !== null || tx.matchState === "NO_SMS" || tx.matchState === "MISMATCH",
+      ).length,
     };
   });
