@@ -40,7 +40,8 @@ export default function DayReport() {
 
   const money = useMemo(() => {
     if (!data) return null;
-    const sum = (pick: (row: (typeof data.shifts)[number]) => number) => data.shifts.reduce((total, row) => total + pick(row), 0);
+    const { shifts } = data;
+    const sum = (pick: (row: (typeof shifts)[number]) => number) => shifts.reduce((total, row) => total + pick(row), 0);
     return (
       [
         ["USD cash", "cashUsd"],
