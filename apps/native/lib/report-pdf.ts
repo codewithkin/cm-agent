@@ -1,3 +1,5 @@
+import type { RouterOutputs } from "@/utils/trpc";
+
 import { amount, clock, dayLabel, shortDate } from "./format";
 import { answers, changeLabel, hourLabel, keyDate, moneyPair, rangeLabel, WEEKDAYS, type Insights } from "./insights";
 
@@ -127,5 +129,76 @@ export function insightsPdfHtml(data: Insights, businessName: string): string {
   <section><h2>Anything to check?</h2>
   ${problemRows.length ? table(["What", "How many"], problemRows.map(([label, count]) => [label, String(count)])) : `<p class="answer ok">Nothing to check.</p>`}
   </section>
+  </body></html>`;
+}
+
+type Logbook = RouterOutputs["reports"]["exportLog"];
+
+const MATCH: Record<Logbook["rows"][number]["matchState"], string> = {
+  MATCHED: "Matched",
+  NO_SMS: "No SMS",
+  MISMATCH: "No match",
+  MANUAL: "Typed in",
+};
+
+/** +263772123456 → 0772123456, the way numbers are written in the paper book. */
+const localPhone = (phone: string) => (phone.startsWith("+263") ? `0${phone.slice(4)}` : phone);
+
+/** The logbook as a landscape A4 page: every column of the paper book, then totals. */
+export function logbookPdfHtml(data: Logbook, businessName: string): string {
+  const live = data.rows.filter((row) => !row.voidedAt);
+  const total = (currency: "USD" | "ZIG", type: "CASH_IN" | "CASH_OUT") =>
+    live.filter((row) => row.currency === currency && row.type === type).reduce((sum, row) => sum + row.amount, 0);
+  const earned = (currency: "USD" | "ZIG") =>
+    live.filter((row) => row.currency === currency).reduce((sum, row) => sum + (row.commission ?? 0), 0);
+
+  const rows = data.rows
+    .map((row) => {
+      const cells = [
+        `${dayLabel(row.occurredAt)} ${clock(row.occurredAt)}`,
+        row.type === "CASH_IN" ? "Cash-in" : "Cash-out",
+        `${row.currency === "USD" ? "USD" : "ZiG"} ${amount(row.amount)}`,
+        row.fee === null ? "" : amount(row.fee),
+        row.commission === null ? "" : amount(row.commission),
+        row.customerName,
+        localPhone(row.customerPhone),
+        row.customerIdNumber,
+        row.reference ?? "",
+        row.servedBy,
+        row.phone,
+        [MATCH[row.matchState], row.flaggedAt ? "Reported" : "", row.voidedAt ? `Cancelled${row.voidReason ? `: ${row.voidReason}` : ""}` : ""]
+          .filter(Boolean)
+          .join(" · "),
+      ];
+      return `<tr class="${row.voidedAt ? "void" : ""}">${cells.map((cell) => `<td>${escape(cell)}</td>`).join("")}</tr>`;
+    })
+    .join("");
+
+  return `<!doctype html><html><head><meta charset="utf-8"><style>
+    body{font-family:-apple-system,Roboto,sans-serif;color:#141416;padding:22px;margin:0;font-size:9px}
+    header{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #F5CF5E;padding-bottom:8px;margin-bottom:12px}
+    h1{font-size:18px;margin:0} .muted{color:#6E6D68}
+    .stats{display:flex;gap:8px;margin-bottom:12px} .stat{flex:1;background:#F4F3EF;border-radius:8px;padding:8px}
+    .stat .label{color:#6E6D68} .stat .value{font-size:13px;font-weight:800}
+    table{width:100%;border-collapse:collapse} th{text-align:left;color:#6E6D68;border-bottom:1px solid #DCD9D1;padding:4px 3px}
+    td{border-bottom:1px solid #ECEAE4;padding:4px 3px;vertical-align:top} tr{page-break-inside:avoid}
+    tr.void td{color:#9A9892;text-decoration:line-through}
+  </style></head><body>
+  <header><div><h1>${escape(businessName)} · Logbook</h1><div class="muted">${escape(rangeLabel(data.from, data.to))} · ${data.rows.length} entries</div></div>
+  <div class="muted">Made ${escape(shortDate(new Date()))} ${escape(clock(new Date()))}</div></header>
+  <div class="stats">
+    ${stat("Cash-in · USD", amount(total("USD", "CASH_IN")))}
+    ${stat("Cash-out · USD", amount(total("USD", "CASH_OUT")))}
+    ${stat("Cash-in · ZiG", amount(total("ZIG", "CASH_IN")))}
+    ${stat("Cash-out · ZiG", amount(total("ZIG", "CASH_OUT")))}
+    ${stat("Earned", moneyPair(earned("USD"), earned("ZIG")))}
+  </div>
+  ${
+    data.rows.length
+      ? `<table><tr>${["When", "Type", "Amount", "Fee", "Earned", "Customer", "Mobile", "ID number", "Reference", "Served by", "Phone", "Check"]
+          .map((cell) => `<th>${cell}</th>`)
+          .join("")}</tr>${rows}</table>`
+      : `<p class="muted">No transactions in this period.</p>`
+  }
   </body></html>`;
 }

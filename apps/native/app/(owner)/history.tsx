@@ -13,9 +13,11 @@ import { Tap } from "@/components/ui/tap";
 import { T } from "@/components/ui/text";
 import { TransactionRow } from "@/components/ui/transaction-row";
 import { amount, clock, dayLabel, localDateKey, maskPhone } from "@/lib/format";
-import { shareCsv } from "@/lib/export";
+import { savePdf } from "@/lib/export";
+import { useBusinessName } from "@/lib/local-db";
 import { haptic } from "@/lib/motion";
 import { useObservable } from "@/lib/observable";
+import { logbookPdfHtml } from "@/lib/report-pdf";
 import { sessionStore } from "@/lib/session";
 import { trpc, trpcClient, type RouterOutputs } from "@/utils/trpc";
 
@@ -27,6 +29,7 @@ const statusOf = (tx: Row) => (tx.voidedAt ? ("CANCELLED" as const) : tx.matchSt
 /** C4 History · the logbook for every phone, newest first, loaded page by page. */
 export default function History() {
   const session = useObservable(sessionStore);
+  const businessName = useBusinessName();
   const [search, setSearch] = useState("");
   const [type, setType] = useState<TypeFilter>("ALL");
   const [helper, setHelper] = useState<string>("ALL");
@@ -47,8 +50,8 @@ export default function History() {
     mutationFn: async () => {
       const now = new Date();
       const from = localDateKey(new Date(now.getFullYear(), now.getMonth(), 1));
-      const result = await trpcClient.reports.exportCsv.mutate({ from, to: localDateKey(now) });
-      await shareCsv(result.filename, result.csv);
+      const logbook = await trpcClient.reports.exportLog.query({ from, to: localDateKey(now) });
+      await savePdf(logbookPdfHtml(logbook, businessName), `Logbook ${from} to ${logbook.to}`, { landscape: true });
     },
     onSuccess: () => haptic.success(),
     onError: () => haptic.error(),
@@ -75,7 +78,7 @@ export default function History() {
         right: exportMonth.isPending ? (
           <ActivityIndicator color="#141416" />
         ) : (
-          <IconButton icon="download" label="Export this month as CSV" onPress={() => exportMonth.mutate()} />
+          <IconButton icon="picture-as-pdf" label="Save this month as PDF" onPress={() => exportMonth.mutate()} />
         ),
       }}
     >
