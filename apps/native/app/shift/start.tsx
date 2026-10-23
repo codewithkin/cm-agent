@@ -3,7 +3,6 @@ import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { CountingChip } from "@/components/booth/counting-chip";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Field } from "@/components/ui/field";
@@ -83,7 +82,6 @@ export default function StartShift() {
         />
       }
     >
-      <CountingChip />
       <Card className="gap-0 py-1">
         {ROWS.map((row) => {
           const changed = changedKeys.includes(row.key);

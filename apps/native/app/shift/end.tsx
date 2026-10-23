@@ -4,7 +4,6 @@ import { cn } from "heroui-native";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 
-import { CountingChip } from "@/components/booth/counting-chip";
 import { CurrencyBadge } from "@/components/ui/badges";
 import { Button } from "@/components/ui/button";
 import { Banner, Card } from "@/components/ui/card";
@@ -12,10 +11,9 @@ import { Field } from "@/components/ui/field";
 import { Icon } from "@/components/ui/icon";
 import { MoneyInput } from "@/components/ui/money-input";
 import { Screen } from "@/components/ui/screen";
-import { Stepper } from "@/components/ui/stepper";
 import { T } from "@/components/ui/text";
 import { endShift } from "@/lib/actions";
-import { useOpenShift, useShiftBalances, useShiftTransactions, useUnrecordedSms } from "@/lib/booth";
+import { useOpenShift, useShiftBalances, useUnrecordedSms } from "@/lib/booth";
 import { deviceStore, homeHref } from "@/lib/device";
 import { amount, clock, toDate } from "@/lib/format";
 import { localDb, useLocalSettings, useRows } from "@/lib/local-db";
@@ -39,7 +37,6 @@ export default function EndShift() {
   const settings = useLocalSettings();
   const shift = useOpenShift();
   const expected = useShiftBalances(shift);
-  const transactions = useShiftTransactions(shift?.id);
   const unrecorded = useUnrecordedSms();
   const balanceSms = useRows(
     "smsMessages",
@@ -75,10 +72,6 @@ export default function EndShift() {
   const go = (next: number) => {
     setStep(next);
   };
-  const customers = new Set(transactions.filter((tx) => !tx.voidedAt).map((tx) => tx.customerPhone)).size;
-  const problems = transactions.filter(
-    (tx) => !tx.voidedAt && (tx.matchState === "NO_SMS" || tx.matchState === "MISMATCH" || tx.flaggedAt),
-  ).length;
   const blockedBySms = unrecorded.length > 0 && !endAnyway;
 
   function finish() {
@@ -103,14 +96,12 @@ export default function EndShift() {
     <Screen
       header={{
         title: "End shift",
-        subtitle: `${opener?.name ?? ""} · since ${clock(shift.openedAt)}`,
+        subtitle: `Step ${step + 1} of 3 · ${opener?.name ?? ""} since ${clock(shift.openedAt)}`,
         leading: step === 0 ? "close" : "back",
         onLeading: step === 0 ? undefined : () => go(step - 1),
       }}
       footer={footer}
     >
-      <Stepper steps={["Cash", "EcoCash", "Check"]} current={step} />
-      <CountingChip />
 
       <View key={step} className="gap-3">
         {step === 0 ? (
@@ -207,25 +198,6 @@ export default function EndShift() {
             ) : (
               <Field label="What happened?" icon="edit-note" placeholder="Explain the difference" value={note} onChangeText={setNote} />
             )}
-
-            <Card title="This shift">
-              <View className="flex-row gap-2">
-                {[
-                  ["Transactions", transactions.filter((tx) => !tx.voidedAt).length],
-                  ["Customers", customers],
-                  ["Problems", problems],
-                ].map(([label, value]) => (
-                  <View key={String(label)} className="flex-1 rounded-2xl bg-page p-2.5">
-                    <T weight="bold" className="text-[11px] text-subtle">
-                      {label}
-                    </T>
-                    <T weight="heavy" className="text-[20px]">
-                      {value}
-                    </T>
-                  </View>
-                ))}
-              </View>
-            </Card>
           </>
         ) : null}
       </View>
